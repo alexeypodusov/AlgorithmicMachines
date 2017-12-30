@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="qtjambi-native-win64-msvc2013x64-4.8.7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/qtJambi/win64/qtjambi-native-win64-msvc2013x64-4.8.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
