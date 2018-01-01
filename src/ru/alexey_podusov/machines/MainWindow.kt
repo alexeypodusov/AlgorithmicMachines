@@ -46,6 +46,5 @@ class MainWindow : QMainWindow() {
 
         ui.tabWorkAreaWidget.addTab(workareaWidgetList.get(0), "test")
         ui.tabCommandWidget.addTab(commandsWidgetList.get(0), "test")
-
     }
 }

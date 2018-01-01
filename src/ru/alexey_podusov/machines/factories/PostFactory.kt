@@ -6,6 +6,7 @@ import ru.alexey_podusov.machines.ui.CommandsBaseWidget
 import ru.alexey_podusov.machines.ui.WorkareaBaseWidget
 import ru.alexey_podusov.machines.ui.post.CommandsPostWidget
 import ru.alexey_podusov.machines.ui.post.WorkareaPostWidget
+import javax.jws.WebParam
 
 class PostFactory: IFactory {
 
@@ -18,6 +19,6 @@ class PostFactory: IFactory {
     }
 
     override fun createCommandsBaseWidget(model: ModelBase): CommandsBaseWidget {
-        return CommandsPostWidget(model)
+        return CommandsPostWidget(model as ModelPost)
     }
 }

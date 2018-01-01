@@ -22,7 +22,6 @@ class CellPostWidget : CellBaseWidget() {
     fun onButtonClicked() { onCellChanchedSignal.emit(number, !isMark)}
 
     override fun createElementWidget(): QWidget {
-
         return QPushButton()
     }
 }

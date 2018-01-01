@@ -5,22 +5,22 @@ import ru.alexey_podusov.machines.models.ModelPost
 import ru.alexey_podusov.machines.ui.CellBaseWidget
 import ru.alexey_podusov.machines.ui.CellsWorkareaBaseWidget
 
-class WorkareaPostWidget(override val model: ModelPost) : CellsWorkareaBaseWidget() {
+class WorkareaPostWidget(model: ModelPost) : CellsWorkareaBaseWidget(model) {
+    init {
+        connect()
+    }
+    override fun onCellChanched(numberCell: Int, cellParameter: Any) {
+        (model as ModelPost).changeValueCell(numberCell, cellParameter as Boolean)
+    }
+
     override fun createCell(): CellBaseWidget {
         return CellPostWidget()
     }
-    init {
-        updateWorkArea()
-        connect()
-    }
-
-    override fun onCellChanched(numberCell: Int, cellParameter: Any) {
-        model.changeValueCell(numberCell, cellParameter as Boolean)
-    }
 
     override fun updateWorkArea() {
-        for (i in cellWidgetList.indices) {
-            val cellWidget = cellWidgetList.get(i) as CellPostWidget
+        model as ModelPost
+        for ((i, widget) in cellWidgetList.withIndex()) {
+            val cellWidget = widget as CellPostWidget
 
             val numberCell = model.currentCarriage - (numberWidgetCarriage - i)
 
@@ -35,10 +35,10 @@ class WorkareaPostWidget(override val model: ModelPost) : CellsWorkareaBaseWidge
     }
 
     override fun onLeftButtonClicked() {
-        model.currentCarriage--
+        (model as ModelPost).currentCarriage--
     }
 
     override fun onRightButtonClicked() {
-        model.currentCarriage++
+        (model as ModelPost).currentCarriage++
     }
 }

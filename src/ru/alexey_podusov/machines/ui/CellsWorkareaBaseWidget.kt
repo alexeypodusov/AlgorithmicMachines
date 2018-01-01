@@ -3,12 +3,11 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QApplication
 import com.trolltech.qt.gui.QHBoxLayout
-import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
 import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.ui.post.CellPostWidget
+import ru.alexey_podusov.machines.ui.post.StringPostWidget
 
-abstract class CellsWorkareaBaseWidget : WorkareaBaseWidget() {
+abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(model) {
     protected val ui = Ui_PostWorkAreaWidget()
     protected val cellWidgetList = ArrayList<CellBaseWidget>()
 
@@ -53,7 +52,7 @@ abstract class CellsWorkareaBaseWidget : WorkareaBaseWidget() {
 
         ui.scrollArea.widget().setLayout(scrollAreaLayout)
         scrollAreaLayout.setSpacing(SPACING_CELL_LAYOUT)
-
+        updateWorkArea()
         cellWidgetList.get(numberWidgetCarriage).setCurrent()
     }
 

@@ -1,10 +1,7 @@
 package ru.alexey_podusov.machines.ui
 
-import com.trolltech.qt.QSignalEmitter
 import com.trolltech.qt.core.Qt
-import com.trolltech.qt.gui.QLabel
-import com.trolltech.qt.gui.QVBoxLayout
-import com.trolltech.qt.gui.QWidget
+import com.trolltech.qt.gui.*
 
 abstract class CellBaseWidget : QWidget() {
     companion object {
