@@ -1,4 +1,8 @@
 package ru.alexey_podusov.machines.models
 
-class ModelBase {
+import com.trolltech.qt.QSignalEmitter
+import com.trolltech.qt.core.QObject
+
+abstract class ModelBase : QObject() {
+    val workAreaChangedSignal = Signal0()
 }

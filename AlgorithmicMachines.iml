@@ -10,5 +10,7 @@
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="library" name="qtjambi-4.8.7" level="project" />
     <orderEntry type="library" name="qtjambi-native-win64-msvc2013x64-4.8.7" level="project" />
+    <orderEntry type="library" name="rxkotlin-2.2.0" level="project" />
+    <orderEntry type="library" name="rxjava-2.1.8" level="project" />
   </component>
 </module>
