@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: kotlin/kotlin-reflect.jar kotlin/kotlin-stdlib.jar kotlin/
+ kotlin-stdlib-sources.jar kotlin/kotlin-test.jar qtjambi-4.8.7.jar qt
+ jambi-native-linux32-gcc-4.8.7.jar qtjambi-native-win64-msvc2013x64-4
+ .8.7.jar
+Main-Class: ru.alexey_podusov.machines.MainKt
+

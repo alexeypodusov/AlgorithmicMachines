@@ -7,8 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
-    <orderEntry type="library" name="qtjambi-4.8.7" level="project" />
-    <orderEntry type="library" name="qtjambi-native-win64-msvc2013x64-4.8.7" level="project" />
+    <orderEntry type="library" exported="" name="KotlinJavaRuntime" level="project" />
+    <orderEntry type="library" exported="" name="qtjambi-4.8.7" level="project" />
+    <orderEntry type="library" exported="" name="qtjambi-native-win64-msvc2013x64-4.8.7" level="project" />
+    <orderEntry type="library" exported="" name="qtjambi-native-linux32-gcc-4.8.7" level="project" />
   </component>
 </module>
