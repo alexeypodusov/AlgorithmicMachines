@@ -10,7 +10,7 @@ abstract class WorkareaBaseWidget(protected val model: ModelBase): QWidget() {
     abstract fun updateWorkArea()
 
     protected open fun connect() {
-        model.workAreaChangedSignal.connect{ updateWorkArea() }
+        model.workAreaChangedSignal.connect(this, ::updateWorkArea)
     }
 
     override fun resizeEvent(arg__1: QResizeEvent?) {

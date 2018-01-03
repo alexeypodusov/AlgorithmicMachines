@@ -66,32 +66,36 @@ class StringPostWidget : StringBaseWidget() {
     init {
         commandComboBox.setMinimumWidth(WIDTH_COMMAND_STRING)
         commandComboBox.setFixedHeight(HEIGHT_STRING)
-        commandComboBox.currentIndexChanged.connect(this, "onComboBoxIndexChanched(int)")
+        commandComboBox.currentIndexChanged.connect(this, ::onComboBoxIndexChanged)
         stringLayout.addWidget(commandComboBox)
         PostCommandType.values().forEach { commandComboBox.addItem(it.text) }
+        commandComboBox.installEventFilter(this)
 
         transitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         transitionLineEdit.setMaximumWidth(3)
         transitionLineEdit.setValidator(QIntValidator(0, 999))
-        transitionLineEdit.editingFinished.connect(this, "onTransitionEditingFinished()")
+        transitionLineEdit.editingFinished.connect(this, ::onTransitionEditingFinished)
         stringLayout.addWidget(transitionLineEdit)
+        transitionLineEdit.installEventFilter(this)
+
 
         secondTransitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         secondTransitionLineEdit.setMaximumWidth(3)
         secondTransitionLineEdit.setValidator(QIntValidator(0, 999))
-        secondTransitionLineEdit.editingFinished.connect(this, "onSecondTransitionEditingFinished()")
+        secondTransitionLineEdit.editingFinished.connect(this, ::onSecondTransitionEditingFinished)
         stringLayout.addWidget(secondTransitionLineEdit)
         secondTransitionLineEdit.hide()
+        secondTransitionLineEdit.installEventFilter(this)
 
         commentLineEdit.setMinimumWidth(WIDTH_COMMENT_STRING)
         commentLineEdit.setFixedHeight(HEIGHT_STRING)
         commentLineEdit.setMaxLength(255)
         stringLayout.addWidget(commentLineEdit)
-        commentLineEdit.editingFinished.connect(this, "onCommentLineEditEditinFinished()")
+        commentLineEdit.editingFinished.connect(this, ::onCommentLineEditEditinFinished)
         commentLineEdit.installEventFilter(this)
     }
 
-    fun onComboBoxIndexChanched(index: Int) {
+    fun onComboBoxIndexChanged(index: Int) {
         postCommandType = PostCommandType.values()[index]
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))

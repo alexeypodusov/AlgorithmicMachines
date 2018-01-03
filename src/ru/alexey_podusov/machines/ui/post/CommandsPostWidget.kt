@@ -1,15 +1,11 @@
 package ru.alexey_podusov.machines.ui.post
 
-import com.sun.org.apache.xpath.internal.operations.Mod
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.models.ModelPost
 import ru.alexey_podusov.machines.ui.StringBaseWidget
 import ru.alexey_podusov.machines.ui.StringCommandsBaseWidget
 
 class CommandsPostWidget(model: ModelPost) : StringCommandsBaseWidget(model) {
-    init {
-        bindCommands()
-    }
     override fun createStringCommand(): StringBaseWidget {
         return StringPostWidget()
     }
@@ -19,7 +15,8 @@ class CommandsPostWidget(model: ModelPost) : StringCommandsBaseWidget(model) {
         for ((i, command) in model.commandsList.withIndex()) {
             val widget = stringWidgetList.get(i) as StringPostWidget
             widget.setCommand(command)
-            //widget.onEditedSignal.connect(this, "onEditedString(PostCommand)")
+
+            widget.onEditedSignal.connect(this, ::onEditedString)
         }
     }
 
@@ -35,7 +32,7 @@ class CommandsPostWidget(model: ModelPost) : StringCommandsBaseWidget(model) {
 
     override fun onDeleteCommandClicked() {
         //TODO
-        (model as ModelPost).insertCommand(stringWidgetList.size - 1)
+        (model as ModelPost).removeCommand(stringWidgetList.size - 1)
         updateCommands()
     }
 }

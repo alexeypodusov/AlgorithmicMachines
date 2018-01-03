@@ -66,7 +66,7 @@ abstract class StringBaseWidget : QFrame() {
         previousStringText.setText(PREVIOUS_STRING_TEXT)
         linkLayout.addWidget(previousStringText)
 
-        previousNumberString.linkActivated.connect(this, "onLinkActivated(String)")
+        previousNumberString.linkActivated.connect(this, ::onLinkActivated)
         linkLayout.addWidget(previousNumberString)
 
         linkLayout.setContentsMargins(LINK_LAYOUT_MARGIN, 0, 0, 0)

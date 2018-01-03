@@ -2,6 +2,7 @@ package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QVBoxLayout
+import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.models.ModelBase
 import ru.alexey_podusov.machines.models.ModelBase.StatusPlay.STOPPED
 
@@ -39,16 +40,19 @@ abstract class StringCommandsBaseWidget(model: ModelBase) : CommandsBaseWidget(m
         val commandSize = model.getCommandsSize()
 
         while (stringWidgetList.size > commandSize) {
+            stringWidgetList.get(stringWidgetList.size - 1).hide()
             stringWidgetList.removeAt(stringWidgetList.size - 1)
         }
 
         while (stringWidgetList.size < commandSize) {
             val stringCommand = createStringCommand()
-            stringCommand.onLinkStringSignal.connect(this, "onLinkStringClicked(int, int)")
-            stringCommand.inFocusSignal.connect(this, "onInFocusCommand(int)")
+            stringCommand.onLinkStringSignal.connect(this, ::onLinkStringClicked)
+            stringCommand.inFocusSignal.connect(this, ::onInFocusCommand)
             stringWidgetList.add(stringCommand)
             commandStringsLayout.addWidget(stringCommand)
         }
+
+        bindCommands()
     }
 
     private fun onLinkStringClicked(transitionNum: Int, senderNum: Int) {

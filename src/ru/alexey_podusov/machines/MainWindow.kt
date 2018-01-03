@@ -1,7 +1,5 @@
 package ru.alexey_podusov.machines
 
-import com.trolltech.qt.QSignalEmitter
-import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QBoxLayout
 import com.trolltech.qt.gui.QKeyEvent
 import com.trolltech.qt.gui.QMainWindow
@@ -34,15 +32,71 @@ class MainWindow : QMainWindow() {
         ui.setupUi(this)
         setNullMargins(ui.mainVerticalLayout)
 
+        connect()
         initHardcode()
-
-        ui.actionPlay.triggered.connect { checked: Boolean -> model!!.play() }
-        ui.actionNextStep.triggered.connect { checked: Boolean -> model!!.playStep() }
-        ui.actionReverseStep.triggered.connect { checked: Boolean -> model!!.playReverseStep() }
-        ui.actionPause.triggered.connect { checked: Boolean -> model!!.statusPlay = ON_PAUSE }
-        ui.actionStop.triggered.connect { checked: Boolean -> model!!.statusPlay = STOPPED }
     }
 
+    //пока хардкод
+    private fun initHardcode() {
+        model = factory.createModel()
+        model!!.sendMessageSignal.connect(this, ::onReceiveMessage)
+        model!!.changedStatusPlaySignal.connect(this, ::onChangedStatusPlay)
+        commandsWidgetList = ArrayList()
+
+        commandsWidgetList.clear()
+        workareaWidgetList.clear()
+
+        val command = factory.createCommandsBaseWidget(model!!)
+        command.enableCommandButtonsChange.connect(this, ::changeEnableCommandButtons)
+        commandsWidgetList.add(command)
+
+        workareaWidgetList.add(factory.createWorkareaWidget(model!!))
+
+        ui.tabWorkAreaWidget.addTab(workareaWidgetList.get(0), "test")
+        ui.tabCommandWidget.addTab(commandsWidgetList.get(0), "test")
+    }
+
+    private fun connect() {
+        ui.actionPlay.triggered.connect(this, ::actionPlayTriggered)
+        ui.actionNextStep.triggered.connect(this, ::actionNextStepTriggered)
+        ui.actionReverseStep.triggered.connect(this, ::actionReverseStepTriggered)
+        ui.actionPause.triggered.connect(this, ::actionPauseTriggered)
+        ui.actionStop.triggered.connect(this, ::actionStopTriggered)
+
+        ui.backCommandButton.clicked.connect(this, ::onBackCommandClicked)
+        ui.forwardCommandButton.clicked.connect(this, ::onForwardCommandClicked)
+
+        ui.pushButtonAddString.clicked.connect(this, ::onAddCommandsClicked)
+        ui.pushButtonDeleteString.clicked.connect(this, ::onDeleteCommandClicked)
+
+    }
+
+    private fun actionPlayTriggered(checked: Boolean) = model!!.play()
+    private fun actionNextStepTriggered(checked: Boolean) = model!!.playStep()
+    private fun actionReverseStepTriggered(checked: Boolean) = model!!.playReverseStep()
+    private fun actionPauseTriggered(checked: Boolean) = {model!!.statusPlay = ON_PAUSE}
+    private fun actionStopTriggered(checked: Boolean) = {model!!.statusPlay = STOPPED}
+
+    private fun onBackCommandClicked(checked: Boolean) {
+        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onBackCommandClicked()
+    }
+
+    private fun onForwardCommandClicked(checked: Boolean) {
+        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onForwardCommandClicked()
+    }
+
+    private fun onAddCommandsClicked(checked: Boolean) {
+        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onAddCommandClicked()
+    }
+
+    private fun onDeleteCommandClicked(checked: Boolean) {
+        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onDeleteCommandClicked()
+    }
+
+    private fun changeEnableCommandButtons(backEnable: Boolean, forwardEnable: Boolean) {
+        ui.backCommandButton.isEnabled = backEnable
+        ui.forwardCommandButton.isEnabled = forwardEnable
+    }
 
     private fun setNullMargins(layout: QBoxLayout) {
         layout.setMargin(0)
@@ -51,24 +105,7 @@ class MainWindow : QMainWindow() {
                 .forEach { setNullMargins(it as QBoxLayout) }
     }
 
-    //пока хардкод
-    private fun initHardcode() {
-        model = factory.createModel()
-        //model!!.sendMessageSignal.connect (this, "receiveMessage(MessageType,String,String)")
-        //model!!.changedStatusPlaySignal.connect(this,  "onChangedStatusPlay(StatusPlay)")
-        commandsWidgetList = ArrayList()
-
-        commandsWidgetList.clear()
-        workareaWidgetList.clear()
-
-        commandsWidgetList.add(factory.createCommandsBaseWidget(model!!))
-        workareaWidgetList.add(factory.createWorkareaWidget(model!!))
-
-        ui.tabWorkAreaWidget.addTab(workareaWidgetList.get(0), "test")
-        ui.tabCommandWidget.addTab(commandsWidgetList.get(0), "test")
-    }
-
-    private fun receiveMessage(messageType: ModelBase.MessageType, text: String, title: String) {
+    private fun onReceiveMessage(messageType: ModelBase.MessageType, text: String, title: String) {
         when (messageType) {
             MessageType.MESSAGE_ERROR -> QMessageBox.warning(this, title, text)
             MessageType.MESSAGE_INFO -> QMessageBox.information(this, title, text)
@@ -76,7 +113,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun onChangedStatusPlay(statusPlay: ModelBase.StatusPlay) {
-        //TODO
+        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onChangedStatusPlay(statusPlay)
         when (statusPlay) {
             PLAYING -> {
                 ui.actionPlay.isEnabled = false

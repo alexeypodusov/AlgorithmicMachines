@@ -16,7 +16,11 @@ class CellPostWidget : CellBaseWidget() {
         }
 
     init {
-        (elementWidget as QPushButton).clicked.connect{ checked: Boolean -> onCellChanchedSignal.emit(number, !isMark) }
+        (elementWidget as QPushButton).clicked.connect(this, ::onCellChanged)
+    }
+
+    private fun onCellChanged(clicked: Boolean) {
+        onCellChanchedSignal.emit(number, !isMark)
     }
 
     override fun createElementWidget(): QWidget {

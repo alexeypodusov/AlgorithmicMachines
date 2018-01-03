@@ -44,8 +44,8 @@ class LinkLineEdit : QLineEdit() {
     init {
         setObjectName("linkLineEdit")
         val mainWindow: MainWindow = getMainWindow()
-        mainWindow.keyPressSignal.connect(this, "onKeyPressed(QKeyEvent)")
-        mainWindow.keyReleaseSignal.connect(this, "onKeyReleased(QKeyEvent)")
+        mainWindow.keyPressSignal.connect(this,::onKeyPressed)
+        mainWindow.keyReleaseSignal.connect(this, ::onKeyReleased)
     }
 
     private fun onKeyPressed(event: QKeyEvent) {

@@ -1,6 +1,7 @@
 package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.gui.*
+import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.models.ModelBase
 
 abstract class CommandsBaseWidget(protected val model: ModelBase) : QWidget() {
@@ -16,7 +17,7 @@ abstract class CommandsBaseWidget(protected val model: ModelBase) : QWidget() {
         mainLayout.addWidget(scrollArea)
         setLayout(mainLayout)
 
-        model.setExecCommandSignal.connect(this, "onSetExecCommand(int, int)")
+        model.setExecCommandSignal.connect(this, ::onSetExecCommand)
     }
 
     abstract fun onChangedStatusPlay(statusPlay: ModelBase.StatusPlay)

@@ -51,8 +51,7 @@ class ModelPost : ModelBase() {
         for (i in 0..COUNT_CELLS) {
             cellsList.add(false)
         }
-        commandsList.add(PostCommand(number = 0))
-
+        insertCommand(0)
     }
 
     fun getCell(numCell: Int): Boolean {

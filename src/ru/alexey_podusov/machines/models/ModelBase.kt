@@ -3,7 +3,6 @@ package ru.alexey_podusov.machines.models
 import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.QTimer
 import ru.alexey_podusov.machines.connect
-import kotlin.collections.ArrayList
 
 abstract class ModelBase : QObject() {
     enum class StatusPlay {
@@ -39,7 +38,7 @@ abstract class ModelBase : QObject() {
     abstract fun checkValidationCommand(numberCommand: Int): Boolean
 
     init {
-        timer.timeout.connect { executeWithTimer() }
+        timer.timeout.connect(this, ::executeWithTimer)
         timer.isSingleShot = true
     }
 
@@ -106,10 +105,10 @@ abstract class ModelBase : QObject() {
     }
 
     private fun emitSetExecCommand() {
-        var indexPrevCommand = -1;
+        var indexPrevCommand = -1
         if (executeNumberCommandList.size > 1) {
-            //-3 нет времени объяснять, но так надо
-            indexPrevCommand = executeNumberCommandList.size - 3;
+            //почему -3 нет времени объяснять, но так надо
+            indexPrevCommand = executeNumberCommandList.size - 3
         }
 
         setExecCommandSignal.emit(executeNumberCommandList.last(), indexPrevCommand)

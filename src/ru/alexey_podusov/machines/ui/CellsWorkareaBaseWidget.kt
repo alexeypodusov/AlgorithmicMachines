@@ -32,8 +32,8 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
 
     override fun connect() {
         super.connect()
-        ui.LeftPushButton.clicked.connect{checked: Boolean -> onLeftButtonClicked()}
-        ui.RightPushButton.clicked.connect{checked: Boolean -> onRightButtonClicked()}
+        ui.LeftPushButton.clicked.connect(this, ::onLeftButtonClicked)
+        ui.RightPushButton.clicked.connect(this, ::onRightButtonClicked)
     }
 
     fun initCells() {
