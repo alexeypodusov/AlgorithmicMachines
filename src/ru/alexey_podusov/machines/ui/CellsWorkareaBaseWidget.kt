@@ -3,6 +3,7 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QApplication
 import com.trolltech.qt.gui.QHBoxLayout
+import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
 import ru.alexey_podusov.machines.models.ModelBase
 import ru.alexey_podusov.machines.ui.post.StringPostWidget
@@ -21,9 +22,6 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
     init {
         ui.setupUi(this)
         ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-
-        ui.LeftPushButton.clicked.connect(this, "onLeftButtonClicked()")
-        ui.RightPushButton.clicked.connect(this, "onRightButtonClicked()")
         initCells()
     }
 
@@ -32,6 +30,11 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
     protected abstract fun onLeftButtonClicked()
     protected abstract fun onRightButtonClicked()
 
+    override fun connect() {
+        super.connect()
+        ui.LeftPushButton.clicked.connect{checked: Boolean -> onLeftButtonClicked()}
+        ui.RightPushButton.clicked.connect{checked: Boolean -> onRightButtonClicked()}
+    }
 
     fun initCells() {
         cellWidgetList.clear()
@@ -46,7 +49,7 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
             val cell: CellBaseWidget = createCell()
             cellWidgetList.add(cell)
 
-            cell.onCellChanchedSignal.connect(this, "onCellChanched(int, java.lang.Object)")
+            cell.onCellChanchedSignal.connect { num: Int, param: Any -> onCellChanched(num, param) }
             scrollAreaLayout.addWidget(cell)
         }
 

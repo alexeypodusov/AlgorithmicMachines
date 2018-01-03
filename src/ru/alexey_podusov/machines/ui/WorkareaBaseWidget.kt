@@ -4,13 +4,12 @@ import com.trolltech.qt.gui.QResizeEvent
 import com.trolltech.qt.gui.QWidget
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.models.ModelPost
 
 abstract class WorkareaBaseWidget(protected val model: ModelBase): QWidget() {
     abstract fun updateSizeWidget()
     abstract fun updateWorkArea()
 
-    protected fun connect() {
+    protected open fun connect() {
         model.workAreaChangedSignal.connect{ updateWorkArea() }
     }
 

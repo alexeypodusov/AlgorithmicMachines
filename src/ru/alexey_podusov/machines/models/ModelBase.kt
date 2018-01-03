@@ -24,7 +24,7 @@ abstract class ModelBase : QObject() {
     var speedTimer = 500
 
     val workAreaChangedSignal = Signal0()
-    protected var statusPlay: StatusPlay = StatusPlay.STOPPED
+    var statusPlay: StatusPlay = StatusPlay.STOPPED
         set(value) {
             field = value
             changedStatusPlaySignal.emit(statusPlay)
@@ -72,7 +72,7 @@ abstract class ModelBase : QObject() {
         } else statusPlay = StatusPlay.STOPPED
     }
 
-    private fun playStep() {
+    fun playStep() {
         when (statusPlay) {
             StatusPlay.STOPPED -> {
                 executeNumberCommandList.clear()
@@ -95,7 +95,7 @@ abstract class ModelBase : QObject() {
         emitSetExecCommand()
     }
 
-    private fun playReverseStep() {
+    fun playReverseStep() {
         if (executeNumberCommandList.size > 1) {
             executeNumberCommandList.removeAt(executeNumberCommandList.size - 1)
             reverseExecuteCommand(executeNumberCommandList.last())

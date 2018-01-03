@@ -1,22 +1,22 @@
 package ru.alexey_podusov.machines.models
 
 class ModelPost : ModelBase() {
-    enum class PostCommandType {
-        NULL_COMMAND,
-        ADD_MARK,
-        DELETE_MARK,
-        LEFT_STEP,
-        RIGHT_STEP,
-        CHECK_MARK,
-        STOP
+    enum class PostCommandType(var text: String) {
+        NULL_COMMAND(""),
+        ADD_MARK("V добавить метку"),
+        DELETE_MARK("X удалить метку"),
+        LEFT_STEP("<- шаг влево"),
+        RIGHT_STEP(". шаг вправо"),
+        CHECK_MARK("? проверить"),
+        STOP("! стоп")
     }
 
     data class PostCommand(var number: Int, var commandType: PostCommandType = PostCommandType.NULL_COMMAND,
                            var transition: Int = -1, var secondTransition: Int = -1, var comment: String = "")
 
-    var currentCarriage: Int = 0
+    var currentCarriage: Int = 0 //not index! fact number cell
         set(value) {
-            if (isIndexInTape(value)) {
+            if (isInTape(value)) {
                 field = value
                 workAreaChangedSignal.emit()
             }
@@ -42,6 +42,11 @@ class ModelPost : ModelBase() {
         val ERROR_MARK_FALSE = "Метка отсутствует!"
     }
 
+    fun changeCommand(command: PostCommand) {
+        commandsList.set(command.number, command)
+
+    }
+
     init {
         for (i in 0..COUNT_CELLS) {
             cellsList.add(false)
@@ -65,6 +70,16 @@ class ModelPost : ModelBase() {
             cellsList.set(cellIndex, cellValue)
             workAreaChangedSignal.emit()
         }
+    }
+
+    fun insertCommand(number: Int) {
+        //TODO
+        commandsList.add(number, PostCommand(number = number))
+    }
+
+    fun removeCommand(number: Int) {
+        //TODO
+        commandsList.removeAt(number)
     }
 
     private fun isIndexInTape(index: Int): Boolean {
@@ -96,7 +111,7 @@ class ModelPost : ModelBase() {
 
         when (commandsList.get(numberCommand).commandType) {
             PostCommandType.ADD_MARK -> {
-                if (!cellsList.get(currentCarriage)) {
+                if (!cellsList.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, true)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_TRUE, ERROR_TITLE)
@@ -105,7 +120,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.DELETE_MARK -> {
-                if (cellsList.get(currentCarriage)) {
+                if (cellsList.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, false)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_FALSE, ERROR_TITLE)
@@ -114,7 +129,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.LEFT_STEP -> {
-                if (isIndexInTape(currentCarriage - 1)) {
+                if (isInTape(currentCarriage - 1)) {
                     currentCarriage--
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
@@ -123,7 +138,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.RIGHT_STEP -> {
-                if (isIndexInTape(currentCarriage + 1)) {
+                if (isInTape(currentCarriage + 1)) {
                     currentCarriage++
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
@@ -132,7 +147,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.CHECK_MARK -> {
-                if (!cellsList.get(currentCarriage)) {
+                if (!cellsList.get(getIndexByNum(currentCarriage))) {
                     executeNumberCommandList.removeAt(executeNumberCommandList.size - 1)
                     executeNumberCommandList.add(commandsList.get(numberCommand).secondTransition)
                 }
@@ -157,7 +172,7 @@ class ModelPost : ModelBase() {
         when(commandsList.get(numberCommand).commandType)
         {
             PostCommandType.ADD_MARK -> {
-                if (cellsList.get(currentCarriage)) {
+                if (cellsList.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, false)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_FALSE, ERROR_TITLE)
@@ -166,7 +181,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.DELETE_MARK -> {
-                if (!cellsList.get(currentCarriage)) {
+                if (!cellsList.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, true)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_TRUE, ERROR_TITLE)
@@ -175,7 +190,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.LEFT_STEP -> {
-                if (isIndexInTape(currentCarriage + 1)) {
+                if (isInTape(currentCarriage + 1)) {
                     currentCarriage++
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
@@ -184,7 +199,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.RIGHT_STEP -> {
-                if (isIndexInTape(currentCarriage - 1)) {
+                if (isInTape(currentCarriage - 1)) {
                     currentCarriage--
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
