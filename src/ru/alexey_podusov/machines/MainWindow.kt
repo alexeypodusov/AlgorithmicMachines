@@ -17,8 +17,6 @@ class MainWindow : QMainWindow() {
     val keyPressSignal = Signal1<QKeyEvent>()
 
     private val ui = Ui_MainWindow()
-    private val qVBoxLayoutClassName = "com.trolltech.qt.gui.QVBoxLayout"
-    private val qHBoxLayoutClassName = "com.trolltech.qt.gui.QHBoxLayout"
 
     private var factory: IFactory = PostFactory()
     private var engine: BaseEngine? = null
@@ -110,7 +108,7 @@ class MainWindow : QMainWindow() {
     private fun setNullMargins(layout: QBoxLayout) {
         layout.setMargin(0)
         layout.children()
-                .filter { qVBoxLayoutClassName == it.javaClass.name || qHBoxLayoutClassName == it.javaClass.name }
+                .filter { it is QVBoxLayout || it is QHBoxLayout }
                 .forEach { setNullMargins(it as QBoxLayout) }
     }
 
