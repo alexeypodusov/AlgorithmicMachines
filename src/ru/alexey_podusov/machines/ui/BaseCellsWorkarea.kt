@@ -5,7 +5,7 @@ import com.trolltech.qt.gui.QApplication
 import com.trolltech.qt.gui.QHBoxLayout
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
-import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine
 
 abstract class BaseCellsWorkarea(engine: BaseEngine) : BaseWorkarea(engine) {
     protected val ui = Ui_PostWorkAreaWidget()

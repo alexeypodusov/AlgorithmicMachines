@@ -3,8 +3,8 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QVBoxLayout
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.BaseEngine
-import ru.alexey_podusov.machines.models.BaseEngine.StatusPlay.STOPPED
+import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 
 abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
     protected val lineItemWidgets = ArrayList<BaseLineItem>()
@@ -19,7 +19,6 @@ abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
     init {
         layoutsManipulation()
         updateCommands()
-        updateSelectingCommand(selectedCommand)
         clickedCommands.add(0)
     }
 
@@ -45,14 +44,15 @@ abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
         }
 
         while (lineItemWidgets.size < commandSize) {
-            val stringCommand = createStringCommand()
-            stringCommand.onLinkStringSignal.connect(this, ::onLinkStringClicked)
-            stringCommand.inFocusSignal.connect(this, ::onInFocusCommand)
-            lineItemWidgets.add(stringCommand)
-            commandLinesLayout.addWidget(stringCommand)
+            val lineCommand = createStringCommand()
+            lineCommand.onLinkStringSignal.connect(this, ::onLinkStringClicked)
+            lineCommand.inFocusSignal.connect(this, ::onInFocusCommand)
+            lineItemWidgets.add(lineCommand)
+            commandLinesLayout.addWidget(lineCommand)
         }
 
         bindCommands()
+        updateSelectingCommand(selectedCommand)
     }
 
     private fun onLinkStringClicked(transitionNum: Int, senderNum: Int) {
@@ -74,11 +74,15 @@ abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
     }
 
     protected open fun updateSelectingCommand(numCommand: Int) {
-        if (lineItemWidgets.size >= selectedCommand) {
+        //убираем старое выделение
+        if (selectedCommand < lineItemWidgets.size) {
             lineItemWidgets.get(selectedCommand).isSelected = false
         }
-        selectedCommand = numCommand;
-        lineItemWidgets.get(numCommand).isSelected = true
+
+        if (numCommand < lineItemWidgets.size) selectedCommand = numCommand
+        else selectedCommand = lineItemWidgets.size - 1
+
+        lineItemWidgets.get(selectedCommand).isSelected = true
     }
 
 

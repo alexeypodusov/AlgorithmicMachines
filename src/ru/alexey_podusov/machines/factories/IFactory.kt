@@ -1,6 +1,6 @@
 package ru.alexey_podusov.machines.factories
 
-import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.ui.BaseCommands
 import ru.alexey_podusov.machines.ui.BaseWorkarea
 

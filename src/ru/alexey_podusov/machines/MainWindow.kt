@@ -1,15 +1,12 @@
 package ru.alexey_podusov.machines
 
-import com.trolltech.qt.gui.QBoxLayout
-import com.trolltech.qt.gui.QKeyEvent
-import com.trolltech.qt.gui.QMainWindow
-import com.trolltech.qt.gui.QMessageBox
+import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.factories.IFactory
 import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
-import ru.alexey_podusov.machines.models.BaseEngine
-import ru.alexey_podusov.machines.models.BaseEngine.*
-import ru.alexey_podusov.machines.models.BaseEngine.StatusPlay.*
+import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine.*
+import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
 import ru.alexey_podusov.machines.ui.BaseCommands
 import ru.alexey_podusov.machines.ui.BaseWorkarea
 import java.util.*
@@ -29,13 +26,17 @@ class MainWindow : QMainWindow() {
     private var workareaWidgets = ArrayList<BaseWorkarea>()
 
     init {
-        ui.setupUi(this)
-        setNullMargins(ui.mainVerticalLayout)
+        setupUi()
 
         connect()
         initHardcode()
     }
 
+    private fun setupUi() {
+        ui.setupUi(this)
+        setNullMargins(ui.mainVerticalLayout)
+        ui.buttonsVerticalLayout.setContentsMargins(0,30,0,0)
+    }
     //пока хардкод
     private fun initHardcode() {
         engine = factory.createModel()
@@ -54,6 +55,8 @@ class MainWindow : QMainWindow() {
 
         ui.tabWorkAreaWidget.addTab(workareaWidgets.get(0), "test")
         ui.tabCommandWidget.addTab(commandsWidgets.get(0), "test")
+
+
     }
 
     private fun connect() {
@@ -66,9 +69,11 @@ class MainWindow : QMainWindow() {
         ui.backCommandButton.clicked.connect(this, ::onBackCommandClicked)
         ui.forwardCommandButton.clicked.connect(this, ::onForwardCommandClicked)
 
-        ui.pushButtonAddString.clicked.connect(this, ::onAddCommandsClicked)
-        ui.pushButtonDeleteString.clicked.connect(this, ::onDeleteCommandClicked)
+        ui.insertAfterButton.clicked.connect(this, ::onInsertAfterClicked)
+        ui.insertBeforeButton.clicked.connect(this, ::onInsertBeforeClicked)
+        ui.deleteCommand.clicked.connect(this, ::onDeleteCommandClicked)
 
+        changeEnableCommandButtons(false, false)
     }
 
     private fun actionPlayTriggered(checked: Boolean) = engine!!.play()
@@ -85,8 +90,12 @@ class MainWindow : QMainWindow() {
         commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onForwardCommandClicked()
     }
 
-    private fun onAddCommandsClicked(checked: Boolean) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onAddCommandClicked()
+    private fun onInsertAfterClicked(checked: Boolean) {
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onInsertAfterClicked()
+    }
+
+    private fun onInsertBeforeClicked(checked: Boolean) {
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onInsertBeforeClicked()
     }
 
     private fun onDeleteCommandClicked(checked: Boolean) {

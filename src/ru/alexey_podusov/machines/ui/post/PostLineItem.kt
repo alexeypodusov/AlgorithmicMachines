@@ -4,10 +4,10 @@ import com.trolltech.qt.gui.QComboBox
 import com.trolltech.qt.gui.QIntValidator
 import com.trolltech.qt.gui.QLineEdit
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.PostEngine
-import ru.alexey_podusov.machines.models.PostEngine.*
-import ru.alexey_podusov.machines.models.PostEngine.PostCommandType.CHECK_MARK
-import ru.alexey_podusov.machines.models.PostEngine.PostCommandType.NULL_COMMAND
+import ru.alexey_podusov.machines.engines.PostEngine
+import ru.alexey_podusov.machines.engines.PostEngine.*
+import ru.alexey_podusov.machines.engines.PostEngine.PostCommandType.CHECK_MARK
+import ru.alexey_podusov.machines.engines.PostEngine.PostCommandType.NULL_COMMAND
 import ru.alexey_podusov.machines.ui.BaseLineItem
 import ru.alexey_podusov.machines.ui.custom_widgets.LinkLineEdit
 
@@ -45,8 +45,8 @@ class PostLineItem : BaseLineItem() {
     var secondTransition: Int = -1
         set(value) {
             field = value
-            if (value != -1) transitionLineEdit.setText(value.toString())
-            else transitionLineEdit.setText("")
+            if (value != -1) secondTransitionLineEdit.setText(value.toString())
+            else secondTransitionLineEdit.setText("")
         }
 
     var comment: String = ""
@@ -73,7 +73,7 @@ class PostLineItem : BaseLineItem() {
 
         transitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         transitionLineEdit.setMaximumWidth(3)
-        transitionLineEdit.setValidator(QIntValidator(0, 999))
+        transitionLineEdit.setValidator(QIntValidator(0, PostEngine.MAX_COMMANDS))
         transitionLineEdit.editingFinished.connect(this, ::onTransitionEditingFinished)
         stringLayout.addWidget(transitionLineEdit)
         transitionLineEdit.installEventFilter(this)
@@ -81,7 +81,7 @@ class PostLineItem : BaseLineItem() {
 
         secondTransitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         secondTransitionLineEdit.setMaximumWidth(3)
-        secondTransitionLineEdit.setValidator(QIntValidator(0, 999))
+        secondTransitionLineEdit.setValidator(QIntValidator(0, PostEngine.MAX_COMMANDS))
         secondTransitionLineEdit.editingFinished.connect(this, ::onSecondTransitionEditingFinished)
         stringLayout.addWidget(secondTransitionLineEdit)
         secondTransitionLineEdit.hide()
@@ -95,13 +95,13 @@ class PostLineItem : BaseLineItem() {
         commentLineEdit.installEventFilter(this)
     }
 
-    fun onComboBoxIndexChanged(index: Int) {
+    private fun onComboBoxIndexChanged(index: Int) {
         postCommandType = PostCommandType.values()[index]
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))
     }
 
-    fun onTransitionEditingFinished() {
+    private fun onTransitionEditingFinished() {
         try {
             transition = transitionLineEdit.text().toInt()
         } catch (e: NumberFormatException) {
@@ -111,7 +111,7 @@ class PostLineItem : BaseLineItem() {
                 transition, secondTransition, comment))
     }
 
-    fun onSecondTransitionEditingFinished() {
+    private fun onSecondTransitionEditingFinished() {
         try {
             secondTransition = secondTransitionLineEdit.text().toInt()
         } catch (e: NumberFormatException) {
@@ -121,7 +121,7 @@ class PostLineItem : BaseLineItem() {
                 transition, secondTransition, comment))
     }
 
-    fun onCommentLineEditEditinFinished() {
+    private fun onCommentLineEditEditinFinished() {
         comment = commentLineEdit.text()
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))

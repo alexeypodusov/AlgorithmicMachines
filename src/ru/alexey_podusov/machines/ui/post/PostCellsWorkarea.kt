@@ -1,7 +1,7 @@
 package ru.alexey_podusov.machines.ui.post
 
 
-import ru.alexey_podusov.machines.models.PostEngine
+import ru.alexey_podusov.machines.engines.PostEngine
 import ru.alexey_podusov.machines.ui.CellBase
 import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
 

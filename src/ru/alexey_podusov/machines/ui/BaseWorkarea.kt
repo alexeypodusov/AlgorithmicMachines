@@ -3,7 +3,7 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.gui.QResizeEvent
 import com.trolltech.qt.gui.QWidget
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine
 
 abstract class BaseWorkarea(protected val engine: BaseEngine): QWidget() {
     abstract fun updateSizeWidget()

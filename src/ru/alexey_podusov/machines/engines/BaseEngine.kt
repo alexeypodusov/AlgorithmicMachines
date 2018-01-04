@@ -1,4 +1,4 @@
-package ru.alexey_podusov.machines.models
+package ru.alexey_podusov.machines.engines
 
 import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.QTimer
