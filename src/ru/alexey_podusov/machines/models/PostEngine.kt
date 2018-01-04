@@ -1,6 +1,6 @@
 package ru.alexey_podusov.machines.models
 
-class ModelPost : ModelBase() {
+class PostEngine : BaseEngine() {
     enum class PostCommandType(var text: String) {
         NULL_COMMAND(""),
         ADD_MARK("V добавить метку"),
@@ -22,8 +22,8 @@ class ModelPost : ModelBase() {
             }
         }
 
-    var cellsList = ArrayList<Boolean>()
-    var commandsList = ArrayList<PostCommand>()
+    var cells = ArrayList<Boolean>()
+    var commands = ArrayList<PostCommand>()
 
     companion object {
         val COUNT_CELLS = 2000
@@ -43,13 +43,13 @@ class ModelPost : ModelBase() {
     }
 
     fun changeCommand(command: PostCommand) {
-        commandsList.set(command.number, command)
+        commands.set(command.number, command)
 
     }
 
     init {
         for (i in 0..COUNT_CELLS) {
-            cellsList.add(false)
+            cells.add(false)
         }
         insertCommand(0)
     }
@@ -57,7 +57,7 @@ class ModelPost : ModelBase() {
     fun getCell(numCell: Int): Boolean {
         if (isInTape(numCell)) {
             val cellIndex = getIndexByNum(numCell)
-            return cellsList.get(cellIndex)
+            return cells.get(cellIndex)
         }
 
         return false
@@ -66,19 +66,19 @@ class ModelPost : ModelBase() {
     fun changeValueCell(numCell: Int, cellValue: Boolean) {
         if (isInTape(numCell)) {
             val cellIndex = getIndexByNum(numCell)
-            cellsList.set(cellIndex, cellValue)
+            cells.set(cellIndex, cellValue)
             workAreaChangedSignal.emit()
         }
     }
 
     fun insertCommand(number: Int) {
         //TODO
-        commandsList.add(number, PostCommand(number = number))
+        commands.add(number, PostCommand(number = number))
     }
 
     fun removeCommand(number: Int) {
         //TODO
-        commandsList.removeAt(number)
+        commands.removeAt(number)
     }
 
     private fun isIndexInTape(index: Int): Boolean {
@@ -88,7 +88,7 @@ class ModelPost : ModelBase() {
     private fun getIndexByNum(num: Int): Int = num + ((COUNT_CELLS / 2) - 1)
 
     override fun getCommandsSize(): Int {
-        return commandsList.size
+        return commands.size
     }
 
     private fun checkTransitionNumber(numberTransition: Int): Boolean {
@@ -96,7 +96,7 @@ class ModelPost : ModelBase() {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_TRANSITION_NULL, ERROR_TITLE)
             return false
         }
-        if (numberTransition >= commandsList.size) {
+        if (numberTransition >= commands.size) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_TRANSITION_NOT_EXIST, ERROR_TITLE)
             return false
         }
@@ -104,13 +104,13 @@ class ModelPost : ModelBase() {
     }
 
     override fun executeCommand(numberCommand: Int): Boolean {
-        executeNumberCommandList.add(commandsList.get(numberCommand).transition)
+        executeNumberCommandList.add(commands.get(numberCommand).transition)
 
         if (!checkValidationCommand(numberCommand)) return false
 
-        when (commandsList.get(numberCommand).commandType) {
+        when (commands.get(numberCommand).commandType) {
             PostCommandType.ADD_MARK -> {
-                if (!cellsList.get(getIndexByNum(currentCarriage))) {
+                if (!cells.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, true)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_TRUE, ERROR_TITLE)
@@ -119,7 +119,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.DELETE_MARK -> {
-                if (cellsList.get(getIndexByNum(currentCarriage))) {
+                if (cells.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, false)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_FALSE, ERROR_TITLE)
@@ -146,9 +146,9 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.CHECK_MARK -> {
-                if (!cellsList.get(getIndexByNum(currentCarriage))) {
+                if (!cells.get(getIndexByNum(currentCarriage))) {
                     executeNumberCommandList.removeAt(executeNumberCommandList.size - 1)
-                    executeNumberCommandList.add(commandsList.get(numberCommand).secondTransition)
+                    executeNumberCommandList.add(commands.get(numberCommand).secondTransition)
                 }
             }
 
@@ -168,10 +168,10 @@ class ModelPost : ModelBase() {
             return false
         }
 
-        when(commandsList.get(numberCommand).commandType)
+        when(commands.get(numberCommand).commandType)
         {
             PostCommandType.ADD_MARK -> {
-                if (cellsList.get(getIndexByNum(currentCarriage))) {
+                if (cells.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, false)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_FALSE, ERROR_TITLE)
@@ -180,7 +180,7 @@ class ModelPost : ModelBase() {
             }
 
             PostCommandType.DELETE_MARK -> {
-                if (!cellsList.get(getIndexByNum(currentCarriage))) {
+                if (!cells.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, true)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_TRUE, ERROR_TITLE)
@@ -210,18 +210,18 @@ class ModelPost : ModelBase() {
     }
 
     override fun checkValidationCommand(numberCommand: Int): Boolean {
-        if (commandsList.get(numberCommand).commandType == PostCommandType.NULL_COMMAND) {
+        if (commands.get(numberCommand).commandType == PostCommandType.NULL_COMMAND) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_NULL_TYPE, ERROR_TITLE)
             return false
         }
 
-        if (commandsList.get(numberCommand).commandType != PostCommandType.STOP) {
-            if (!checkTransitionNumber(commandsList.get(numberCommand).transition)) {
+        if (commands.get(numberCommand).commandType != PostCommandType.STOP) {
+            if (!checkTransitionNumber(commands.get(numberCommand).transition)) {
                 return false
             }
 
-            if (commandsList.get(numberCommand).commandType == PostCommandType.CHECK_MARK) {
-                if (!checkTransitionNumber(commandsList.get(numberCommand).secondTransition)) {
+            if (commands.get(numberCommand).commandType == PostCommandType.CHECK_MARK) {
+                if (!checkTransitionNumber(commands.get(numberCommand).secondTransition)) {
                     return false
                 }
             }

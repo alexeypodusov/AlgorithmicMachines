@@ -4,14 +4,14 @@ import com.trolltech.qt.gui.QComboBox
 import com.trolltech.qt.gui.QIntValidator
 import com.trolltech.qt.gui.QLineEdit
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.ModelPost
-import ru.alexey_podusov.machines.models.ModelPost.*
-import ru.alexey_podusov.machines.models.ModelPost.PostCommandType.CHECK_MARK
-import ru.alexey_podusov.machines.models.ModelPost.PostCommandType.NULL_COMMAND
-import ru.alexey_podusov.machines.ui.StringBaseWidget
+import ru.alexey_podusov.machines.models.PostEngine
+import ru.alexey_podusov.machines.models.PostEngine.*
+import ru.alexey_podusov.machines.models.PostEngine.PostCommandType.CHECK_MARK
+import ru.alexey_podusov.machines.models.PostEngine.PostCommandType.NULL_COMMAND
+import ru.alexey_podusov.machines.ui.BaseLineItem
 import ru.alexey_podusov.machines.ui.custom_widgets.LinkLineEdit
 
-class StringPostWidget : StringBaseWidget() {
+class PostLineItem : BaseLineItem() {
     private val commandComboBox = QComboBox()
     private val transitionLineEdit = LinkLineEdit()
     private val secondTransitionLineEdit = LinkLineEdit()
@@ -25,7 +25,7 @@ class StringPostWidget : StringBaseWidget() {
         val WIDTH_COMMENT_STRING = 50
     }
 
-    var postCommandType: ModelPost.PostCommandType = NULL_COMMAND
+    var postCommandType: PostEngine.PostCommandType = NULL_COMMAND
         set(value) {
             field = value
             commandComboBox.blockSignals(true)

@@ -6,7 +6,7 @@ import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
 
-abstract class StringBaseWidget : QFrame() {
+abstract class BaseLineItem : QFrame() {
     val onLinkStringSignal = Signal2<Int, Int>()
     val inFocusSignal = Signal1<Int>()
 

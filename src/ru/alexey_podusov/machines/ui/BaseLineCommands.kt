@@ -3,15 +3,15 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QVBoxLayout
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.models.ModelBase.StatusPlay.STOPPED
+import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.models.BaseEngine.StatusPlay.STOPPED
 
-abstract class StringCommandsBaseWidget(model: ModelBase) : CommandsBaseWidget(model) {
-    protected val stringWidgetList = ArrayList<StringBaseWidget>()
-    protected val clickedCommandList = ArrayList<Int>()
+abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
+    protected val lineItemWidgets = ArrayList<BaseLineItem>()
+    protected val clickedCommands = ArrayList<Int>()
 
     private val scrollAreaLayout = QVBoxLayout()
-    protected val commandStringsLayout = QVBoxLayout()
+    protected val commandLinesLayout = QVBoxLayout()
     protected var currentCommandIndex: Int = 0
     protected var selectedCommand = 0
     protected var currentExecCommand = -1
@@ -20,65 +20,65 @@ abstract class StringCommandsBaseWidget(model: ModelBase) : CommandsBaseWidget(m
         layoutsManipulation()
         updateCommands()
         updateSelectingCommand(selectedCommand)
-        clickedCommandList.add(0)
+        clickedCommands.add(0)
     }
 
-    abstract fun createStringCommand(): StringBaseWidget
+    abstract fun createStringCommand(): BaseLineItem
     abstract fun bindCommands()
 
     private fun layoutsManipulation() {
         scrollArea.widget().setLayout(scrollAreaLayout)
-        stringWidgetList.clear()
-        scrollAreaLayout.addLayout(commandStringsLayout)
+        lineItemWidgets.clear()
+        scrollAreaLayout.addLayout(commandLinesLayout)
         scrollAreaWidget.setLayout(scrollAreaLayout)
         scrollArea.widget().setLayout(scrollAreaLayout)
-        scrollAreaLayout.setAlignment(commandStringsLayout, Qt.AlignmentFlag.AlignTop)
+        scrollAreaLayout.setAlignment(commandLinesLayout, Qt.AlignmentFlag.AlignTop)
 
     }
 
     protected fun updateCommands() {
-        val commandSize = model.getCommandsSize()
+        val commandSize = engine.getCommandsSize()
 
-        while (stringWidgetList.size > commandSize) {
-            stringWidgetList.get(stringWidgetList.size - 1).hide()
-            stringWidgetList.removeAt(stringWidgetList.size - 1)
+        while (lineItemWidgets.size > commandSize) {
+            lineItemWidgets.get(lineItemWidgets.size - 1).hide()
+            lineItemWidgets.removeAt(lineItemWidgets.size - 1)
         }
 
-        while (stringWidgetList.size < commandSize) {
+        while (lineItemWidgets.size < commandSize) {
             val stringCommand = createStringCommand()
             stringCommand.onLinkStringSignal.connect(this, ::onLinkStringClicked)
             stringCommand.inFocusSignal.connect(this, ::onInFocusCommand)
-            stringWidgetList.add(stringCommand)
-            commandStringsLayout.addWidget(stringCommand)
+            lineItemWidgets.add(stringCommand)
+            commandLinesLayout.addWidget(stringCommand)
         }
 
         bindCommands()
     }
 
     private fun onLinkStringClicked(transitionNum: Int, senderNum: Int) {
-        if (transitionNum < stringWidgetList.size) {
-            if (clickedCommandList.size > 1) {
-                for (i in clickedCommandList.size - 1 downTo currentCommandIndex + 1) {
-                    clickedCommandList.removeAt(i)
+        if (transitionNum < lineItemWidgets.size) {
+            if (clickedCommands.size > 1) {
+                for (i in clickedCommands.size - 1 downTo currentCommandIndex + 1) {
+                    clickedCommands.removeAt(i)
                 }
             }
         }
 
-        if (clickedCommandList.get(currentCommandIndex) != senderNum) {
-            clickedCommandList.add(senderNum);
+        if (clickedCommands.get(currentCommandIndex) != senderNum) {
+            clickedCommands.add(senderNum);
         }
         currentCommandIndex++;
-        clickedCommandList.add(transitionNum);
+        clickedCommands.add(transitionNum);
 
         goToCommandByNumber(transitionNum);
     }
 
     protected open fun updateSelectingCommand(numCommand: Int) {
-        if (stringWidgetList.size >= selectedCommand) {
-            stringWidgetList.get(selectedCommand).isSelected = false
+        if (lineItemWidgets.size >= selectedCommand) {
+            lineItemWidgets.get(selectedCommand).isSelected = false
         }
         selectedCommand = numCommand;
-        stringWidgetList.get(numCommand).isSelected = true
+        lineItemWidgets.get(numCommand).isSelected = true
     }
 
 
@@ -89,43 +89,43 @@ abstract class StringCommandsBaseWidget(model: ModelBase) : CommandsBaseWidget(m
     protected open fun goToCommandByNumber(transitionNum: Int) {
         checkCurrentIndex()
         updateSelectingCommand(transitionNum)
-        scrollArea.ensureWidgetVisible(stringWidgetList.get(transitionNum))
+        scrollArea.ensureWidgetVisible(lineItemWidgets.get(transitionNum))
     }
 
     protected open fun deselectExecCommand() {
         if (currentExecCommand != -1) {
-            stringWidgetList.get(currentExecCommand).hideExecBorder()
+            lineItemWidgets.get(currentExecCommand).hideExecBorder()
         }
     }
 
     override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
         deselectExecCommand()
-        stringWidgetList.get(numberCommand).setExecBorder(prevCommand)
-        scrollArea.ensureWidgetVisible(stringWidgetList.get(numberCommand))
+        lineItemWidgets.get(numberCommand).setExecBorder(prevCommand)
+        scrollArea.ensureWidgetVisible(lineItemWidgets.get(numberCommand))
         currentExecCommand = numberCommand
     }
 
     override fun onBackCommandClicked() {
         if (currentCommandIndex > 0) {
             --currentCommandIndex
-            goToCommandByNumber(clickedCommandList.get(currentCommandIndex))
+            goToCommandByNumber(clickedCommands.get(currentCommandIndex))
         }
     }
 
     override fun onForwardCommandClicked() {
-        if (currentCommandIndex < (clickedCommandList.size - 1)) {
+        if (currentCommandIndex < (clickedCommands.size - 1)) {
             ++currentCommandIndex
-            goToCommandByNumber(clickedCommandList.get(currentCommandIndex))
+            goToCommandByNumber(clickedCommands.get(currentCommandIndex))
         }
     }
 
     override fun checkCurrentIndex() {
         val backEnable: Boolean = currentCommandIndex != 0
-        val forwardEnable: Boolean = !(currentCommandIndex == (clickedCommandList.size - 1))
+        val forwardEnable: Boolean = !(currentCommandIndex == (clickedCommands.size - 1))
         enableCommandButtonsChange.emit(backEnable, forwardEnable)
     }
 
-    override fun onChangedStatusPlay(statusPlay: ModelBase.StatusPlay) {
+    override fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {
         if (statusPlay == STOPPED) {
             deselectExecCommand()
             currentExecCommand = -1

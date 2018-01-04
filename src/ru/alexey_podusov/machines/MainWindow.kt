@@ -7,11 +7,11 @@ import com.trolltech.qt.gui.QMessageBox
 import ru.alexey_podusov.machines.factories.IFactory
 import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
-import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.models.ModelBase.*
-import ru.alexey_podusov.machines.models.ModelBase.StatusPlay.*
-import ru.alexey_podusov.machines.ui.CommandsBaseWidget
-import ru.alexey_podusov.machines.ui.WorkareaBaseWidget
+import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.models.BaseEngine.*
+import ru.alexey_podusov.machines.models.BaseEngine.StatusPlay.*
+import ru.alexey_podusov.machines.ui.BaseCommands
+import ru.alexey_podusov.machines.ui.BaseWorkarea
 import java.util.*
 
 class MainWindow : QMainWindow() {
@@ -24,9 +24,9 @@ class MainWindow : QMainWindow() {
     private val qHBoxLayoutClassName = "com.trolltech.qt.gui.QHBoxLayout"
 
     private var factory: IFactory = PostFactory()
-    private var model: ModelBase? = null
-    private var commandsWidgetList = ArrayList<CommandsBaseWidget>()
-    private var workareaWidgetList = ArrayList<WorkareaBaseWidget>()
+    private var engine: BaseEngine? = null
+    private var commandsWidgets = ArrayList<BaseCommands>()
+    private var workareaWidgets = ArrayList<BaseWorkarea>()
 
     init {
         ui.setupUi(this)
@@ -38,22 +38,22 @@ class MainWindow : QMainWindow() {
 
     //пока хардкод
     private fun initHardcode() {
-        model = factory.createModel()
-        model!!.sendMessageSignal.connect(this, ::onReceiveMessage)
-        model!!.changedStatusPlaySignal.connect(this, ::onChangedStatusPlay)
-        commandsWidgetList = ArrayList()
+        engine = factory.createModel()
+        engine!!.sendMessageSignal.connect(this, ::onReceiveMessage)
+        engine!!.changedStatusPlaySignal.connect(this, ::onChangedStatusPlay)
+        commandsWidgets = ArrayList()
 
-        commandsWidgetList.clear()
-        workareaWidgetList.clear()
+        commandsWidgets.clear()
+        workareaWidgets.clear()
 
-        val command = factory.createCommandsBaseWidget(model!!)
+        val command = factory.createCommandsBaseWidget(engine!!)
         command.enableCommandButtonsChange.connect(this, ::changeEnableCommandButtons)
-        commandsWidgetList.add(command)
+        commandsWidgets.add(command)
 
-        workareaWidgetList.add(factory.createWorkareaWidget(model!!))
+        workareaWidgets.add(factory.createWorkareaWidget(engine!!))
 
-        ui.tabWorkAreaWidget.addTab(workareaWidgetList.get(0), "test")
-        ui.tabCommandWidget.addTab(commandsWidgetList.get(0), "test")
+        ui.tabWorkAreaWidget.addTab(workareaWidgets.get(0), "test")
+        ui.tabCommandWidget.addTab(commandsWidgets.get(0), "test")
     }
 
     private fun connect() {
@@ -71,26 +71,26 @@ class MainWindow : QMainWindow() {
 
     }
 
-    private fun actionPlayTriggered(checked: Boolean) = model!!.play()
-    private fun actionNextStepTriggered(checked: Boolean) = model!!.playStep()
-    private fun actionReverseStepTriggered(checked: Boolean) = model!!.playReverseStep()
-    private fun actionPauseTriggered(checked: Boolean) = {model!!.statusPlay = ON_PAUSE}
-    private fun actionStopTriggered(checked: Boolean) = {model!!.statusPlay = STOPPED}
+    private fun actionPlayTriggered(checked: Boolean) = engine!!.play()
+    private fun actionNextStepTriggered(checked: Boolean) = engine!!.playStep()
+    private fun actionReverseStepTriggered(checked: Boolean) = engine!!.playReverseStep()
+    private fun actionPauseTriggered(checked: Boolean) = { engine!!.statusPlay = ON_PAUSE}
+    private fun actionStopTriggered(checked: Boolean) = { engine!!.statusPlay = STOPPED}
 
     private fun onBackCommandClicked(checked: Boolean) {
-        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onBackCommandClicked()
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onBackCommandClicked()
     }
 
     private fun onForwardCommandClicked(checked: Boolean) {
-        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onForwardCommandClicked()
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onForwardCommandClicked()
     }
 
     private fun onAddCommandsClicked(checked: Boolean) {
-        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onAddCommandClicked()
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onAddCommandClicked()
     }
 
     private fun onDeleteCommandClicked(checked: Boolean) {
-        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onDeleteCommandClicked()
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onDeleteCommandClicked()
     }
 
     private fun changeEnableCommandButtons(backEnable: Boolean, forwardEnable: Boolean) {
@@ -105,15 +105,15 @@ class MainWindow : QMainWindow() {
                 .forEach { setNullMargins(it as QBoxLayout) }
     }
 
-    private fun onReceiveMessage(messageType: ModelBase.MessageType, text: String, title: String) {
+    private fun onReceiveMessage(messageType: BaseEngine.MessageType, text: String, title: String) {
         when (messageType) {
             MessageType.MESSAGE_ERROR -> QMessageBox.warning(this, title, text)
             MessageType.MESSAGE_INFO -> QMessageBox.information(this, title, text)
         }
     }
 
-    private fun onChangedStatusPlay(statusPlay: ModelBase.StatusPlay) {
-        commandsWidgetList.get(ui.tabCommandWidget.currentIndex()).onChangedStatusPlay(statusPlay)
+    private fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {
+        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onChangedStatusPlay(statusPlay)
         when (statusPlay) {
             PLAYING -> {
                 ui.actionPlay.isEnabled = false

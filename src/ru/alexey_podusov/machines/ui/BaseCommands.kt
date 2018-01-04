@@ -2,9 +2,9 @@ package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.ModelBase
+import ru.alexey_podusov.machines.models.BaseEngine
 
-abstract class CommandsBaseWidget(protected val model: ModelBase) : QWidget() {
+abstract class BaseCommands(protected val engine: BaseEngine) : QWidget() {
     protected val mainLayout = QVBoxLayout()
     protected val scrollArea = QScrollArea()
     protected val scrollAreaWidget = QWidget()
@@ -17,10 +17,10 @@ abstract class CommandsBaseWidget(protected val model: ModelBase) : QWidget() {
         mainLayout.addWidget(scrollArea)
         setLayout(mainLayout)
 
-        model.setExecCommandSignal.connect(this, ::onSetExecCommand)
+        engine.setExecCommandSignal.connect(this, ::onSetExecCommand)
     }
 
-    abstract fun onChangedStatusPlay(statusPlay: ModelBase.StatusPlay)
+    abstract fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay)
     abstract fun onAddCommandClicked()
     abstract fun onDeleteCommandClicked()
     abstract fun onBackCommandClicked()

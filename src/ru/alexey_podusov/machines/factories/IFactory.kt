@@ -1,11 +1,11 @@
 package ru.alexey_podusov.machines.factories
 
-import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.ui.CommandsBaseWidget
-import ru.alexey_podusov.machines.ui.WorkareaBaseWidget
+import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.ui.BaseCommands
+import ru.alexey_podusov.machines.ui.BaseWorkarea
 
 interface IFactory {
-    fun createModel(): ModelBase
-    fun createWorkareaWidget(model: ModelBase): WorkareaBaseWidget
-    fun createCommandsBaseWidget(model: ModelBase): CommandsBaseWidget
+    fun createModel(): BaseEngine
+    fun createWorkareaWidget(engine: BaseEngine): BaseWorkarea
+    fun createCommandsBaseWidget(engine: BaseEngine): BaseCommands
 }

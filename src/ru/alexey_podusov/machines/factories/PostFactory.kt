@@ -1,24 +1,23 @@
 package ru.alexey_podusov.machines.factories
 
-import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.models.ModelPost
-import ru.alexey_podusov.machines.ui.CommandsBaseWidget
-import ru.alexey_podusov.machines.ui.WorkareaBaseWidget
-import ru.alexey_podusov.machines.ui.post.CommandsPostWidget
-import ru.alexey_podusov.machines.ui.post.WorkareaPostWidget
-import javax.jws.WebParam
+import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.models.PostEngine
+import ru.alexey_podusov.machines.ui.BaseCommands
+import ru.alexey_podusov.machines.ui.BaseWorkarea
+import ru.alexey_podusov.machines.ui.post.PostLineCommands
+import ru.alexey_podusov.machines.ui.post.PostCellsWorkarea
 
 class PostFactory: IFactory {
 
-    override fun createModel(): ModelBase{
-        return  ModelPost()
+    override fun createModel(): BaseEngine {
+        return  PostEngine()
     }
 
-    override fun createWorkareaWidget(model: ModelBase): WorkareaBaseWidget {
-        return WorkareaPostWidget(model as ModelPost)
+    override fun createWorkareaWidget(engine: BaseEngine): BaseWorkarea {
+        return PostCellsWorkarea(engine as PostEngine)
     }
 
-    override fun createCommandsBaseWidget(model: ModelBase): CommandsBaseWidget {
-        return CommandsPostWidget(model as ModelPost)
+    override fun createCommandsBaseWidget(engine: BaseEngine): BaseCommands {
+        return PostLineCommands(engine as PostEngine)
     }
 }

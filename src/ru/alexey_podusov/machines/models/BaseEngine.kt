@@ -4,7 +4,7 @@ import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.QTimer
 import ru.alexey_podusov.machines.connect
 
-abstract class ModelBase : QObject() {
+abstract class BaseEngine : QObject() {
     enum class StatusPlay {
         STOPPED,
         PLAYING,

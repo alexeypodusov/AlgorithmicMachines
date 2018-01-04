@@ -5,12 +5,11 @@ import com.trolltech.qt.gui.QApplication
 import com.trolltech.qt.gui.QHBoxLayout
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
-import ru.alexey_podusov.machines.models.ModelBase
-import ru.alexey_podusov.machines.ui.post.StringPostWidget
+import ru.alexey_podusov.machines.models.BaseEngine
 
-abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(model) {
+abstract class BaseCellsWorkarea(engine: BaseEngine) : BaseWorkarea(engine) {
     protected val ui = Ui_PostWorkAreaWidget()
-    protected val cellWidgetList = ArrayList<CellBaseWidget>()
+    protected val cellWidgets = ArrayList<CellBase>()
 
     protected var countCells: Int = 0
     protected var numberWidgetCarriage: Int = 0
@@ -25,7 +24,7 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
         initCells()
     }
 
-    protected abstract fun createCell(): CellBaseWidget
+    protected abstract fun createCell(): CellBase
     protected abstract fun onCellChanched(numberCell: Int, cellParameter:Any)
     protected abstract fun onLeftButtonClicked()
     protected abstract fun onRightButtonClicked()
@@ -37,17 +36,17 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
     }
 
     fun initCells() {
-        cellWidgetList.clear()
+        cellWidgets.clear()
         val scrollAreaLayout = QHBoxLayout(this)
 
         countCells = (QApplication.desktop().width() /
-                (CellBaseWidget.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
+                (CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
 
         numberWidgetCarriage = countCells / 2
 
         for (i: Int in 0..countCells) {
-            val cell: CellBaseWidget = createCell()
-            cellWidgetList.add(cell)
+            val cell: CellBase = createCell()
+            cellWidgets.add(cell)
 
             cell.onCellChanchedSignal.connect { num: Int, param: Any -> onCellChanched(num, param) }
             scrollAreaLayout.addWidget(cell)
@@ -56,11 +55,11 @@ abstract class CellsWorkareaBaseWidget(model: ModelBase) : WorkareaBaseWidget(mo
         ui.scrollArea.widget().setLayout(scrollAreaLayout)
         scrollAreaLayout.setSpacing(SPACING_CELL_LAYOUT)
         updateWorkArea()
-        cellWidgetList.get(numberWidgetCarriage).setCurrent()
+        cellWidgets.get(numberWidgetCarriage).setCurrent()
     }
 
     override fun updateSizeWidget() {
-        val widthCellWithSpacing: Int = CellBaseWidget.WIDTH_CELL + SPACING_CELL_LAYOUT
+        val widthCellWithSpacing: Int = CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT
         val widthScrollArea: Int = ui.scrollArea.size().width()
 
         val leftCellNumber = numberWidgetCarriage - (widthScrollArea / widthCellWithSpacing) / 2
