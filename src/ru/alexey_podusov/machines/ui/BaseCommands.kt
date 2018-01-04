@@ -2,7 +2,7 @@ package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine
 
 abstract class BaseCommands(protected val engine: BaseEngine) : QWidget() {
     protected val mainLayout = QVBoxLayout()
@@ -21,7 +21,8 @@ abstract class BaseCommands(protected val engine: BaseEngine) : QWidget() {
     }
 
     abstract fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay)
-    abstract fun onAddCommandClicked()
+    abstract fun onInsertAfterClicked()
+    abstract fun onInsertBeforeClicked()
     abstract fun onDeleteCommandClicked()
     abstract fun onBackCommandClicked()
     abstract fun onForwardCommandClicked()

@@ -1,7 +1,7 @@
 package ru.alexey_podusov.machines.ui.post
 
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.models.PostEngine
+import ru.alexey_podusov.machines.engines.PostEngine
 import ru.alexey_podusov.machines.ui.BaseLineItem
 import ru.alexey_podusov.machines.ui.BaseLineCommands
 
@@ -24,15 +24,18 @@ class PostLineCommands(model: PostEngine) : BaseLineCommands(model) {
         (engine as PostEngine).changeCommand(command)
     }
 
-    override fun onAddCommandClicked() {
-        //TODO
-        (engine as PostEngine).insertCommand(lineItemWidgets.size)
+    override fun onInsertBeforeClicked() {
+        (engine as PostEngine).insertCommand(selectedCommand)
+        updateCommands()
+    }
+
+    override fun onInsertAfterClicked() {
+        (engine as PostEngine).insertCommand(selectedCommand + 1)
         updateCommands()
     }
 
     override fun onDeleteCommandClicked() {
-        //TODO
-        (engine as PostEngine).removeCommand(lineItemWidgets.size - 1)
+        (engine as PostEngine).removeCommand(selectedCommand)
         updateCommands()
     }
 }

@@ -1,4 +1,4 @@
-package ru.alexey_podusov.machines.models
+package ru.alexey_podusov.machines.engines
 
 class PostEngine : BaseEngine() {
     enum class PostCommandType(var text: String) {
@@ -27,6 +27,7 @@ class PostEngine : BaseEngine() {
 
     companion object {
         val COUNT_CELLS = 2000
+        val MAX_COMMANDS = 999
         fun isInTape(number: Int): Boolean = number in -((COUNT_CELLS / 2) - 1)..((COUNT_CELLS / 2) - 1)
 
         val SUCCES_TITLE = "Конец программы"
@@ -72,13 +73,22 @@ class PostEngine : BaseEngine() {
     }
 
     fun insertCommand(number: Int) {
-        //TODO
-        commands.add(number, PostCommand(number = number))
+        if (commands.size < MAX_COMMANDS) {
+            commands.filter { it.number >= number }.forEach { it.number++ }
+            commands.filter { it.transition >= number }.forEach { it.transition++ }
+            commands.filter { it.secondTransition >= number }.forEach { it.secondTransition++ }
+
+            commands.add(number, PostCommand(number = number))
+        }
     }
 
     fun removeCommand(number: Int) {
-        //TODO
-        commands.removeAt(number)
+        if (number != 0) {
+            commands.filter { it.number > number }.forEach { it.number-- }
+            commands.filter { it.transition == number }.forEach { it.transition = -1 }
+            commands.filter { it.secondTransition == number }.forEach { it.secondTransition = -1 }
+            commands.removeAt(number)
+        }
     }
 
     private fun isIndexInTape(index: Int): Boolean {
@@ -168,8 +178,7 @@ class PostEngine : BaseEngine() {
             return false
         }
 
-        when(commands.get(numberCommand).commandType)
-        {
+        when (commands.get(numberCommand).commandType) {
             PostCommandType.ADD_MARK -> {
                 if (cells.get(getIndexByNum(currentCarriage))) {
                     changeValueCell(currentCarriage, false)

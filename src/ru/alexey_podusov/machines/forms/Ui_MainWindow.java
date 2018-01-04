@@ -27,9 +27,9 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QTabWidget tabWorkAreaWidget;
     public QHBoxLayout commandBarLayout;
     public QVBoxLayout buttonsVerticalLayout;
-    public QSpacerItem verticalSpacer;
-    public QPushButton pushButtonAddString;
-    public QPushButton pushButtonDeleteString;
+    public QPushButton insertBeforeButton;
+    public QPushButton insertAfterButton;
+    public QPushButton deleteCommand;
     public QSpacerItem verticalSpacer_2;
     public QVBoxLayout commandAndButtonslLayout;
     public QHBoxLayout buttonHorizontalLayout;
@@ -112,21 +112,24 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         buttonsVerticalLayout.setSpacing(6);
         buttonsVerticalLayout.setMargin(11);
         buttonsVerticalLayout.setObjectName("buttonsVerticalLayout");
-        verticalSpacer = new QSpacerItem(20, 40, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        buttonsVerticalLayout.setContentsMargins(-1, 30, -1, -1);
+        insertBeforeButton = new QPushButton(centralWidget);
+        insertBeforeButton.setObjectName("insertBeforeButton");
+        insertBeforeButton.setMaximumSize(new QSize(30, 16777215));
 
-        buttonsVerticalLayout.addItem(verticalSpacer);
+        buttonsVerticalLayout.addWidget(insertBeforeButton);
 
-        pushButtonAddString = new QPushButton(centralWidget);
-        pushButtonAddString.setObjectName("pushButtonAddString");
-        pushButtonAddString.setMaximumSize(new QSize(30, 16777215));
+        insertAfterButton = new QPushButton(centralWidget);
+        insertAfterButton.setObjectName("insertAfterButton");
+        insertAfterButton.setMaximumSize(new QSize(30, 16777215));
 
-        buttonsVerticalLayout.addWidget(pushButtonAddString);
+        buttonsVerticalLayout.addWidget(insertAfterButton);
 
-        pushButtonDeleteString = new QPushButton(centralWidget);
-        pushButtonDeleteString.setObjectName("pushButtonDeleteString");
-        pushButtonDeleteString.setMaximumSize(new QSize(30, 16777215));
+        deleteCommand = new QPushButton(centralWidget);
+        deleteCommand.setObjectName("deleteCommand");
+        deleteCommand.setMaximumSize(new QSize(30, 16777215));
 
-        buttonsVerticalLayout.addWidget(pushButtonDeleteString);
+        buttonsVerticalLayout.addWidget(deleteCommand);
 
         verticalSpacer_2 = new QSpacerItem(20, 40, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
 
@@ -147,11 +150,13 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         buttonHorizontalLayout.setContentsMargins(-1, 0, -1, -1);
         backCommandButton = new QPushButton(centralWidget);
         backCommandButton.setObjectName("backCommandButton");
+        backCommandButton.setMaximumSize(new QSize(30, 16777215));
 
         buttonHorizontalLayout.addWidget(backCommandButton);
 
         forwardCommandButton = new QPushButton(centralWidget);
         forwardCommandButton.setObjectName("forwardCommandButton");
+        forwardCommandButton.setMaximumSize(new QSize(30, 16777215));
 
         buttonHorizontalLayout.addWidget(forwardCommandButton);
 
@@ -227,8 +232,9 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionPause.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041f\u0430\u0443\u0437\u0430", null));
         actionStop.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0421\u0442\u043e\u043f", null));
         labelTask.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0423\u0441\u043b\u043e\u0432\u0438\u0435", null));
-        pushButtonAddString.setText("");
-        pushButtonDeleteString.setText("");
+        insertBeforeButton.setText("");
+        insertAfterButton.setText("");
+        deleteCommand.setText("");
         backCommandButton.setText("");
         forwardCommandButton.setText("");
         menu.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0424\u0430\u0439\u043b", null));

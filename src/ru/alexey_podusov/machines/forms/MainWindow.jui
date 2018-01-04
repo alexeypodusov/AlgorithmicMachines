@@ -71,21 +71,11 @@
        <layout class="QHBoxLayout" name="commandBarLayout">
         <item>
          <layout class="QVBoxLayout" name="buttonsVerticalLayout">
+          <property name="topMargin">
+           <number>30</number>
+          </property>
           <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>com.trolltech.qt.core.Qt.Orientation.Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButtonAddString">
+           <widget class="QPushButton" name="insertBeforeButton">
             <property name="maximumSize">
              <size>
               <width>30</width>
@@ -98,7 +88,20 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButtonDeleteString">
+           <widget class="QPushButton" name="insertAfterButton">
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteCommand">
             <property name="maximumSize">
              <size>
               <width>30</width>
@@ -140,6 +143,12 @@
             </property>
             <item>
              <widget class="QPushButton" name="backCommandButton">
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -147,6 +156,12 @@
             </item>
             <item>
              <widget class="QPushButton" name="forwardCommandButton">
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string/>
               </property>
