@@ -1,4 +1,3 @@
 package ru.alexey_podusov.machines.engines
 
-interface IEngineTab {
-}
+abstract class EngineTab(var name:String, var engine: BaseEngine)

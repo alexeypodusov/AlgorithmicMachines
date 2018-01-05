@@ -1,15 +1,18 @@
 package ru.alexey_podusov.machines.ui.custom_widgets.tab
 
+import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
+import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.factories.IFactory
 
 class EngineTabBar(val parent: EngineTabWidget) : QTabBar(parent) {
     val lineEdit = QLineEdit(this)
     var indexTabEdited = 0
 
     init {
-        
         lineEdit.hide()
+        lineEdit.setAlignment(Qt.AlignmentFlag.AlignCenter)
         lineEdit.editingFinished.connect(this, ::onEditingFinished)
     }
 
@@ -41,6 +44,13 @@ class EngineTabBar(val parent: EngineTabWidget) : QTabBar(parent) {
                 }
             } catch (e: NullPointerException) {
             }
+        }
+    }
+
+    override fun resizeEvent(arg__1: QResizeEvent?) {
+        super.resizeEvent(arg__1)
+        if (!lineEdit.isHidden) {
+            lineEdit.setGeometry(tabRect(indexTabEdited))
         }
     }
 

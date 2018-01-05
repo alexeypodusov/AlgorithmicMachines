@@ -51,21 +51,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="workAreaLayout">
-        <item>
-         <widget class="QTabWidget" name="tabWorkAreaWidget">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="currentIndex">
-           <number>-1</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <layout class="QVBoxLayout" name="workAreaLayout"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="commandBarLayout">
@@ -183,15 +169,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="commandLayout">
-            <item>
-             <widget class="QTabWidget" name="tabCommandWidget">
-              <property name="currentIndex">
-               <number>-1</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <layout class="QVBoxLayout" name="commandLayout"/>
           </item>
          </layout>
         </item>

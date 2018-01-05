@@ -1,4 +1,3 @@
 package ru.alexey_podusov.machines.engines
 
-interface IWorkareaTab {
-}
+abstract class WorkareaTab(name: String, engine: BaseEngine): EngineTab(name, engine)

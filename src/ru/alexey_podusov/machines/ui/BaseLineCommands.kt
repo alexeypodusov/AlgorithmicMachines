@@ -5,8 +5,9 @@ import com.trolltech.qt.gui.QVBoxLayout
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
+import ru.alexey_podusov.machines.engines.CommandTab
 
-abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
+abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     protected val lineItemWidgets = ArrayList<BaseLineItem>()
     protected val clickedCommands = ArrayList<Int>()
 
@@ -36,7 +37,7 @@ abstract class BaseLineCommands(model: BaseEngine) : BaseCommands(model) {
     }
 
     protected fun updateCommands() {
-        val commandSize = engine.getCommandsSize()
+        val commandSize = tab.getCommandsSize()
 
         while (lineItemWidgets.size > commandSize) {
             lineItemWidgets.get(lineItemWidgets.size - 1).hide()

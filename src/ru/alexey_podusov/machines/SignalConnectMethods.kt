@@ -9,7 +9,7 @@ fun getNameMethod(action :Any): String {
     return "invoke(" + action.javaClass.methods.get(1).parameterTypes.joinToString { it.canonicalName } + ")"
 }
 
-fun QSignalEmitter.AbstractSignal.connect(receiver: QObject, method: KFunction<Any>) {
+fun QSignalEmitter.AbstractSignal.connect(receiver: Any, method: KFunction<Any>) {
     val methodName: String = method.name + "(" + method.parameters.joinToString { (it.type.javaType as Class<*>).name } + ")"
     connect(receiver, methodName)
 }

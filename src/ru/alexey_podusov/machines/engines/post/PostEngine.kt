@@ -1,4 +1,10 @@
-package ru.alexey_podusov.machines.engines
+package ru.alexey_podusov.machines.engines.post
+
+import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.CommandTab
+import ru.alexey_podusov.machines.engines.WorkareaTab
+import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.*
+import ru.alexey_podusov.machines.engines.post.PostWorkareaTab.Companion.isInTape
 
 class PostEngine : BaseEngine() {
     enum class PostCommandType(var text: String) {
@@ -11,25 +17,11 @@ class PostEngine : BaseEngine() {
         STOP("! стоп")
     }
 
-    data class PostCommand(var number: Int, var commandType: PostCommandType = PostCommandType.NULL_COMMAND,
+    data class PostCommand(var number: Int, var commandType: PostCommandType = NULL_COMMAND,
                            var transition: Int = -1, var secondTransition: Int = -1, var comment: String = "")
 
-    var currentCarriage: Int = 0 //not index! fact number cell
-        set(value) {
-            if (isInTape(value)) {
-                field = value
-                workAreaChangedSignal.emit()
-            }
-        }
-
-    var cells = ArrayList<Boolean>()
-    var commands = ArrayList<PostCommand>()
 
     companion object {
-        val COUNT_CELLS = 2000
-        val MAX_COMMANDS = 999
-        fun isInTape(number: Int): Boolean = number in -((COUNT_CELLS / 2) - 1)..((COUNT_CELLS / 2) - 1)
-
         val SUCCES_TITLE = "Конец программы"
         val SUCCES_TEXT = "Конец программы"
 
@@ -43,126 +35,84 @@ class PostEngine : BaseEngine() {
         val ERROR_MARK_FALSE = "Метка отсутствует!"
     }
 
-    fun changeCommand(command: PostCommand) {
-        commands.set(command.number, command)
 
+    override fun addCommandTab(name: String): CommandTab {
+        val tab = PostCommandTab(name, this)
+        commandTabs.add(tab)
+        return tab
     }
 
-    init {
-        for (i in 0..COUNT_CELLS) {
-            cells.add(false)
-        }
-        insertCommand(0)
+    override fun addWorkareaTab(name: String): WorkareaTab {
+        val tab = PostWorkareaTab(name, this)
+        workareaTabs.add(tab)
+        return tab
     }
 
-    fun getCell(numCell: Int): Boolean {
-        if (isInTape(numCell)) {
-            val cellIndex = getIndexByNum(numCell)
-            return cells.get(cellIndex)
-        }
-
-        return false
-    }
-
-    fun changeValueCell(numCell: Int, cellValue: Boolean) {
-        if (isInTape(numCell)) {
-            val cellIndex = getIndexByNum(numCell)
-            cells.set(cellIndex, cellValue)
-            workAreaChangedSignal.emit()
-        }
-    }
-
-    fun insertCommand(number: Int) {
-        if (commands.size < MAX_COMMANDS) {
-            commands.filter { it.number >= number }.forEach { it.number++ }
-            commands.filter { it.transition >= number }.forEach { it.transition++ }
-            commands.filter { it.secondTransition >= number }.forEach { it.secondTransition++ }
-
-            commands.add(number, PostCommand(number = number))
-        }
-    }
-
-    fun removeCommand(number: Int) {
-        if (number != 0) {
-            commands.filter { it.number > number }.forEach { it.number-- }
-            commands.filter { it.transition == number }.forEach { it.transition = -1 }
-            commands.filter { it.secondTransition == number }.forEach { it.secondTransition = -1 }
-            commands.removeAt(number)
-        }
-    }
-
-    private fun isIndexInTape(index: Int): Boolean {
-        return index in 0..COUNT_CELLS
-    }
-
-    private fun getIndexByNum(num: Int): Int = num + ((COUNT_CELLS / 2) - 1)
-
-    override fun getCommandsSize(): Int {
-        return commands.size
-    }
-
-    private fun checkTransitionNumber(numberTransition: Int): Boolean {
+    private fun checkTransitionNumber(numberTransition: Int, sizeCommand: Int): Boolean {
         if (numberTransition == -1) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_TRANSITION_NULL, ERROR_TITLE)
             return false
         }
-        if (numberTransition >= commands.size) {
+        if (numberTransition >= sizeCommand) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_TRANSITION_NOT_EXIST, ERROR_TITLE)
             return false
         }
         return true
     }
 
-    override fun executeCommand(numberCommand: Int): Boolean {
-        executeNumberCommandList.add(commands.get(numberCommand).transition)
+    override fun executeCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
+        val comTab = commandTabs.get(currentCommandTab) as PostCommandTab
+        val workTab = workareaTabs.get(currentWorkareaTab) as PostWorkareaTab
 
-        if (!checkValidationCommand(numberCommand)) return false
+        executeNumberCommandList.add(comTab.commands.get(numberCommand).transition)
 
-        when (commands.get(numberCommand).commandType) {
-            PostCommandType.ADD_MARK -> {
-                if (!cells.get(getIndexByNum(currentCarriage))) {
-                    changeValueCell(currentCarriage, true)
+        if (!checkValidationCommand(numberCommand, comTab)) return false
+
+        when (comTab.commands.get(numberCommand).commandType) {
+            ADD_MARK -> {
+                if (!workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
+                    workTab.changeValueCell(workTab.currentCarriage, true)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_TRUE, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.DELETE_MARK -> {
-                if (cells.get(getIndexByNum(currentCarriage))) {
-                    changeValueCell(currentCarriage, false)
+            DELETE_MARK -> {
+                if (workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
+                    workTab.changeValueCell(workTab.currentCarriage, false)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_FALSE, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.LEFT_STEP -> {
-                if (isInTape(currentCarriage - 1)) {
-                    currentCarriage--
+            LEFT_STEP -> {
+                if (isInTape(workTab.currentCarriage - 1)) {
+                    workTab.currentCarriage--
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.RIGHT_STEP -> {
-                if (isInTape(currentCarriage + 1)) {
-                    currentCarriage++
+            RIGHT_STEP -> {
+                if (isInTape(workTab.currentCarriage + 1)) {
+                    workTab.currentCarriage++
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.CHECK_MARK -> {
-                if (!cells.get(getIndexByNum(currentCarriage))) {
+            CHECK_MARK -> {
+                if (!workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
                     executeNumberCommandList.removeAt(executeNumberCommandList.size - 1)
-                    executeNumberCommandList.add(commands.get(numberCommand).secondTransition)
+                    executeNumberCommandList.add(comTab.commands.get(numberCommand).secondTransition)
                 }
             }
 
-            PostCommandType.STOP -> {
+            STOP -> {
                 sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT, SUCCES_TITLE)
             }
 
@@ -173,42 +123,45 @@ class PostEngine : BaseEngine() {
         return true
     }
 
-    override fun reverseExecuteCommand(numberCommand: Int): Boolean {
-        if (!checkValidationCommand(numberCommand)) {
+    override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
+        val comTab = commandTabs.get(currentCommandTab) as PostCommandTab
+        val workTab = workareaTabs.get(currentWorkareaTab) as PostWorkareaTab
+
+        if (!checkValidationCommand(numberCommand, comTab)) {
             return false
         }
 
-        when (commands.get(numberCommand).commandType) {
-            PostCommandType.ADD_MARK -> {
-                if (cells.get(getIndexByNum(currentCarriage))) {
-                    changeValueCell(currentCarriage, false)
+        when (comTab.commands.get(numberCommand).commandType) {
+            ADD_MARK -> {
+                if (workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
+                    workTab.changeValueCell(workTab.currentCarriage, false)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_FALSE, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.DELETE_MARK -> {
-                if (!cells.get(getIndexByNum(currentCarriage))) {
-                    changeValueCell(currentCarriage, true)
+            DELETE_MARK -> {
+                if (!workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
+                    workTab.changeValueCell(workTab.currentCarriage, true)
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_MARK_TRUE, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.LEFT_STEP -> {
-                if (isInTape(currentCarriage + 1)) {
-                    currentCarriage++
+            LEFT_STEP -> {
+                if (isInTape(workTab.currentCarriage + 1)) {
+                    workTab.currentCarriage++
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
                     return false
                 }
             }
 
-            PostCommandType.RIGHT_STEP -> {
-                if (isInTape(currentCarriage - 1)) {
-                    currentCarriage--
+            RIGHT_STEP -> {
+                if (isInTape( workTab.currentCarriage - 1)) {
+                    workTab.currentCarriage--
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
                     return false
@@ -218,19 +171,20 @@ class PostEngine : BaseEngine() {
         return true
     }
 
-    override fun checkValidationCommand(numberCommand: Int): Boolean {
-        if (commands.get(numberCommand).commandType == PostCommandType.NULL_COMMAND) {
+    override fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean {
+        tab as PostCommandTab
+        if (tab.commands.get(numberCommand).commandType == NULL_COMMAND) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_NULL_TYPE, ERROR_TITLE)
             return false
         }
 
-        if (commands.get(numberCommand).commandType != PostCommandType.STOP) {
-            if (!checkTransitionNumber(commands.get(numberCommand).transition)) {
+        if (tab.commands.get(numberCommand).commandType != STOP) {
+            if (!checkTransitionNumber(tab.commands.get(numberCommand).transition, tab.getCommandsSize())) {
                 return false
             }
 
-            if (commands.get(numberCommand).commandType == PostCommandType.CHECK_MARK) {
-                if (!checkTransitionNumber(commands.get(numberCommand).secondTransition)) {
+            if (tab.commands.get(numberCommand).commandType == CHECK_MARK) {
+                if (!checkTransitionNumber(tab.commands.get(numberCommand).secondTransition, tab.getCommandsSize())) {
                     return false
                 }
             }

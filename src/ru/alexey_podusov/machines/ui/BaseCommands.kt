@@ -3,8 +3,9 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.CommandTab
 
-abstract class BaseCommands(protected val engine: BaseEngine) : QWidget() {
+abstract class BaseCommands(protected val tab: CommandTab) : QWidget() {
     protected val mainLayout = QVBoxLayout()
     protected val scrollArea = QScrollArea()
     protected val scrollAreaWidget = QWidget()
@@ -16,8 +17,6 @@ abstract class BaseCommands(protected val engine: BaseEngine) : QWidget() {
         scrollArea.setWidgetResizable(true)
         mainLayout.addWidget(scrollArea)
         setLayout(mainLayout)
-
-        engine.setExecCommandSignal.connect(this, ::onSetExecCommand)
     }
 
     abstract fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay)

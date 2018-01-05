@@ -4,10 +4,11 @@ import com.trolltech.qt.gui.QComboBox
 import com.trolltech.qt.gui.QIntValidator
 import com.trolltech.qt.gui.QLineEdit
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.engines.PostEngine
-import ru.alexey_podusov.machines.engines.PostEngine.*
-import ru.alexey_podusov.machines.engines.PostEngine.PostCommandType.CHECK_MARK
-import ru.alexey_podusov.machines.engines.PostEngine.PostCommandType.NULL_COMMAND
+import ru.alexey_podusov.machines.engines.post.PostCommandTab.Companion.MAX_COMMANDS
+import ru.alexey_podusov.machines.engines.post.PostEngine
+import ru.alexey_podusov.machines.engines.post.PostEngine.*
+import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.CHECK_MARK
+import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.NULL_COMMAND
 import ru.alexey_podusov.machines.ui.BaseLineItem
 import ru.alexey_podusov.machines.ui.custom_widgets.LinkLineEdit
 
@@ -25,7 +26,7 @@ class PostLineItem : BaseLineItem() {
         val WIDTH_COMMENT_STRING = 50
     }
 
-    var postCommandType: PostEngine.PostCommandType = NULL_COMMAND
+    var postCommandType: PostCommandType = NULL_COMMAND
         set(value) {
             field = value
             commandComboBox.blockSignals(true)
@@ -73,7 +74,7 @@ class PostLineItem : BaseLineItem() {
 
         transitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         transitionLineEdit.setMaximumWidth(3)
-        transitionLineEdit.setValidator(QIntValidator(0, PostEngine.MAX_COMMANDS))
+        transitionLineEdit.setValidator(QIntValidator(0, MAX_COMMANDS))
         transitionLineEdit.editingFinished.connect(this, ::onTransitionEditingFinished)
         stringLayout.addWidget(transitionLineEdit)
         transitionLineEdit.installEventFilter(this)
@@ -81,7 +82,7 @@ class PostLineItem : BaseLineItem() {
 
         secondTransitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         secondTransitionLineEdit.setMaximumWidth(3)
-        secondTransitionLineEdit.setValidator(QIntValidator(0, PostEngine.MAX_COMMANDS))
+        secondTransitionLineEdit.setValidator(QIntValidator(0, MAX_COMMANDS))
         secondTransitionLineEdit.editingFinished.connect(this, ::onSecondTransitionEditingFinished)
         stringLayout.addWidget(secondTransitionLineEdit)
         secondTransitionLineEdit.hide()

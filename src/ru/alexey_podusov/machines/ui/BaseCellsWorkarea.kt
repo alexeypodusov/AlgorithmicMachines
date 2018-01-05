@@ -5,9 +5,9 @@ import com.trolltech.qt.gui.QApplication
 import com.trolltech.qt.gui.QHBoxLayout
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
-import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.WorkareaTab
 
-abstract class BaseCellsWorkarea(engine: BaseEngine) : BaseWorkarea(engine) {
+abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     protected val ui = Ui_PostWorkAreaWidget()
     protected val cellWidgets = ArrayList<CellBase>()
 
@@ -30,14 +30,13 @@ abstract class BaseCellsWorkarea(engine: BaseEngine) : BaseWorkarea(engine) {
     protected abstract fun onRightButtonClicked()
 
     override fun connect() {
-        super.connect()
         ui.LeftPushButton.clicked.connect(this, ::onLeftButtonClicked)
         ui.RightPushButton.clicked.connect(this, ::onRightButtonClicked)
     }
 
     fun initCells() {
         cellWidgets.clear()
-        val scrollAreaLayout = QHBoxLayout(this)
+        val scrollAreaLayout = QHBoxLayout()
 
         countCells = (QApplication.desktop().width() /
                 (CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
