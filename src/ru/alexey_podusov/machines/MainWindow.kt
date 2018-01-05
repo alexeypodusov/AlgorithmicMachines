@@ -7,8 +7,11 @@ import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.*
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
+import ru.alexey_podusov.machines.forms.Ui_MainWindowTest
 import ru.alexey_podusov.machines.ui.BaseCommands
 import ru.alexey_podusov.machines.ui.BaseWorkarea
+import ru.alexey_podusov.machines.ui.custom_widgets.tab.EngineTabBar
+import ru.alexey_podusov.machines.ui.custom_widgets.tab.EngineTabWidget
 import java.util.*
 
 class MainWindow : QMainWindow() {
@@ -16,7 +19,7 @@ class MainWindow : QMainWindow() {
     val keyReleaseSignal = Signal1<QKeyEvent>()
     val keyPressSignal = Signal1<QKeyEvent>()
 
-    private val ui = Ui_MainWindow()
+    private val ui = Ui_MainWindowTest()
 
     private var factory: IFactory = PostFactory()
     private var engine: BaseEngine? = null
@@ -51,7 +54,8 @@ class MainWindow : QMainWindow() {
 
         workareaWidgets.add(factory.createWorkareaWidget(engine!!))
 
-        ui.tabWorkAreaWidget.addTab(workareaWidgets.get(0), "test")
+        (ui.tabWorkAreaWidget as EngineTabWidget).addEngineTab(workareaWidgets.get(0), "tete")
+        //ui.tabWorkAreaWidget.addTab(workareaWidgets.get(0), "test")
         ui.tabCommandWidget.addTab(commandsWidgets.get(0), "test")
 
 
@@ -142,6 +146,11 @@ class MainWindow : QMainWindow() {
             }
         }
 
+    }
+
+    override fun mousePressEvent(arg__1: QMouseEvent?) {
+        centralWidget().setFocus()
+        super.mousePressEvent(arg__1)
     }
 
     override fun keyPressEvent(arg__1: QKeyEvent?) {
