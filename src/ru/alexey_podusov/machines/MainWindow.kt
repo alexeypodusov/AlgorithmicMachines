@@ -8,7 +8,9 @@ import ru.alexey_podusov.machines.engines.BaseEngine.*
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
+import ru.alexey_podusov.machines.ui.custom_widgets.tab.EngineTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
+import java.util.Arrays.asList
 
 class MainWindow : QMainWindow() {
 
@@ -39,6 +41,7 @@ class MainWindow : QMainWindow() {
         ui.workAreaLayout.addWidget(workareaTabWidget)
         changeEnableCommandButtons(false, false)
     }
+
     //пока хардкод
     private fun initHardcode() {
         engine = factory.createModel()
@@ -51,9 +54,12 @@ class MainWindow : QMainWindow() {
         engine!!.addWorkareaTab("test")
 
         //command.enableCommandButtonsChange.connect(this, ::changeEnableCommandButtons)
-
         workareaTabWidget.setEngine(engine!!, factory)
         commandTabWidget.setEngine(engine!!, factory)
+
+        commandTabWidget.connectCommands(this)
+
+        onChangedStatusPlay(STOPPED)
     }
 
     private fun connect() {
@@ -80,8 +86,8 @@ class MainWindow : QMainWindow() {
     private fun actionPlayTriggered(checked: Boolean) = engine!!.play(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
     private fun actionNextStepTriggered(checked: Boolean) = engine!!.playStep(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
     private fun actionReverseStepTriggered(checked: Boolean) = engine!!.playReverseStep(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
-    private fun actionPauseTriggered(checked: Boolean) = { engine!!.statusPlay = ON_PAUSE}
-    private fun actionStopTriggered(checked: Boolean) = { engine!!.statusPlay = STOPPED}
+    private fun actionPauseTriggered(checked: Boolean) { engine!!.statusPlay = ON_PAUSE}
+    private fun actionStopTriggered(checked: Boolean) { engine!!.statusPlay = STOPPED}
 
     private fun onBackCommandClicked(checked: Boolean) {
         commandTabWidget.getCurrent().onBackCommandClicked()
@@ -103,7 +109,7 @@ class MainWindow : QMainWindow() {
         commandTabWidget.getCurrent().onDeleteCommandClicked()
     }
 
-    private fun changeEnableCommandButtons(backEnable: Boolean, forwardEnable: Boolean) {
+    fun changeEnableCommandButtons(backEnable: Boolean, forwardEnable: Boolean) {
         ui.backCommandButton.isEnabled = backEnable
         ui.forwardCommandButton.isEnabled = forwardEnable
     }
@@ -124,20 +130,26 @@ class MainWindow : QMainWindow() {
 
     private fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {
         commandTabWidget.getCurrent().onChangedStatusPlay(statusPlay)
+
         when (statusPlay) {
             PLAYING -> {
+                asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = false }
                 ui.actionPlay.isEnabled = false
                 ui.actionPause.isEnabled = true
                 ui.actionStop.isEnabled = true
                 ui.actionReverseStep.isEnabled = true
             }
             ON_PAUSE -> {
+                asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = false }
+
                 ui.actionPlay.isEnabled = true
                 ui.actionPause.isEnabled = false
                 ui.actionStop.isEnabled = true
                 ui.actionReverseStep.isEnabled = true
             }
             STOPPED -> {
+                asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = true }
+
                 ui.actionPlay.isEnabled = true
                 ui.actionPause.isEnabled = false
                 ui.actionStop.isEnabled = false

@@ -32,4 +32,8 @@ class WorkareaTabWidget: EngineTabWidget() {
     fun getCurrent(): BaseWorkarea {
         return currentWidget() as BaseWorkarea
     }
+
+    override fun removeTabFromEngine(index: Int) {
+        engine!!.removeWorkareTab(index)
+    }
 }

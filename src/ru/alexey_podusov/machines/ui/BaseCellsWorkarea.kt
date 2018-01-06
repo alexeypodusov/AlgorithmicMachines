@@ -47,7 +47,7 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
             val cell: CellBase = createCell()
             cellWidgets.add(cell)
 
-            cell.onCellChanchedSignal.connect { num: Int, param: Any -> onCellChanched(num, param) }
+            cell.onCellChanchedSignal.connect(this, ::onCellChanched)
             scrollAreaLayout.addWidget(cell)
         }
 

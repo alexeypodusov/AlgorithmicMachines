@@ -18,8 +18,10 @@ abstract class EngineTabWidget : QTabWidget() {
 
     init {
         setTabBar(tabBar)
-        setTabsClosable(false)
+        setTabsClosable(true)
         addAddingTab()
+
+        tabCloseRequested.connect(this, ::onDeleteTab)
         currentChanged.connect(this, ::onCurrentChanged)
     }
 
@@ -40,6 +42,19 @@ abstract class EngineTabWidget : QTabWidget() {
     abstract fun addWidgetsFromEngine()
     abstract fun addTab()
     abstract fun getNewWidget(tab: EngineTab): QWidget
+    abstract fun removeTabFromEngine(index: Int)
+
+    private fun onDeleteTab(index: Int) {
+        if (count() > 2) {
+            tabBar.lineEdit.hide()
+            widget(index).disconnect()
+            widget(index).hide()
+            removeTabFromEngine(index)
+
+            if (index == count() - 2) setCurrentIndex(index - 1)
+            removeTab(index)
+        }
+    }
 
     private fun onCurrentChanged(index: Int) {
         tabBar.lineEdit.hide()
@@ -58,6 +73,7 @@ abstract class EngineTabWidget : QTabWidget() {
 
     private fun addAddingTab() {
         addTab(QLabel(), "")
+        tabBar.setTabButton(count() - 1, QTabBar.ButtonPosition.RightSide, null)
     }
 
     protected fun addEngineTab(widget: QWidget, title: String) {

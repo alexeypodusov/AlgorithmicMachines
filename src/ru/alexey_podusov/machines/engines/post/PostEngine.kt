@@ -12,7 +12,7 @@ class PostEngine : BaseEngine() {
         ADD_MARK("V добавить метку"),
         DELETE_MARK("X удалить метку"),
         LEFT_STEP("<- шаг влево"),
-        RIGHT_STEP(". шаг вправо"),
+        RIGHT_STEP("-> шаг вправо"),
         CHECK_MARK("? проверить"),
         STOP("! стоп")
     }

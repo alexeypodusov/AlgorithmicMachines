@@ -3,6 +3,7 @@ package ru.alexey_podusov.machines.engines
 import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.QTimer
 import ru.alexey_podusov.machines.connect
+import ru.alexey_podusov.machines.ui.BaseCommands
 
 abstract class BaseEngine : QObject() {
     val commandTabs = ArrayList<CommandTab>()
@@ -31,6 +32,7 @@ abstract class BaseEngine : QObject() {
             field = value
             changedStatusPlaySignal.emit(statusPlay)
         }
+
     protected val executeNumberCommandList = ArrayList<Int>()
 
     private val timer = ExecuteTimer()
@@ -41,6 +43,14 @@ abstract class BaseEngine : QObject() {
 
     abstract fun addCommandTab(name: String): CommandTab
     abstract fun addWorkareaTab(name: String): WorkareaTab
+
+    fun removeCommandTab(index: Int) {
+        commandTabs.removeAt(index)
+    }
+
+    fun removeWorkareTab(index: Int) {
+        workareaTabs.removeAt(index)
+    }
 
     init {
         timer.executeTimeoutSignal.connect(this, ::executeWithTimer)
@@ -87,6 +97,7 @@ abstract class BaseEngine : QObject() {
                 executeNumberCommandList.add(0)
                 statusPlay = StatusPlay.ON_PAUSE
                 emitSetExecCommand()
+                return
             }
             StatusPlay.PLAYING -> {
                 return
@@ -116,8 +127,7 @@ abstract class BaseEngine : QObject() {
     private fun emitSetExecCommand() {
         var indexPrevCommand = -1
         if (executeNumberCommandList.size > 1) {
-            //почему -3 нет времени объяснять, но так надо
-            indexPrevCommand = executeNumberCommandList.size - 3
+            indexPrevCommand = executeNumberCommandList.get(executeNumberCommandList.size - 2)
         }
 
         setExecCommandSignal.emit(executeNumberCommandList.last(), indexPrevCommand)
