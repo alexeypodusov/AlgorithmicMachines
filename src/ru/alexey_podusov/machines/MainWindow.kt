@@ -3,13 +3,14 @@ package ru.alexey_podusov.machines
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.factories.IFactory
 import ru.alexey_podusov.machines.factories.PostFactory
-import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.*
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
-import ru.alexey_podusov.machines.ui.BaseCommands
-import ru.alexey_podusov.machines.ui.BaseWorkarea
-import java.util.*
+import ru.alexey_podusov.machines.forms.Ui_MainWindow
+import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
+import ru.alexey_podusov.machines.ui.custom_widgets.tab.EngineTabWidget
+import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
+import java.util.Arrays.asList
 
 class MainWindow : QMainWindow() {
 
@@ -20,8 +21,9 @@ class MainWindow : QMainWindow() {
 
     private var factory: IFactory = PostFactory()
     private var engine: BaseEngine? = null
-    private var commandsWidgets = ArrayList<BaseCommands>()
-    private var workareaWidgets = ArrayList<BaseWorkarea>()
+
+    private val commandTabWidget = CommandTabWidget()
+    private val workareaTabWidget = WorkareaTabWidget()
 
     init {
         setupUi()
@@ -34,27 +36,30 @@ class MainWindow : QMainWindow() {
         ui.setupUi(this)
         setNullMargins(ui.mainVerticalLayout)
         ui.buttonsVerticalLayout.setContentsMargins(0,30,0,0)
+
+        ui.commandLayout.addWidget(commandTabWidget)
+        ui.workAreaLayout.addWidget(workareaTabWidget)
+        changeEnableCommandButtons(false, false)
     }
+
     //пока хардкод
     private fun initHardcode() {
         engine = factory.createModel()
         engine!!.sendMessageSignal.connect(this, ::onReceiveMessage)
         engine!!.changedStatusPlaySignal.connect(this, ::onChangedStatusPlay)
-        commandsWidgets = ArrayList()
+        engine!!.workAreaChangedSignal.connect(this, ::onUpdatedWorkarea)
+        engine!!.setExecCommandSignal.connect(this, ::onSetExecCommand)
 
-        commandsWidgets.clear()
-        workareaWidgets.clear()
+        engine!!.addCommandTab("test")
+        engine!!.addWorkareaTab("test")
 
-        val command = factory.createCommandsBaseWidget(engine!!)
-        command.enableCommandButtonsChange.connect(this, ::changeEnableCommandButtons)
-        commandsWidgets.add(command)
+        //command.enableCommandButtonsChange.connect(this, ::changeEnableCommandButtons)
+        workareaTabWidget.setEngine(engine!!, factory)
+        commandTabWidget.setEngine(engine!!, factory)
 
-        workareaWidgets.add(factory.createWorkareaWidget(engine!!))
+        commandTabWidget.connectCommands(this)
 
-        ui.tabWorkAreaWidget.addTab(workareaWidgets.get(0), "test")
-        ui.tabCommandWidget.addTab(commandsWidgets.get(0), "test")
-
-
+        onChangedStatusPlay(STOPPED)
     }
 
     private fun connect() {
@@ -71,36 +76,40 @@ class MainWindow : QMainWindow() {
         ui.insertBeforeButton.clicked.connect(this, ::onInsertBeforeClicked)
         ui.deleteCommand.clicked.connect(this, ::onDeleteCommandClicked)
 
-        changeEnableCommandButtons(false, false)
     }
 
-    private fun actionPlayTriggered(checked: Boolean) = engine!!.play()
-    private fun actionNextStepTriggered(checked: Boolean) = engine!!.playStep()
-    private fun actionReverseStepTriggered(checked: Boolean) = engine!!.playReverseStep()
-    private fun actionPauseTriggered(checked: Boolean) = { engine!!.statusPlay = ON_PAUSE}
-    private fun actionStopTriggered(checked: Boolean) = { engine!!.statusPlay = STOPPED}
+    private fun onUpdatedWorkarea() = workareaTabWidget.getCurrent().updateWorkArea()
+    private fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
+        commandTabWidget.getCurrent().onSetExecCommand(numberCommand, prevCommand)
+    }
+
+    private fun actionPlayTriggered(checked: Boolean) = engine!!.play(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
+    private fun actionNextStepTriggered(checked: Boolean) = engine!!.playStep(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
+    private fun actionReverseStepTriggered(checked: Boolean) = engine!!.playReverseStep(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
+    private fun actionPauseTriggered(checked: Boolean) { engine!!.statusPlay = ON_PAUSE}
+    private fun actionStopTriggered(checked: Boolean) { engine!!.statusPlay = STOPPED}
 
     private fun onBackCommandClicked(checked: Boolean) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onBackCommandClicked()
+        commandTabWidget.getCurrent().onBackCommandClicked()
     }
 
     private fun onForwardCommandClicked(checked: Boolean) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onForwardCommandClicked()
+        commandTabWidget.getCurrent().onForwardCommandClicked()
     }
 
     private fun onInsertAfterClicked(checked: Boolean) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onInsertAfterClicked()
+        commandTabWidget.getCurrent().onInsertAfterClicked()
     }
 
     private fun onInsertBeforeClicked(checked: Boolean) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onInsertBeforeClicked()
+        commandTabWidget.getCurrent().onInsertBeforeClicked()
     }
 
     private fun onDeleteCommandClicked(checked: Boolean) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onDeleteCommandClicked()
+        commandTabWidget.getCurrent().onDeleteCommandClicked()
     }
 
-    private fun changeEnableCommandButtons(backEnable: Boolean, forwardEnable: Boolean) {
+    fun changeEnableCommandButtons(backEnable: Boolean, forwardEnable: Boolean) {
         ui.backCommandButton.isEnabled = backEnable
         ui.forwardCommandButton.isEnabled = forwardEnable
     }
@@ -120,21 +129,27 @@ class MainWindow : QMainWindow() {
     }
 
     private fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {
-        commandsWidgets.get(ui.tabCommandWidget.currentIndex()).onChangedStatusPlay(statusPlay)
+        commandTabWidget.getCurrent().onChangedStatusPlay(statusPlay)
+
         when (statusPlay) {
             PLAYING -> {
+                asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = false }
                 ui.actionPlay.isEnabled = false
                 ui.actionPause.isEnabled = true
                 ui.actionStop.isEnabled = true
                 ui.actionReverseStep.isEnabled = true
             }
             ON_PAUSE -> {
+                asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = false }
+
                 ui.actionPlay.isEnabled = true
                 ui.actionPause.isEnabled = false
                 ui.actionStop.isEnabled = true
                 ui.actionReverseStep.isEnabled = true
             }
             STOPPED -> {
+                asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = true }
+
                 ui.actionPlay.isEnabled = true
                 ui.actionPause.isEnabled = false
                 ui.actionStop.isEnabled = false
@@ -142,6 +157,11 @@ class MainWindow : QMainWindow() {
             }
         }
 
+    }
+
+    override fun mousePressEvent(arg__1: QMouseEvent?) {
+        centralWidget().setFocus()
+        super.mousePressEvent(arg__1)
     }
 
     override fun keyPressEvent(arg__1: QKeyEvent?) {

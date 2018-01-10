@@ -1,16 +1,17 @@
 package ru.alexey_podusov.machines.ui.post
 
 
-import ru.alexey_podusov.machines.engines.PostEngine
+import ru.alexey_podusov.machines.engines.post.PostEngine
+import ru.alexey_podusov.machines.engines.post.PostWorkareaTab
 import ru.alexey_podusov.machines.ui.CellBase
 import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
 
-class PostCellsWorkarea(model: PostEngine) : BaseCellsWorkarea(model) {
+class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
     init {
         connect()
     }
     override fun onCellChanched(numberCell: Int, cellParameter: Any) {
-        (engine as PostEngine).changeValueCell(numberCell, cellParameter as Boolean)
+        (tab as PostWorkareaTab).changeValueCell(numberCell, cellParameter as Boolean)
     }
 
     override fun createCell(): CellBase {
@@ -18,15 +19,15 @@ class PostCellsWorkarea(model: PostEngine) : BaseCellsWorkarea(model) {
     }
 
     override fun updateWorkArea() {
-        engine as PostEngine
+        tab as PostWorkareaTab
         for ((i, widget) in cellWidgets.withIndex()) {
             val cellWidget = widget as PostCell
 
-            val numberCell = engine.currentCarriage - (numberWidgetCarriage - i)
+            val numberCell = tab.currentCarriage - (numberWidgetCarriage - i)
 
-            if (PostEngine.isInTape(numberCell)) {
+            if (PostWorkareaTab.isInTape(numberCell)) {
                 cellWidget.number = numberCell
-                cellWidget.isMark = engine.getCell(numberCell)
+                cellWidget.isMark = tab.getCell(numberCell)
                 if (!cellWidget.isActive) {
                     cellWidget.isActive = true
                 }
@@ -35,10 +36,10 @@ class PostCellsWorkarea(model: PostEngine) : BaseCellsWorkarea(model) {
     }
 
     override fun onLeftButtonClicked() {
-        (engine as PostEngine).currentCarriage--
+        (tab as PostWorkareaTab).currentCarriage--
     }
 
     override fun onRightButtonClicked() {
-        (engine as PostEngine).currentCarriage++
+        (tab as PostWorkareaTab).currentCarriage++
     }
 }

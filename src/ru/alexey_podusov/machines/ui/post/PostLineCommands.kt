@@ -1,18 +1,19 @@
 package ru.alexey_podusov.machines.ui.post
 
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.engines.PostEngine
+import ru.alexey_podusov.machines.engines.post.PostCommandTab
+import ru.alexey_podusov.machines.engines.post.PostEngine
 import ru.alexey_podusov.machines.ui.BaseLineItem
 import ru.alexey_podusov.machines.ui.BaseLineCommands
 
-class PostLineCommands(model: PostEngine) : BaseLineCommands(model) {
+class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
     override fun createStringCommand(): BaseLineItem {
         return PostLineItem()
     }
 
     override fun bindCommands() {
-        engine as PostEngine
-        for ((i, command) in engine.commands.withIndex()) {
+        tab as PostCommandTab
+        for ((i, command) in tab.commands.withIndex()) {
             val widget = lineItemWidgets.get(i) as PostLineItem
             widget.setCommand(command)
 
@@ -21,21 +22,21 @@ class PostLineCommands(model: PostEngine) : BaseLineCommands(model) {
     }
 
     private fun onEditedString(command: PostEngine.PostCommand) {
-        (engine as PostEngine).changeCommand(command)
+        (tab as PostCommandTab).changeCommand(command)
     }
 
     override fun onInsertBeforeClicked() {
-        (engine as PostEngine).insertCommand(selectedCommand)
+        (tab as PostCommandTab).insertCommand(selectedCommand)
         updateCommands()
     }
 
     override fun onInsertAfterClicked() {
-        (engine as PostEngine).insertCommand(selectedCommand + 1)
+        (tab as PostCommandTab).insertCommand(selectedCommand + 1)
         updateCommands()
     }
 
     override fun onDeleteCommandClicked() {
-        (engine as PostEngine).removeCommand(selectedCommand)
+        (tab as PostCommandTab).removeCommand(selectedCommand)
         updateCommands()
     }
 }

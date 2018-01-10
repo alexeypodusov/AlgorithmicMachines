@@ -24,7 +24,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QLabel labelTask;
     public QTextEdit taskTextEdit;
     public QVBoxLayout workAreaLayout;
-    public QTabWidget tabWorkAreaWidget;
     public QHBoxLayout commandBarLayout;
     public QVBoxLayout buttonsVerticalLayout;
     public QPushButton insertBeforeButton;
@@ -37,7 +36,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QPushButton forwardCommandButton;
     public QSpacerItem horizontalSpacer;
     public QVBoxLayout commandLayout;
-    public QTabWidget tabCommandWidget;
     public QMenuBar menuBar;
     public QMenu menu;
     public QMenu menu_2;
@@ -95,12 +93,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         workAreaLayout.setSpacing(6);
         workAreaLayout.setMargin(11);
         workAreaLayout.setObjectName("workAreaLayout");
-        tabWorkAreaWidget = new QTabWidget(centralWidget);
-        tabWorkAreaWidget.setObjectName("tabWorkAreaWidget");
-        tabWorkAreaWidget.setMaximumSize(new QSize(16777215, 140));
-
-        workAreaLayout.addWidget(tabWorkAreaWidget);
-
 
         mainVerticalLayout.addLayout(workAreaLayout);
 
@@ -171,11 +163,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         commandLayout.setSpacing(6);
         commandLayout.setMargin(11);
         commandLayout.setObjectName("commandLayout");
-        tabCommandWidget = new QTabWidget(centralWidget);
-        tabCommandWidget.setObjectName("tabCommandWidget");
-
-        commandLayout.addWidget(tabCommandWidget);
-
 
         commandAndButtonslLayout.addLayout(commandLayout);
 
@@ -215,10 +202,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         menu_3.addAction(actionPause);
         menu_3.addAction(actionStop);
         retranslateUi(MainWindow);
-
-        tabWorkAreaWidget.setCurrentIndex(-1);
-        tabCommandWidget.setCurrentIndex(-1);
-
 
         MainWindow.connectSlotsByName();
     } // setupUi
