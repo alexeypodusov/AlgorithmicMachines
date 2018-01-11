@@ -10,6 +10,7 @@ import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.EngineTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
+import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
 
 class MainWindow : QMainWindow() {
@@ -58,6 +59,9 @@ class MainWindow : QMainWindow() {
         commandTabWidget.setEngine(engine!!, factory)
 
         commandTabWidget.connectCommands(this)
+
+        FileUtils.write(engine!!, "test123");
+        val read = FileUtils.read("test123")
 
         onChangedStatusPlay(STOPPED)
     }

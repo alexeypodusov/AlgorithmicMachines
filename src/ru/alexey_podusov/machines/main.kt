@@ -1,6 +1,5 @@
 package ru.alexey_podusov.machines
 
-import com.trolltech.qt.QSignalEmitter
 import com.trolltech.qt.gui.QApplication
 
 fun main(args: Array<String>) {

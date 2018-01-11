@@ -1,12 +1,15 @@
 package ru.alexey_podusov.machines.engines
 
+import com.google.gson.annotations.Expose
 import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.QTimer
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.ui.BaseCommands
 
 abstract class BaseEngine : QObject() {
+    @Expose
     val commandTabs = ArrayList<CommandTab>()
+    @Expose
     val workareaTabs = ArrayList<WorkareaTab>()
 
     enum class StatusPlay {
@@ -43,6 +46,11 @@ abstract class BaseEngine : QObject() {
 
     abstract fun addCommandTab(name: String): CommandTab
     abstract fun addWorkareaTab(name: String): WorkareaTab
+
+    fun setMainEngineOnTabs() {
+        workareaTabs.forEach { it.setMainEngine(this) }
+        commandTabs.forEach { it.setMainEngine(this) }
+    }
 
     fun removeCommandTab(index: Int) {
         commandTabs.removeAt(index)

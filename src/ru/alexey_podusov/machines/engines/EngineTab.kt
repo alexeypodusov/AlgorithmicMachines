@@ -1,3 +1,8 @@
 package ru.alexey_podusov.machines.engines
 
-abstract class EngineTab(var name:String, var engine: BaseEngine)
+import com.google.gson.annotations.Expose
+
+abstract class EngineTab(@Expose var name:String) {
+    var engine: BaseEngine? = null
+    abstract fun setMainEngine(engine: BaseEngine)
+}

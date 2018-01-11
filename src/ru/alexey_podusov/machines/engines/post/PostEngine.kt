@@ -37,13 +37,15 @@ class PostEngine : BaseEngine() {
 
 
     override fun addCommandTab(name: String): CommandTab {
-        val tab = PostCommandTab(name, this)
+        val tab = PostCommandTab(name)
+        tab.setMainEngine(this)
         commandTabs.add(tab)
         return tab
     }
 
     override fun addWorkareaTab(name: String): WorkareaTab {
-        val tab = PostWorkareaTab(name, this)
+        val tab = PostWorkareaTab(name)
+        tab.setMainEngine(this)
         workareaTabs.add(tab)
         return tab
     }
