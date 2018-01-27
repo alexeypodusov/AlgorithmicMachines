@@ -31,7 +31,6 @@ class PostWorkareaTab(name: String) : WorkareaTab(name) {
         for (i in 0 until COUNT_CELLS) {
             cells.add(false)
         }
-
     }
 
     fun getCell(numCell: Int): Boolean {

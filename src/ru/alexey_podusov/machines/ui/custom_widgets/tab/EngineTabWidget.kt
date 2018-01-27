@@ -67,8 +67,11 @@ abstract class EngineTabWidget : QTabWidget() {
         }
     }
 
+    protected abstract fun renameTab(index: Int, text: String)
+
     internal fun onTabTitleEdited(index: Int, text: String) {
         tabTitleEditedSignal.emit(index, text)
+        renameTab(index, text)
     }
 
     private fun addAddingTab() {

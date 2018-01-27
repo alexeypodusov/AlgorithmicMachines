@@ -11,6 +11,8 @@ abstract class BaseEngine : QObject() {
     val commandTabs = ArrayList<CommandTab>()
     @Expose
     val workareaTabs = ArrayList<WorkareaTab>()
+    @Expose
+    var task: String = ""
 
     enum class StatusPlay {
         STOPPED,
@@ -58,6 +60,14 @@ abstract class BaseEngine : QObject() {
 
     fun removeWorkareTab(index: Int) {
         workareaTabs.removeAt(index)
+    }
+
+    fun renameWorkareaTab(index: Int, name: String) {
+        workareaTabs.get(index).name = name
+    }
+
+    fun renameCommandTab(index: Int, name: String) {
+        commandTabs.get(index).name = name
     }
 
     init {

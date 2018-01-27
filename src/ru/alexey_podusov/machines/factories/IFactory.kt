@@ -7,7 +7,8 @@ import ru.alexey_podusov.machines.ui.BaseCommands
 import ru.alexey_podusov.machines.ui.BaseWorkarea
 
 interface IFactory {
-    fun createModel(): BaseEngine
+    fun createEngine(): BaseEngine
+    fun readEngineFromJson(json: String): BaseEngine
     fun createWorkWidget(tab: WorkareaTab): BaseWorkarea
     fun createCommandsWidget(tab: CommandTab): BaseCommands
 }

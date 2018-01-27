@@ -39,4 +39,8 @@ class CommandTabWidget: EngineTabWidget() {
     override fun removeTabFromEngine(index: Int) {
         engine!!.removeCommandTab(index)
     }
+
+    override fun renameTab(index: Int, text: String) {
+        engine!!.renameCommandTab(index, text)
+    }
 }

@@ -1,5 +1,6 @@
 package ru.alexey_podusov.machines.engines.post
 
+import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
@@ -17,8 +18,8 @@ class PostEngine : BaseEngine() {
         STOP("! стоп")
     }
 
-    data class PostCommand(var number: Int, var commandType: PostCommandType = NULL_COMMAND,
-                           var transition: Int = -1, var secondTransition: Int = -1, var comment: String = "")
+    data class PostCommand(@Expose var number: Int,@Expose var commandType: PostCommandType = NULL_COMMAND,
+                           @Expose var transition: Int = -1,@Expose var secondTransition: Int = -1,@Expose var comment: String = "")
 
 
     companion object {
@@ -33,6 +34,11 @@ class PostEngine : BaseEngine() {
         val ERROR_BORDER = "Каретка вышла за пределы ленты!"
         val ERROR_MARK_TRUE = "Метка уже есть!"
         val ERROR_MARK_FALSE = "Метка отсутствует!"
+    }
+
+    init {
+        addCommandTab("test")
+        addWorkareaTab("test")
     }
 
 
