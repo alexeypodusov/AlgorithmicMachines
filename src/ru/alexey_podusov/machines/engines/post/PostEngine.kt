@@ -122,6 +122,7 @@ class PostEngine : BaseEngine() {
 
             STOP -> {
                 sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT, SUCCES_TITLE)
+                statusPlay = StatusPlay.STOPPED
             }
 
             else -> {

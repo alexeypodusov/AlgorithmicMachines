@@ -75,7 +75,7 @@ abstract class BaseEngine : QObject() {
         timer.isSingleShot = true
     }
 
-    internal fun onWorkareaChanged()  {
+    internal fun onWorkareaChanged() {
         workAreaChangedSignal.emit()
     }
 
@@ -86,7 +86,6 @@ abstract class BaseEngine : QObject() {
                 executeNumberCommandList.add(0)
                 statusPlay = StatusPlay.PLAYING
                 emitSetExecCommand()
-                timer.start(speedTimer)
             }
             StatusPlay.PLAYING -> {
                 return
@@ -95,6 +94,7 @@ abstract class BaseEngine : QObject() {
                 statusPlay = StatusPlay.PLAYING
             }
         }
+        timer.start(speedTimer)
     }
 
     private fun executeWithTimer(currentCommandTab: Int, currentWorkareaTab: Int) {
@@ -143,11 +143,13 @@ abstract class BaseEngine : QObject() {
     }
 
     private fun emitSetExecCommand() {
-        var indexPrevCommand = -1
-        if (executeNumberCommandList.size > 1) {
-            indexPrevCommand = executeNumberCommandList.get(executeNumberCommandList.size - 2)
-        }
+        if (statusPlay != StatusPlay.STOPPED) {
+            var indexPrevCommand = -1
+            if (executeNumberCommandList.size > 1) {
+                indexPrevCommand = executeNumberCommandList.get(executeNumberCommandList.size - 2)
+            }
 
-        setExecCommandSignal.emit(executeNumberCommandList.last(), indexPrevCommand)
+            setExecCommandSignal.emit(executeNumberCommandList.last(), indexPrevCommand)
+        }
     }
 }
