@@ -1,17 +1,26 @@
 package ru.alexey_podusov.machines.engines.post
 
+import com.google.gson.annotations.Expose
+import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.WorkareaTab
 
-class PostWorkareaTab(name: String, engine: PostEngine) : WorkareaTab(name, engine) {
+class PostWorkareaTab(name: String) : WorkareaTab(name) {
+
+    @Expose
     var cells = ArrayList<Boolean>()
+
+    override fun setMainEngine(engine: BaseEngine) {
+        this.engine = engine
+    }
 
     var currentCarriage: Int = 0 //not index! fact number cell
         set(value) {
             if (isInTape(value)) {
                 field = value
-                engine.onWorkareaChanged()
+                engine!!.onWorkareaChanged()
             }
         }
+
 
     companion object {
         val COUNT_CELLS = 2000
@@ -19,10 +28,9 @@ class PostWorkareaTab(name: String, engine: PostEngine) : WorkareaTab(name, engi
     }
 
     init {
-        for (i in 0..COUNT_CELLS) {
+        for (i in 0 until COUNT_CELLS) {
             cells.add(false)
         }
-
     }
 
     fun getCell(numCell: Int): Boolean {
@@ -38,7 +46,7 @@ class PostWorkareaTab(name: String, engine: PostEngine) : WorkareaTab(name, engi
         if (isInTape(numCell)) {
             val cellIndex = getIndexByNum(numCell)
             cells.set(cellIndex, cellValue)
-            engine.onWorkareaChanged()
+            engine!!.onWorkareaChanged()
         }
     }
 

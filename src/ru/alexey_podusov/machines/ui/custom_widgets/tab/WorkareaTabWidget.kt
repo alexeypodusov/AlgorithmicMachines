@@ -36,4 +36,8 @@ class WorkareaTabWidget: EngineTabWidget() {
     override fun removeTabFromEngine(index: Int) {
         engine!!.removeWorkareTab(index)
     }
+
+    override fun renameTab(index: Int, text: String) {
+        engine!!.renameWorkareaTab(index, text)
+    }
 }

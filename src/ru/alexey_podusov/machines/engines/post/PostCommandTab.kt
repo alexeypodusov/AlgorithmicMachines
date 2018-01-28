@@ -1,14 +1,22 @@
 package ru.alexey_podusov.machines.engines.post
 
+import com.google.gson.annotations.Expose
+import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommand
 
-class PostCommandTab(name: String, engine: PostEngine) : CommandTab(name, engine) {
+class PostCommandTab(name: String) : CommandTab(name) {
+
     companion object {
         val MAX_COMMANDS = 999
     }
 
+    @Expose
     var commands = ArrayList<PostCommand>()
+
+    override fun setMainEngine(engine: BaseEngine) {
+        this.engine = engine
+    }
 
     init {
         insertCommand(0)

@@ -192,6 +192,13 @@
     <property name="title">
      <string>Файл</string>
     </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -244,6 +251,31 @@
   <action name="actionStop">
    <property name="text">
     <string>Стоп</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>Новый</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Сохранить как</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Выход</string>
    </property>
   </action>
  </widget>
