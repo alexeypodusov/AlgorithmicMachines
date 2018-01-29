@@ -17,7 +17,7 @@ class PostWorkareaTab(name: String) : WorkareaTab(name) {
         set(value) {
             if (isInTape(value)) {
                 field = value
-                engine!!.onWorkareaChanged()
+                engine?.onWorkareaChanged()
             }
         }
 
@@ -46,7 +46,7 @@ class PostWorkareaTab(name: String) : WorkareaTab(name) {
         if (isInTape(numCell)) {
             val cellIndex = getIndexByNum(numCell)
             cells.set(cellIndex, cellValue)
-            engine!!.onWorkareaChanged()
+            engine?.onWorkareaChanged()
         }
     }
 
