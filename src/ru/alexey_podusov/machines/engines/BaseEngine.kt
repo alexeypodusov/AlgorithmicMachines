@@ -28,7 +28,9 @@ abstract class BaseEngine : QObject() {
     val sendMessageSignal = Signal3<MessageType, String, String>()
     val setExecCommandSignal = Signal2<Int, Int>()
     val changedStatusPlaySignal = Signal1<StatusPlay>()
+    val changedTabsSignal = Signal0()
     val workAreaChangedSignal = Signal0()
+    val commandsChangedSignal = Signal0()
 
     var speedTimer = 500
 
@@ -46,8 +48,17 @@ abstract class BaseEngine : QObject() {
     abstract fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
     abstract fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean
 
-    abstract fun addCommandTab(name: String): CommandTab
-    abstract fun addWorkareaTab(name: String): WorkareaTab
+    fun addCommandTab(name: String): CommandTab {
+        changedTabsSignal.emit()
+        return createCommandTab(name)
+    }
+    fun addWorkareaTab(name: String): WorkareaTab {
+        changedTabsSignal.emit()
+        return createWorkareaTab(name)
+    }
+
+    protected abstract fun createCommandTab(name: String): CommandTab
+    protected abstract fun createWorkareaTab(name: String): WorkareaTab
 
     fun setMainEngineOnTabs() {
         workareaTabs.forEach { it.setMainEngine(this) }
@@ -56,18 +67,22 @@ abstract class BaseEngine : QObject() {
 
     fun removeCommandTab(index: Int) {
         commandTabs.removeAt(index)
+        changedTabsSignal.emit()
     }
 
     fun removeWorkareTab(index: Int) {
         workareaTabs.removeAt(index)
+        changedTabsSignal.emit()
     }
 
     fun renameWorkareaTab(index: Int, name: String) {
         workareaTabs.get(index).name = name
+        changedTabsSignal.emit()
     }
 
     fun renameCommandTab(index: Int, name: String) {
         commandTabs.get(index).name = name
+        changedTabsSignal.emit()
     }
 
     init {
@@ -151,5 +166,9 @@ abstract class BaseEngine : QObject() {
 
             setExecCommandSignal.emit(executeNumberCommandList.last(), indexPrevCommand)
         }
+    }
+
+    internal fun commandsChanged() {
+        commandsChangedSignal.emit()
     }
 }

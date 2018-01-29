@@ -10,14 +10,10 @@ class FileUtils {
             val file = QFile(filepath)
             if (file.open(QIODevice.OpenModeFlag.WriteOnly)) {
                 val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-                //val bytes = QByteArray().append(gson.toJson(obj))
                 val bytes: ByteArray = gson.toJson(obj).toByteArray()
                 file.write(bytes)
                 file.close()
-            } else {
-                throw Exception()
             }
-
         }
 
         fun read(filepath: String): String {
@@ -26,10 +22,8 @@ class FileUtils {
             if (file.open(QIODevice.OpenModeFlag.ReadOnly)) {
                 result = String(file.readAll().toByteArray(), Charset.defaultCharset())
                 file.close()
-            } else {
-                throw Exception()
-            }
-            return result
+                return result
+            } else return ""
         }
     }
 }

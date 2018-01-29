@@ -26,12 +26,25 @@ class MainWindow : QMainWindow() {
 
     private val commandTabWidget = CommandTabWidget()
     private val workareaTabWidget = WorkareaTabWidget()
+    private var savedFilePath = ""
+
+    private var isSavedChanges = true
+        set(value) {
+            field = value
+            if (value == false && !savedFilePath.isEmpty()) {
+                ui.actionSave.setDisabled(false)
+            } else ui.actionSave.setDisabled(true)
+        }
 
     companion object {
         val ALGORITHMIC_MACHINES = "Алгоритмические машины"
         val ERROR_TITLE = "Ошибка"
         val WRITE_ERROR = "Ошибка сохранения файла"
         val READ_ERROR = "Ошибка чтения файла"
+        val CHANGED_NOT_SAVED = "Изменения не были сохранены, продолжить?"
+        val SAVE_TITLE = "Сохранение"
+        val CANCEL_BUTTON_TEXT = "Отмена"
+        val CONTINUE_BUTTON_TEXT = "Продолжить"
     }
 
     init {
@@ -55,7 +68,11 @@ class MainWindow : QMainWindow() {
         engine!!.sendMessageSignal.connect(this, ::onReceiveMessage)
         engine!!.changedStatusPlaySignal.connect(this, ::onChangedStatusPlay)
         engine!!.workAreaChangedSignal.connect(this, ::onUpdatedWorkarea)
+        engine!!.commandsChangedSignal.connect(this, ::updatedCommands)
+        engine!!.changedTabsSignal.connect(this, ::updatedTabs)
         engine!!.setExecCommandSignal.connect(this, ::onSetExecCommand)
+
+        isSavedChanges = true
 
         ui.taskTextEdit.setText(engine!!.task)
 
@@ -91,10 +108,21 @@ class MainWindow : QMainWindow() {
     }
 
     private fun onTaskEdited() {
-        engine!!.task =  ui.taskTextEdit.toPlainText()
+        engine!!.task = ui.taskTextEdit.toPlainText()
     }
 
-    private fun onUpdatedWorkarea() = workareaTabWidget.getCurrent().updateWorkArea()
+    private fun updatedTabs() {
+        isSavedChanges = false
+    }
+
+    private fun onUpdatedWorkarea() {
+        workareaTabWidget.getCurrent().updateWorkArea()
+        isSavedChanges = false
+    }
+
+    private fun updatedCommands() {
+        isSavedChanges = false
+    }
 
     private fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
         commandTabWidget.getCurrent().onSetExecCommand(numberCommand, prevCommand)
@@ -105,31 +133,32 @@ class MainWindow : QMainWindow() {
     }
 
     private fun actionOpenTriggered(checked: Boolean) {
-        val filter = ALGORITHMIC_MACHINES + " (" + MachineType.values().joinToString(" ") { "*." + it.fileFormat } + ")"
-        val filepath = QFileDialog.getOpenFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
-        try {
-            currentMachine = MachineType.getTypeByFileFormat(QFileInfo(filepath).suffix())
-            val engineJson = FileUtils.read(filepath)
-            factory = createFactory(currentMachine)
-            engine = factory.readEngineFromJson(engineJson)
-            initMachine()
-        } catch (e: Exception) {
-            QMessageBox.warning(this, ERROR_TITLE, READ_ERROR)
+        if (checkCloseWithoutSave()) {
+            val filter = ALGORITHMIC_MACHINES + " (" + MachineType.values().joinToString(" ") { "*." + it.fileFormat } + ")"
+            val filepath = QFileDialog.getOpenFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
+            try {
+                currentMachine = MachineType.getTypeByFileFormat(QFileInfo(filepath).suffix())
+                val engineJson = FileUtils.read(filepath)
+                factory = createFactory(currentMachine)
+                engine = factory.readEngineFromJson(engineJson)
+                initMachine()
+            } catch (e: Exception) {
+                QMessageBox.warning(this, ERROR_TITLE, READ_ERROR)
+            }
         }
     }
 
-    private fun actionSaveTriggered(checked: Boolean) = {}
+    private fun actionSaveTriggered(checked: Boolean) {
+        saveToFixedPath()
+    }
+
     private fun actionSaveAsTriggered(checked: Boolean) {
-        val filter = currentMachine.nameMachine + " (*." + currentMachine.fileFormat + ")"
-        val filepath = QFileDialog.getSaveFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
-        try {
-            FileUtils.writeObject(engine!!, filepath)
-        } catch (e: Exception) {
-            QMessageBox.warning(this, ERROR_TITLE, WRITE_ERROR)
-        }
+        saveAsEngine()
     }
 
-    private fun actionExitTriggered(checked: Boolean) = {}
+    private fun actionExitTriggered(checked: Boolean) {
+        close()
+    }
 
     private fun actionPlayTriggered(checked: Boolean) = engine!!.play(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
     private fun actionNextStepTriggered(checked: Boolean) = engine!!.playStep(commandTabWidget.currentIndex(), workareaTabWidget.currentIndex())
@@ -138,16 +167,50 @@ class MainWindow : QMainWindow() {
         engine!!.statusPlay = ON_PAUSE
     }
 
-    private fun createFactory(type: MachineType) : IFactory {
-        when(type){
+    private fun saveToFixedPath(): Boolean {
+        if (!savedFilePath.isEmpty()) {
+            try {
+                saveFileEngine(savedFilePath)
+                return true
+            } catch (e: Exception) {
+                QMessageBox.warning(this, ERROR_TITLE, WRITE_ERROR)
+                return false
+            }
+        } else return false
+    }
+
+    private fun saveFileEngine(filepath: String) {
+        savedFilePath = filepath
+        FileUtils.writeObject(engine!!, filepath)
+        isSavedChanges = true
+    }
+
+    private fun saveAsEngine(): Boolean {
+        val filter = currentMachine.nameMachine + " (*." + currentMachine.fileFormat + ")"
+        val filepath = QFileDialog.getSaveFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
+
+        if (filepath.isEmpty()) return false
+        try {
+            saveFileEngine(filepath)
+        } catch (e: Exception) {
+            QMessageBox.warning(this, ERROR_TITLE, WRITE_ERROR)
+            return false
+        }
+        return true
+    }
+
+    private fun createFactory(type: MachineType): IFactory {
+        when (type) {
             MachineType.POST -> return PostFactory()
         }
         return PostFactory()
     }
 
     private fun createNewFile() {
-        engine = factory.createEngine()
-        initMachine()
+        if (checkCloseWithoutSave()) {
+            engine = factory.createEngine()
+            initMachine()
+        }
     }
 
     private fun actionStopTriggered(checked: Boolean) {
@@ -238,5 +301,45 @@ class MainWindow : QMainWindow() {
         super.keyReleaseEvent(arg__1)
         keyReleaseSignal.emit(arg__1)
     }
+
+    override fun closeEvent(event: QCloseEvent?) {
+        if (checkCloseWithoutSave()) {
+            event!!.accept()
+        } else {
+            event!!.ignore()
+        }
+    }
+
+    fun checkCloseWithoutSave(): Boolean {
+        if (!isSavedChanges) {
+            val msgBox = QMessageBox(this)
+            msgBox.setText(CHANGED_NOT_SAVED)
+            msgBox.setWindowTitle(SAVE_TITLE)
+            val saveAsButton = msgBox.addButton(ui.actionSaveAs.text(), QMessageBox.ButtonRole.AcceptRole)
+            val saveButton = msgBox.addButton(ui.actionSave.text(), QMessageBox.ButtonRole.AcceptRole)
+            val cancelButton = msgBox.addButton(CANCEL_BUTTON_TEXT, QMessageBox.ButtonRole.AcceptRole)
+            val continueButton = msgBox.addButton(CONTINUE_BUTTON_TEXT, QMessageBox.ButtonRole.AcceptRole)
+
+            saveButton.isEnabled = ui.actionSave.isEnabled
+
+            msgBox.exec()
+            if (msgBox.clickedButton() == saveAsButton) {
+                return saveAsEngine()
+            }
+            if (msgBox.clickedButton() == saveButton) {
+                actionSaveTriggered(false)
+                return saveToFixedPath()
+
+            }
+            if (msgBox.clickedButton() == cancelButton) {
+                return false
+            }
+            if (msgBox.clickedButton() == continueButton) {
+                return true
+            }
+        }
+        return true
+    }
+
 
 }
