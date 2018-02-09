@@ -129,7 +129,11 @@ class MainWindow : QMainWindow() {
     }
 
     private fun actionNewTriggered(checked: Boolean) {
-
+        if (checkCloseWithoutSave()) {
+            factory = createFactory(currentMachine)
+            engine = factory.createEngine()
+            initMachine()
+        }
     }
 
     private fun actionOpenTriggered(checked: Boolean) {
