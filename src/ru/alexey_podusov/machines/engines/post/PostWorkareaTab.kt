@@ -9,10 +9,6 @@ class PostWorkareaTab(name: String) : WorkareaTab(name) {
     @Expose
     var cells = ArrayList<Boolean>()
 
-    override fun setMainEngine(engine: BaseEngine) {
-        this.engine = engine
-    }
-
     var currentCarriage: Int = 0 //not index! fact number cell
         set(value) {
             if (isInTape(value)) {

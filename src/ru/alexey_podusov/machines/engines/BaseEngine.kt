@@ -14,6 +14,14 @@ abstract class BaseEngine : QObject() {
     @Expose
     var task: String = ""
 
+    companion object {
+        val SUCCES_TITLE = "Конец программы"
+        val SUCCES_TEXT = "Конец программы"
+
+        val ERROR_TITLE = "Ошибка"
+
+    }
+
     enum class StatusPlay {
         STOPPED,
         PLAYING,

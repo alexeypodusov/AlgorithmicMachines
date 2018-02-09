@@ -9,7 +9,7 @@ import ru.alexey_podusov.machines.engines.WorkareaTab
 
 abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     protected val ui = Ui_PostWorkAreaWidget()
-    protected val cellWidgets = ArrayList<CellBase>()
+    protected val cellWidgets = ArrayList<BaseCell>()
 
     protected var countCells: Int = 0
     protected var numberWidgetCarriage: Int = 0
@@ -24,7 +24,7 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
         initCells()
     }
 
-    protected abstract fun createCell(): CellBase
+    protected abstract fun createCell(): BaseCell
     protected abstract fun onCellChanched(numberCell: Int, cellParameter:Any)
     protected abstract fun onLeftButtonClicked()
     protected abstract fun onRightButtonClicked()
@@ -39,12 +39,12 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
         val scrollAreaLayout = QHBoxLayout()
 
         countCells = (QApplication.desktop().width() /
-                (CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
+                (BaseCell.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
 
         numberWidgetCarriage = countCells / 2
 
         for (i: Int in 0..countCells) {
-            val cell: CellBase = createCell()
+            val cell: BaseCell = createCell()
             cellWidgets.add(cell)
 
             cell.onCellChanchedSignal.connect(this, ::onCellChanched)
@@ -58,7 +58,7 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     }
 
     override fun updateSizeWidget() {
-        val widthCellWithSpacing: Int = CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT
+        val widthCellWithSpacing: Int = BaseCell.WIDTH_CELL + SPACING_CELL_LAYOUT
         val widthScrollArea: Int = ui.scrollArea.size().width()
 
         val leftCellNumber = numberWidgetCarriage - (widthScrollArea / widthCellWithSpacing) / 2

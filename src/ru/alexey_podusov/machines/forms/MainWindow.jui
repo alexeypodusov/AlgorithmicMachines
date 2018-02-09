@@ -204,6 +204,9 @@
     <property name="title">
      <string>Машина</string>
     </property>
+    <addaction name="actionPost"/>
+    <addaction name="actionTyuring"/>
+    <addaction name="actionMarkov"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -276,6 +279,21 @@
   <action name="actionExit">
    <property name="text">
     <string>Выход</string>
+   </property>
+  </action>
+  <action name="actionPost">
+   <property name="text">
+    <string>Машина Поста</string>
+   </property>
+  </action>
+  <action name="actionTyuring">
+   <property name="text">
+    <string>Машина Тьюринга</string>
+   </property>
+  </action>
+  <action name="actionMarkov">
+   <property name="text">
+    <string>Нормальные алгоритмы Маркова</string>
    </property>
   </action>
  </widget>

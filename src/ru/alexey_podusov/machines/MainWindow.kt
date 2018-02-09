@@ -7,11 +7,13 @@ import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.*
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
+import ru.alexey_podusov.machines.factories.MarkovFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
 import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
+import javax.crypto.Mac
 
 class MainWindow : QMainWindow() {
 
@@ -21,6 +23,7 @@ class MainWindow : QMainWindow() {
     private val ui = Ui_MainWindow()
 
     var currentMachine: MachineType = MachineType.POST
+
     private var factory: IFactory = createFactory(currentMachine)
     private var engine: BaseEngine? = null
 
@@ -81,7 +84,7 @@ class MainWindow : QMainWindow() {
 
         commandTabWidget.connectCommands(this)
 
-        onChangedStatusPlay(STOPPED)
+        //onChangedStatusPlay(STOPPED)
     }
 
     private fun connect() {
@@ -105,6 +108,24 @@ class MainWindow : QMainWindow() {
         ui.deleteCommand.clicked.connect(this, ::onDeleteCommandClicked)
 
         ui.taskTextEdit.textChanged.connect(this, ::onTaskEdited)
+
+        ui.actionPost.triggered.connect(this, ::actionPostTriggered)
+        ui.actionMarkov.triggered.connect(this, ::actionMarkovTriggered)
+        ui.actionTyuring.triggered.connect(this, ::actionTyuringTriggered)
+    }
+
+    private fun actionPostTriggered(checked: Boolean) {
+        currentMachine = MachineType.POST
+        newFile()
+    }
+
+    private fun actionMarkovTriggered(checked: Boolean) {
+        currentMachine = MachineType.MARKOV
+        newFile()
+    }
+
+    private fun actionTyuringTriggered(checked: Boolean) {
+        //TODO
     }
 
     private fun onTaskEdited() {
@@ -129,11 +150,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun actionNewTriggered(checked: Boolean) {
-        if (checkCloseWithoutSave()) {
-            factory = createFactory(currentMachine)
-            engine = factory.createEngine()
-            initMachine()
-        }
+        newFile()
     }
 
     private fun actionOpenTriggered(checked: Boolean) {
@@ -171,6 +188,14 @@ class MainWindow : QMainWindow() {
         engine!!.statusPlay = ON_PAUSE
     }
 
+    private fun newFile() {
+        if (checkCloseWithoutSave()) {
+            factory = createFactory(currentMachine)
+            engine = factory.createEngine()
+            initMachine()
+        }
+    }
+
     private fun saveToFixedPath(): Boolean {
         if (!savedFilePath.isEmpty()) {
             try {
@@ -206,6 +231,7 @@ class MainWindow : QMainWindow() {
     private fun createFactory(type: MachineType): IFactory {
         when (type) {
             MachineType.POST -> return PostFactory()
+            MachineType.MARKOV -> return MarkovFactory()
         }
         return PostFactory()
     }
