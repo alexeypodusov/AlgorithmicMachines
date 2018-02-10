@@ -19,7 +19,6 @@ abstract class BaseEngine : QObject() {
         val SUCCES_TEXT = "Конец программы"
 
         val ERROR_TITLE = "Ошибка"
-
     }
 
     enum class StatusPlay {

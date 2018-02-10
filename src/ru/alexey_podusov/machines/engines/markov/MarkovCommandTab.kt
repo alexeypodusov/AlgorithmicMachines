@@ -30,7 +30,7 @@ class MarkovCommandTab(name: String): CommandTab(name) {
     }
 
     fun removeCommand(number: Int) {
-        if (number != 0) {
+        if (commands.size != 1) {
             commands.filter { it.number > number }.forEach { it.number-- }
             commands.removeAt(number)
             engine?.commandsChanged()

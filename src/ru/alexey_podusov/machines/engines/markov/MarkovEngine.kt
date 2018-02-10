@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
-import ru.alexey_podusov.machines.engines.post.PostCommandTab
-import ru.alexey_podusov.machines.engines.post.PostWorkareaTab
-
 
 class MarkovEngine : BaseEngine() {
 
@@ -46,6 +43,12 @@ class MarkovEngine : BaseEngine() {
 
         var isFinish = false
 
+        if (executeNumberCommandList.size <= 1) {
+            workTab.historyString = ArrayList()
+        }
+
+        workTab.historyString.add(workTab.string)
+
         var replacement = command.replacement
         if (command.replacement.length >= SYMBOL_END.length &&
                 command.replacement.takeLast(SYMBOL_END.length) == SYMBOL_END) {
@@ -55,7 +58,7 @@ class MarkovEngine : BaseEngine() {
 
         val lastString = workTab.string
         if (!command.sample.isEmpty()) {
-            workTab.string = workTab.string.replace(command.sample, replacement)
+            workTab.string = workTab.string.replaceFirst(command.sample, replacement)
         } else {
             workTab.string = replacement + workTab.string
         }
@@ -76,14 +79,20 @@ class MarkovEngine : BaseEngine() {
         if (isReplaced) {
             executeNumberCommandList.add(0)
             isReplaced = false
+        } else {
+            executeNumberCommandList.add(numberCommand + 1)
         }
-
 
         return true
     }
 
     override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
-        return false
+        val workTab = workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab
+
+        workTab.string = workTab.historyString.last()
+        workTab.historyString.removeAt(workTab.historyString.size - 1)
+
+        return true
     }
 
     override fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean {

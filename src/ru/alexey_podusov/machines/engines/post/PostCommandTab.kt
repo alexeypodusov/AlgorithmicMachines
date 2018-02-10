@@ -35,7 +35,7 @@ class PostCommandTab(name: String) : CommandTab(name) {
     }
 
     fun removeCommand(number: Int) {
-        if (number != 0) {
+        if (commands.size != 1) {
             commands.filter { it.number > number }.forEach { it.number-- }
             commands.filter { it.transition == number }.forEach { it.transition = -1 }
             commands.filter { it.secondTransition == number }.forEach { it.secondTransition = -1 }

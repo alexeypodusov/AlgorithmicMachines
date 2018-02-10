@@ -7,9 +7,6 @@ import ru.alexey_podusov.machines.engines.WorkareaTab
 import ru.alexey_podusov.machines.engines.markov.MarkovCommandTab
 import ru.alexey_podusov.machines.engines.markov.MarkovEngine
 import ru.alexey_podusov.machines.engines.markov.MarkovWorkareaTab
-import ru.alexey_podusov.machines.engines.post.PostCommandTab
-import ru.alexey_podusov.machines.engines.post.PostEngine
-import ru.alexey_podusov.machines.engines.post.PostWorkareaTab
 import ru.alexey_podusov.machines.ui.BaseCommands
 import ru.alexey_podusov.machines.ui.BaseWorkarea
 import ru.alexey_podusov.machines.ui.markov.MarkovLineCommands

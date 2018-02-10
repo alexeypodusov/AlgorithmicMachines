@@ -65,6 +65,8 @@ class PostLineItem : BaseLineItem() {
     }
 
     init {
+        scaleFactor = 3
+
         commandComboBox.setMinimumWidth(WIDTH_COMMAND_STRING)
         commandComboBox.setFixedHeight(HEIGHT_STRING)
         commandComboBox.currentIndexChanged.connect(this, ::onComboBoxIndexChanged)
@@ -126,5 +128,14 @@ class PostLineItem : BaseLineItem() {
         comment = commentLineEdit.text()
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))
+    }
+
+    override fun setExecBorder(prevCommand: Int) {
+        super.setExecBorder(prevCommand)
+        if (prevCommand != -1) {
+            val link = "<a href='$prevCommand'>$prevCommand</a>"
+            previousNumberString.setText(link)
+            previousStringWidget.show()
+        }
     }
 }

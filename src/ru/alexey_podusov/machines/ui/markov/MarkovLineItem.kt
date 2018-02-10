@@ -41,6 +41,8 @@ class MarkovLineItem : BaseLineItem() {
     }
 
     init {
+        scaleFactor = 2
+
         sampleLineEdit.setMaximumWidth(MAX_WIDTH_EDIT_STRING)
         sampleLineEdit.setFixedHeight(HEIGHT_STRING)
         sampleLineEdit.editingFinished.connect(this, ::onSampleEditingFinished)

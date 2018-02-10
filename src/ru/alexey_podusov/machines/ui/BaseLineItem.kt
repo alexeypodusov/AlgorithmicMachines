@@ -25,6 +25,8 @@ abstract class BaseLineItem : QFrame() {
             numberStringLabel.setText("$value")
         }
 
+    var scaleFactor = 3
+
     var isSelected: Boolean = false
         set(value) {
             when(value) {
@@ -97,12 +99,7 @@ abstract class BaseLineItem : QFrame() {
 
     open fun setExecBorder(prevCommand: Int) {
         setStyleSheet(SELECT_STRING_CSS)
-        setFixedHeight(3*HEIGHT_STRING)
-        if (prevCommand != -1) {
-            val link = "<a href='$prevCommand'>$prevCommand</a>"
-            previousNumberString.setText(link)
-            previousStringWidget.show()
-        }
+        setFixedHeight(scaleFactor*HEIGHT_STRING)
     }
 
     open fun hideExecBorder() {
