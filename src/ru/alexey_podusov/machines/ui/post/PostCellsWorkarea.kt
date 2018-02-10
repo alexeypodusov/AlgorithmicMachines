@@ -1,6 +1,7 @@
 package ru.alexey_podusov.machines.ui.post
 
 
+import ru.alexey_podusov.machines.engines.CellsWorkareaTab.Companion.isInTape
 import ru.alexey_podusov.machines.engines.post.PostWorkareaTab
 import ru.alexey_podusov.machines.ui.BaseCell
 import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
@@ -24,7 +25,7 @@ class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
 
             val numberCell = tab.currentCarriage - (numberWidgetCarriage - i)
 
-            if (PostWorkareaTab.isInTape(numberCell)) {
+            if (isInTape(numberCell)) {
                 cellWidget.number = numberCell
                 cellWidget.isMark = tab.getCell(numberCell)
                 if (!cellWidget.isActive) {
@@ -32,13 +33,5 @@ class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
                 }
             } else cellWidget.isActive = false
         }
-    }
-
-    override fun onLeftButtonClicked() {
-        (tab as PostWorkareaTab).currentCarriage--
-    }
-
-    override fun onRightButtonClicked() {
-        (tab as PostWorkareaTab).currentCarriage++
     }
 }

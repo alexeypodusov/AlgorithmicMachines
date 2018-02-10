@@ -4,8 +4,9 @@ import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QApplication
 import com.trolltech.qt.gui.QHBoxLayout
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
+import ru.alexey_podusov.machines.engines.CellsWorkareaTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
+import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
 
 abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     protected val ui = Ui_PostWorkAreaWidget()
@@ -26,8 +27,14 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
 
     protected abstract fun createCell(): BaseCell
     protected abstract fun onCellChanched(numberCell: Int, cellParameter:Any)
-    protected abstract fun onLeftButtonClicked()
-    protected abstract fun onRightButtonClicked()
+
+    protected fun onLeftButtonClicked() {
+        (tab as CellsWorkareaTab).currentCarriage--
+    }
+
+    protected fun onRightButtonClicked() {
+        (tab as CellsWorkareaTab).currentCarriage++
+    }
 
     override fun connect() {
         ui.LeftPushButton.clicked.connect(this, ::onLeftButtonClicked)

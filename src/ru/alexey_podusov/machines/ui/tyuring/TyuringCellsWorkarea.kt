@@ -17,13 +17,6 @@ class TyuringCellsWorkarea(tab: TyuringWorkareaTab) : BaseCellsWorkarea(tab) {
 
     }
 
-    override fun onLeftButtonClicked() {
-
-    }
-
-    override fun onRightButtonClicked() {
-
-    }
 
     override fun updateWorkArea() {
     }

@@ -2,10 +2,10 @@ package ru.alexey_podusov.machines.engines.post
 
 import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.CellsWorkareaTab.Companion.isInTape
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.*
-import ru.alexey_podusov.machines.engines.post.PostWorkareaTab.Companion.isInTape
 
 class PostEngine : BaseEngine() {
     enum class PostCommandType(var text: String) {
