@@ -84,7 +84,7 @@ class MainWindow : QMainWindow() {
 //        commandTabWidget.setEngine(engine!!, factory)
 //
 //        commandTabWidget.connectCommands(this)
-
+        
 //        onChangedStatusPlay(STOPPED)
     }
 
@@ -232,6 +232,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun createFactory(type: MachineType): IFactory {
+        engine?.blockSignals(true)
         return when (type) {
             MachineType.POST -> PostFactory()
             MachineType.MARKOV -> MarkovFactory()
