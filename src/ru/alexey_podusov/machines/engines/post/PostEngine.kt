@@ -23,14 +23,10 @@ class PostEngine : BaseEngine() {
 
 
     companion object {
-        val SUCCES_TITLE = "Конец программы"
-        val SUCCES_TEXT = "Конец программы"
-
         val ERROR_NULL_TYPE = "Не указана команда!"
         val ERROR_TRANSITION_NULL = "Не указан номер строки для перехода!"
         val ERROR_TRANSITION_NOT_EXIST = "Строки с таким номером не существует!"
 
-        val ERROR_TITLE = "Ошибка"
         val ERROR_BORDER = "Каретка вышла за пределы ленты!"
         val ERROR_MARK_TRUE = "Метка уже есть!"
         val ERROR_MARK_FALSE = "Метка отсутствует!"

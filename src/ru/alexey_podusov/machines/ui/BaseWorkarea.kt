@@ -11,7 +11,6 @@ abstract class BaseWorkarea(protected val tab: WorkareaTab): QWidget() {
     abstract fun updateWorkArea()
     abstract fun connect()
 
-
     override fun resizeEvent(arg__1: QResizeEvent?) {
         super.resizeEvent(arg__1)
         updateSizeWidget()

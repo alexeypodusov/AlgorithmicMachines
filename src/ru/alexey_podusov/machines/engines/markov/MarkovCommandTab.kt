@@ -1,24 +1,22 @@
-package ru.alexey_podusov.machines.engines.post
+package ru.alexey_podusov.machines.engines.markov
 
 import com.google.gson.annotations.Expose
-import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
-import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommand
+import ru.alexey_podusov.machines.engines.markov.MarkovEngine.MarkovCommand
 
-class PostCommandTab(name: String) : CommandTab(name) {
+class MarkovCommandTab(name: String): CommandTab(name) {
     companion object {
         val MAX_COMMANDS = 999
     }
 
     @Expose
-    var commands = ArrayList<PostCommand>()
+    var commands = ArrayList<MarkovCommand>()
 
     init {
         insertCommand(0)
     }
 
-
-    fun changeCommand(command: PostCommand) {
+    fun changeCommand(command: MarkovCommand) {
         commands.set(command.number, command)
         engine?.commandsChanged()
     }
@@ -26,10 +24,7 @@ class PostCommandTab(name: String) : CommandTab(name) {
     fun insertCommand(number: Int) {
         if (commands.size < MAX_COMMANDS) {
             commands.filter { it.number >= number }.forEach { it.number++ }
-            commands.filter { it.transition >= number }.forEach { it.transition++ }
-            commands.filter { it.secondTransition >= number }.forEach { it.secondTransition++ }
-
-            commands.add(number, PostCommand(number = number))
+            commands.add(number, MarkovCommand(number = number))
             engine?.commandsChanged()
         }
     }
@@ -37,8 +32,6 @@ class PostCommandTab(name: String) : CommandTab(name) {
     fun removeCommand(number: Int) {
         if (commands.size != 1) {
             commands.filter { it.number > number }.forEach { it.number-- }
-            commands.filter { it.transition == number }.forEach { it.transition = -1 }
-            commands.filter { it.secondTransition == number }.forEach { it.secondTransition = -1 }
             commands.removeAt(number)
             engine?.commandsChanged()
         }
@@ -47,5 +40,4 @@ class PostCommandTab(name: String) : CommandTab(name) {
     override fun getCommandsSize(): Int {
         return commands.size
     }
-
 }

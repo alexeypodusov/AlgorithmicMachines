@@ -3,7 +3,7 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 
-abstract class CellBase : QWidget() {
+abstract class BaseCell : QWidget() {
     companion object {
         val WIDTH_CELL = 22
         val HEIGHT_ELEMENT = 30

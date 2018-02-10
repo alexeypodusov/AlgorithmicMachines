@@ -1,9 +1,8 @@
 package ru.alexey_podusov.machines.ui.post
 
 
-import ru.alexey_podusov.machines.engines.post.PostEngine
 import ru.alexey_podusov.machines.engines.post.PostWorkareaTab
-import ru.alexey_podusov.machines.ui.CellBase
+import ru.alexey_podusov.machines.ui.BaseCell
 import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
 
 class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
@@ -14,7 +13,7 @@ class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
         (tab as PostWorkareaTab).changeValueCell(numberCell, cellParameter as Boolean)
     }
 
-    override fun createCell(): CellBase {
+    override fun createCell(): BaseCell {
         return PostCell()
     }
 
