@@ -84,7 +84,7 @@ class MainWindow : QMainWindow() {
 //        commandTabWidget.setEngine(engine!!, factory)
 //
 //        commandTabWidget.connectCommands(this)
-        
+
 //        onChangedStatusPlay(STOPPED)
     }
 

@@ -22,7 +22,13 @@ class TyuringWorkareaTab(name: String): CellsWorkareaTab(name) {
             engine?.onWorkareaChanged()
         }
     }
-    
 
+    fun getCell(numCell: Int): String {
+        if (isInTape(numCell)) {
+            val cellIndex = getIndexByNum(numCell)
+            return cells.get(cellIndex)
+        }
+        return ""
+    }
 
 }
