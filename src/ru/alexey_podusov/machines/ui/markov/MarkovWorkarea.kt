@@ -29,6 +29,7 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
         stringLayout.addWidget(editText)
         mainLayout.addLayout(stringLayout)
         setLayout(mainLayout)
+        updateWorkArea()
     }
 
     override fun updateSizeWidget() {
