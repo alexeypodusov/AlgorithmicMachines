@@ -8,6 +8,7 @@ import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.*
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
 import ru.alexey_podusov.machines.factories.MarkovFactory
+import ru.alexey_podusov.machines.factories.TyuringFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
@@ -80,11 +81,11 @@ class MainWindow : QMainWindow() {
         ui.taskTextEdit.setText(engine!!.task)
 
         workareaTabWidget.setEngine(engine!!, factory)
-        commandTabWidget.setEngine(engine!!, factory)
+//        commandTabWidget.setEngine(engine!!, factory)
+//
+//        commandTabWidget.connectCommands(this)
 
-        commandTabWidget.connectCommands(this)
-
-        //onChangedStatusPlay(STOPPED)
+//        onChangedStatusPlay(STOPPED)
     }
 
     private fun connect() {
@@ -125,7 +126,8 @@ class MainWindow : QMainWindow() {
     }
 
     private fun actionTyuringTriggered(checked: Boolean) {
-        //TODO
+        currentMachine = MachineType.TYURING
+        newFile()
     }
 
     private fun onTaskEdited() {
@@ -230,11 +232,11 @@ class MainWindow : QMainWindow() {
     }
 
     private fun createFactory(type: MachineType): IFactory {
-        when (type) {
-            MachineType.POST -> return PostFactory()
-            MachineType.MARKOV -> return MarkovFactory()
+        return when (type) {
+            MachineType.POST -> PostFactory()
+            MachineType.MARKOV -> MarkovFactory()
+            MachineType.TYURING -> TyuringFactory()
         }
-        return PostFactory()
     }
 
     private fun createNewFile() {
