@@ -2,19 +2,20 @@ package ru.alexey_podusov.machines
 
 import com.trolltech.qt.core.QFileInfo
 import com.trolltech.qt.gui.*
-import ru.alexey_podusov.machines.factories.IFactory
-import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.engines.BaseEngine
-import ru.alexey_podusov.machines.engines.BaseEngine.*
+import ru.alexey_podusov.machines.engines.BaseEngine.MessageType
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.*
+import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine
+import ru.alexey_podusov.machines.factories.IFactory
 import ru.alexey_podusov.machines.factories.MarkovFactory
+import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.factories.TyuringFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
+import ru.alexey_podusov.machines.ui.tyuring.TyuringAlphabetWidget
 import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
-import javax.crypto.Mac
 
 class MainWindow : QMainWindow() {
 
@@ -22,6 +23,10 @@ class MainWindow : QMainWindow() {
     val keyPressSignal = Signal1<QKeyEvent>()
 
     private val ui = Ui_MainWindow()
+    private val alphabetContainerWidget = QWidget()
+    private val alphabetContainerLayout = QHBoxLayout()
+
+    private var tyuringAlphabetWidget = TyuringAlphabetWidget()
 
     var currentMachine: MachineType = MachineType.POST
 
@@ -31,6 +36,7 @@ class MainWindow : QMainWindow() {
     private val commandTabWidget = CommandTabWidget()
     private val workareaTabWidget = WorkareaTabWidget()
     private var savedFilePath = ""
+
 
     private var isSavedChanges = true
         set(value) {
@@ -60,8 +66,14 @@ class MainWindow : QMainWindow() {
 
     private fun setupUi() {
         ui.setupUi(this)
-        setNullMargins(ui.mainVerticalLayout)
+
         ui.buttonsVerticalLayout.setContentsMargins(0, 30, 0, 0)
+        alphabetContainerWidget.setLayout(alphabetContainerLayout)
+        alphabetContainerLayout.addWidget(tyuringAlphabetWidget)
+        ui.buttonHorizontalLayout.addWidget(alphabetContainerWidget)
+        alphabetContainerLayout.setMargin(0)
+
+        setNullMargins(ui.mainVerticalLayout)
 
         ui.commandLayout.addWidget(commandTabWidget)
         ui.workAreaLayout.addWidget(workareaTabWidget)
@@ -81,6 +93,16 @@ class MainWindow : QMainWindow() {
         ui.taskTextEdit.setText(engine!!.task)
 
         workareaTabWidget.setEngine(engine!!, factory)
+
+        tyuringAlphabetWidget.hide()
+        alphabetContainerLayout.removeWidget(tyuringAlphabetWidget)
+
+        if (currentMachine == MachineType.TYURING) {
+            tyuringAlphabetWidget = TyuringAlphabetWidget()
+            alphabetContainerLayout.addWidget(tyuringAlphabetWidget)
+            tyuringAlphabetWidget.engine = engine as TyuringEngine
+        }
+
 //        commandTabWidget.setEngine(engine!!, factory)
 //
 //        commandTabWidget.connectCommands(this)
