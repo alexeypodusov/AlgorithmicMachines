@@ -103,7 +103,7 @@ class MainWindow : QMainWindow() {
             tyuringAlphabetWidget.engine = engine as TyuringEngine
         }
 
-//        commandTabWidget.setEngine(engine!!, factory)
+        commandTabWidget.setEngine(engine!!, factory)
 //
 //        commandTabWidget.connectCommands(this)
 

@@ -4,14 +4,13 @@ import com.google.gson.GsonBuilder
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
-import ru.alexey_podusov.machines.engines.post.PostCommandTab
 import ru.alexey_podusov.machines.engines.tyuring.TyuringCommandTab
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine
 import ru.alexey_podusov.machines.engines.tyuring.TyuringWorkareaTab
 import ru.alexey_podusov.machines.ui.BaseCommands
 import ru.alexey_podusov.machines.ui.BaseWorkarea
-import ru.alexey_podusov.machines.ui.post.PostLineCommands
 import ru.alexey_podusov.machines.ui.tyuring.TyuringCellsWorkarea
+import ru.alexey_podusov.machines.ui.tyuring.TyuringCommands
 import ru.alexey_podusov.machines.utils.ConcreteClassDeserializer
 
 class TyuringFactory : IFactory {
@@ -35,6 +34,6 @@ class TyuringFactory : IFactory {
     }
 
     override fun createCommandsWidget(tab: CommandTab): BaseCommands {
-        return PostLineCommands(tab as PostCommandTab)
+        return TyuringCommands(tab as TyuringCommandTab)
     }
 }

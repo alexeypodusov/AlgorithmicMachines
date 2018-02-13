@@ -4,12 +4,28 @@ import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
+import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.*
 
 class TyuringEngine : BaseEngine() {
+    enum class TyuringCommandType(var text: String) {
+        NULL_COMMAND(""),
+        LEFT_STEP("<-"),
+        RIGHT_STEP("->"),
+        STAY(".")
+    }
+
+    data class TyuringCommand(@Expose var numberColumn: Int, @Expose var numberRow: Int, @Expose var replace: String = "",
+                              @Expose var commandType: TyuringCommandType = NULL_COMMAND, @Expose var newState: Int = -1)
+
     @Expose
     var alphabet = ""
 
     val alphabetChangedSignal = Signal1<Int>()
+
+    init {
+        addCommandTab("test")
+        addWorkareaTab("test")
+    }
 
     fun changeAlphabet(currentPositionCursor: Int, changedString: String) {
         var lastPositionCursor: Int? = null
@@ -24,7 +40,7 @@ class TyuringEngine : BaseEngine() {
 
         } else if (changedString.length < alphabet.length) {
             lastPositionCursor = currentPositionCursor + (alphabet.length - changedString.length)
-            var deletedString = alphabet.substring(currentPositionCursor, lastPositionCursor)
+            val deletedString = alphabet.substring(currentPositionCursor, lastPositionCursor)
             alphabet = changedString
 
             newCursorPosition = lastPositionCursor - deletedString.length
