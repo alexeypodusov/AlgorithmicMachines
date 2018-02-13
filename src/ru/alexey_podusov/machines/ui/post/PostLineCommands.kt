@@ -16,27 +16,12 @@ class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
         for ((i, command) in tab.commands.withIndex()) {
             val widget = lineItemWidgets.get(i) as PostLineItem
             widget.setCommand(command)
-
+            widget.onEditedSignal.disconnect(this)
             widget.onEditedSignal.connect(this, ::onEditedString)
         }
     }
 
     private fun onEditedString(command: PostEngine.PostCommand) {
         (tab as PostCommandTab).changeCommand(command)
-    }
-
-    override fun onInsertBeforeClicked() {
-        (tab as PostCommandTab).insertCommand(selectedCommand)
-        updateCommands()
-    }
-
-    override fun onInsertAfterClicked() {
-        (tab as PostCommandTab).insertCommand(selectedCommand + 1)
-        updateCommands()
-    }
-
-    override fun onDeleteCommandClicked() {
-        (tab as PostCommandTab).removeCommand(selectedCommand)
-        updateCommands()
     }
 }

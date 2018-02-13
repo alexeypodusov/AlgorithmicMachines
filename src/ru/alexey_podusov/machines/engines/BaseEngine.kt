@@ -2,9 +2,7 @@ package ru.alexey_podusov.machines.engines
 
 import com.google.gson.annotations.Expose
 import com.trolltech.qt.core.QObject
-import com.trolltech.qt.core.QTimer
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.ui.BaseCommands
 
 abstract class BaseEngine : QObject() {
     @Expose
@@ -53,7 +51,7 @@ abstract class BaseEngine : QObject() {
 
     abstract fun executeCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
     abstract fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
-    abstract fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean
+    abstract fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean
 
     fun addCommandTab(name: String): CommandTab {
         changedTabsSignal.emit()

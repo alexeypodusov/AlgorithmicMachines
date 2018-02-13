@@ -39,10 +39,10 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QPushButton deleteCommand;
     public QSpacerItem verticalSpacer_2;
     public QVBoxLayout commandAndButtonslLayout;
+    public QSpacerItem horizontalSpacer;
     public QHBoxLayout buttonHorizontalLayout;
     public QPushButton backCommandButton;
     public QPushButton forwardCommandButton;
-    public QSpacerItem horizontalSpacer;
     public QVBoxLayout commandLayout;
     public QMenuBar menuBar;
     public QMenu menu;
@@ -159,6 +159,10 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         commandAndButtonslLayout.setMargin(11);
         commandAndButtonslLayout.setObjectName("commandAndButtonslLayout");
         commandAndButtonslLayout.setContentsMargins(0, -1, -1, -1);
+        horizontalSpacer = new QSpacerItem(40, 0, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
+
+        commandAndButtonslLayout.addItem(horizontalSpacer);
+
         buttonHorizontalLayout = new QHBoxLayout();
         buttonHorizontalLayout.setSpacing(6);
         buttonHorizontalLayout.setMargin(11);
@@ -175,10 +179,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         forwardCommandButton.setMaximumSize(new QSize(30, 16777215));
 
         buttonHorizontalLayout.addWidget(forwardCommandButton);
-
-        horizontalSpacer = new QSpacerItem(40, 20, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
-
-        buttonHorizontalLayout.addItem(horizontalSpacer);
 
 
         commandAndButtonslLayout.addLayout(buttonHorizontalLayout);

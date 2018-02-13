@@ -95,7 +95,7 @@ class MarkovEngine : BaseEngine() {
         return true
     }
 
-    override fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean {
+    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean {
         return true
     }
 

@@ -21,7 +21,7 @@ class MarkovCommandTab(name: String): CommandTab(name) {
         engine?.commandsChanged()
     }
 
-    fun insertCommand(number: Int) {
+    override fun insertCommand(number: Int) {
         if (commands.size < MAX_COMMANDS) {
             commands.filter { it.number >= number }.forEach { it.number++ }
             commands.add(number, MarkovCommand(number = number))
@@ -29,7 +29,7 @@ class MarkovCommandTab(name: String): CommandTab(name) {
         }
     }
 
-    fun removeCommand(number: Int) {
+    override fun removeCommand(number: Int) {
         if (commands.size != 1) {
             commands.filter { it.number > number }.forEach { it.number-- }
             commands.removeAt(number)

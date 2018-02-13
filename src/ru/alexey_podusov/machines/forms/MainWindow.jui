@@ -123,6 +123,19 @@
            <number>0</number>
           </property>
           <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="buttonHorizontalLayout">
             <property name="topMargin">
              <number>0</number>
@@ -140,7 +153,7 @@
               </property>
              </widget>
             </item>
-            <item>
+            <item alignment="Qt::AlignLeft">
              <widget class="QPushButton" name="forwardCommandButton">
               <property name="maximumSize">
                <size>
@@ -152,19 +165,6 @@
                <string/>
               </property>
              </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </item>

@@ -6,6 +6,7 @@ import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 import ru.alexey_podusov.machines.engines.CommandTab
+import ru.alexey_podusov.machines.engines.post.PostCommandTab
 
 abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     protected val lineItemWidgets = ArrayList<BaseLineItem>()
@@ -18,7 +19,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     protected var currentExecCommand = -1
 
     init {
-        layoutsManipulation()
+        initUI()
         updateCommands()
         clickedCommands.add(0)
     }
@@ -26,7 +27,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     abstract fun createStringCommand(): BaseLineItem
     abstract fun bindCommands()
 
-    private fun layoutsManipulation() {
+    private fun initUI() {
         scrollArea.widget().setLayout(scrollAreaLayout)
         lineItemWidgets.clear()
         scrollAreaLayout.addLayout(commandLinesLayout)
@@ -36,7 +37,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
     }
 
-    protected fun updateCommands() {
+    override fun updateCommands() {
         val commandSize = tab.getCommandsSize()
 
         while (lineItemWidgets.size > commandSize) {
@@ -101,6 +102,19 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
         if (currentExecCommand != -1) {
             lineItemWidgets.get(currentExecCommand).hideExecBorder()
         }
+    }
+
+
+    override fun onInsertBeforeClicked() {
+        tab.insertCommand(selectedCommand)
+    }
+
+    override fun onInsertAfterClicked() {
+        tab.insertCommand(selectedCommand + 1)
+    }
+
+    override fun onDeleteCommandClicked() {
+        tab.removeCommand(selectedCommand)
     }
 
     override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {

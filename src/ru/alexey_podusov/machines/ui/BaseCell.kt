@@ -32,6 +32,7 @@ abstract class BaseCell : QWidget() {
         }
 
     init {
+        elementWidget.setObjectName("cell")
         elementWidget.setFixedSize(WIDTH_CELL, HEIGHT_ELEMENT)
 
         label.setFixedSize(WIDTH_CELL, HEIGHT_LABEL)
@@ -44,7 +45,7 @@ abstract class BaseCell : QWidget() {
 
     abstract fun createElementWidget(): QWidget
 
-    fun setCurrent() {
+    open fun setCurrent() {
         label.setStyleSheet(CSS_COLOR_CURRENT)
         elementWidget.setStyleSheet(CSS_BORDER_CURRENT)
     }
