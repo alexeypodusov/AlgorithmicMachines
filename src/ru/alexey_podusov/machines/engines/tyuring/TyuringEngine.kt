@@ -156,7 +156,7 @@ class TyuringEngine : BaseEngine() {
         return false
     }
 
-    private fun getRowNumber(workareaTab: TyuringWorkareaTab, commandTab: TyuringCommandTab): Int {
+    fun getRowNumber(workareaTab: TyuringWorkareaTab, commandTab: TyuringCommandTab): Int {
 
         val cellValue = workareaTab.getCell(workareaTab.currentCarriage)
 

@@ -34,7 +34,7 @@ class MainWindow : QMainWindow() {
     private var engine: BaseEngine? = null
 
     private val commandTabWidget = CommandTabWidget()
-    private val workareaTabWidget = WorkareaTabWidget()
+    val workareaTabWidget = WorkareaTabWidget()
     private var savedFilePath = ""
 
 
@@ -55,6 +55,12 @@ class MainWindow : QMainWindow() {
         val SAVE_TITLE = "Сохранение"
         val CANCEL_BUTTON_TEXT = "Отмена"
         val CONTINUE_BUTTON_TEXT = "Продолжить"
+
+
+        fun getMainWindow(): MainWindow {
+            return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
+        }
+
     }
 
     init {

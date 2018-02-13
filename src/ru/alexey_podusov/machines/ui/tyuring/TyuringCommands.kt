@@ -1,15 +1,21 @@
 package ru.alexey_podusov.machines.ui.tyuring
 
 import com.trolltech.qt.core.Qt
-import com.trolltech.qt.gui.*
+import com.trolltech.qt.gui.QGridLayout
+import com.trolltech.qt.gui.QVBoxLayout
+import ru.alexey_podusov.machines.MainWindow.Companion.getMainWindow
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.tyuring.TyuringCommandTab
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommand
+import ru.alexey_podusov.machines.engines.tyuring.TyuringWorkareaTab
 import ru.alexey_podusov.machines.ui.BaseCommands
 
 class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
+    private val mainWindow = getMainWindow()
+    private var currentWorkareaTab = (mainWindow.workareaTabWidget.getCurrent() as TyuringCellsWorkarea).tab as TyuringWorkareaTab
+
     private val scrollAreaLayout = QVBoxLayout()
     private val commandsLayout = QGridLayout()
 
@@ -18,6 +24,9 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
 
     private var selectedRowWithoutHeader = 0
     private var selectedColumnWithoutHeader = 0
+
+    private var currentExecColumn = -1
+    private var currentExecRow = -1
 
     companion object {
         val HEIGHT_COLUMN_HEADER = 20
@@ -165,7 +174,20 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     }
 
     override fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {
+        if (statusPlay == BaseEngine.StatusPlay.STOPPED) {
+            deselectExecCommand()
+            currentExecColumn = -1
+            currentExecRow = -1
+        } else {
+            currentWorkareaTab = (mainWindow.workareaTabWidget.getCurrent() as TyuringCellsWorkarea).tab as TyuringWorkareaTab
 
+        }
+    }
+
+    private fun deselectExecCommand() {
+        if (currentExecColumn != -1 || currentExecRow != -1) {
+            (commandsLayout.itemAtPosition(currentExecRow + 1, currentExecColumn + 1).widget() as TyuringTableItem).hideExecBorder()
+        }
     }
 
     override fun onInsertAfterClicked() {
@@ -193,6 +215,15 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     }
 
     override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
+        deselectExecCommand()
+        var rowNum = (currentWorkareaTab.engine as TyuringEngine).getRowNumber(currentWorkareaTab, tab as TyuringCommandTab)
 
+        if (rowNum == -1) {
+            rowNum = rowsWithoutHeaderCount - 1
+        }
+
+        currentExecColumn = numberCommand
+        currentExecRow = rowNum
+        (commandsLayout.itemAtPosition(currentExecRow + 1, currentExecColumn + 1).widget() as TyuringTableItem).setExecBorder()
     }
 }

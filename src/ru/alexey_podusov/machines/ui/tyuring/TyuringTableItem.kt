@@ -5,13 +5,11 @@ import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.engines.post.PostCommandTab
-import ru.alexey_podusov.machines.engines.tyuring.TyuringCommandTab
 import ru.alexey_podusov.machines.engines.tyuring.TyuringCommandTab.Companion.MAX_STATES
-import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommand
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType
-import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.*
+import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.NULL_COMMAND
+import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.values
 
 class TyuringTableItem : QFrame() {
     private val mainLayout = QHBoxLayout()
@@ -29,12 +27,12 @@ class TyuringTableItem : QFrame() {
         val NEW_STATE_NUMBER_WIDHT = 30
 
         val SELECT_ITEM_CSS = """#commandItem{
-                                        padding-right: 5px;
+                                        margin-right: 5px;
                                         border:1px solid green;
                                         }"""
 
         val NOSELECT_ITEM_CSS = """#commandItem{
-                                        padding: 0px;
+                                        margin: 0px;
                                         border:0px solid green;
                                         }"""
     }
@@ -133,5 +131,13 @@ class TyuringTableItem : QFrame() {
             newState = -1
         }
         onEditedSignal.emit(TyuringCommand(numberColumn, numberRow, replace, tyuringCommandType, newState))
+    }
+
+    fun setExecBorder() {
+        setStyleSheet(SELECT_ITEM_CSS)
+    }
+
+    fun hideExecBorder() {
+        setStyleSheet(NOSELECT_ITEM_CSS)
     }
 }
