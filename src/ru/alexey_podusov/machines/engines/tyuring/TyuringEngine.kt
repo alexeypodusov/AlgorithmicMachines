@@ -172,7 +172,7 @@ class TyuringEngine : BaseEngine() {
 
         val command = commandTab.commands.get(rowNumber).get(numberCommand)
 
-        if (alphabet.indexOf(command.replace[0]) == -1) {
+        if (!command.replace.isEmpty() && alphabet.indexOf(command.replace[0]) == -1) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_SYMBOL_NOT_INCLUDER, ERROR_TITLE)
             return false
         }
