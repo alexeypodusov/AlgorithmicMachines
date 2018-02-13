@@ -30,13 +30,17 @@ class TyuringEngine : BaseEngine() {
     fun changeAlphabet(currentPositionCursor: Int, changedString: String) {
         var lastPositionCursor: Int? = null
         var newCursorPosition = 0
+        val oldAlphabet = alphabet
         if (changedString.length > alphabet.length) {
             lastPositionCursor = currentPositionCursor - (changedString.length - alphabet.length)
             var insertedString = changedString.substring(lastPositionCursor, currentPositionCursor)
             insertedString = deleteDublicateSymbols(insertedString)
             alphabet = getNewStringWithoutDublicateSymbols(alphabet, insertedString, lastPositionCursor)
 
-            newCursorPosition = lastPositionCursor + insertedString.length
+            val insertedLenght = alphabet.length - oldAlphabet.length
+            newCursorPosition = lastPositionCursor + insertedLenght
+
+            insertRowsInAllTabs(lastPositionCursor, insertedLenght)
 
         } else if (changedString.length < alphabet.length) {
             lastPositionCursor = currentPositionCursor + (alphabet.length - changedString.length)
@@ -44,8 +48,28 @@ class TyuringEngine : BaseEngine() {
             alphabet = changedString
 
             newCursorPosition = lastPositionCursor - deletedString.length
+
+            deleleteRowsInAllTabs(lastPositionCursor - 1, deletedString)
         }
         alphabetChangedSignal.emit(newCursorPosition)
+    }
+
+    private fun insertRowsInAllTabs(startPosition: Int, length: Int) {
+        for (commandTab in commandTabs) {
+            commandTab as TyuringCommandTab
+            for(i in 0 until length) {
+                commandTab.insertRow(startPosition + i)
+            }
+        }
+    }
+
+    private fun deleleteRowsInAllTabs(startPosition: Int, deletedString: String) {
+        for (commandTab in commandTabs) {
+            commandTab as TyuringCommandTab
+            for(i in 0 until deletedString.length) {
+                commandTab.deleteRow(startPosition - i, deletedString)
+            }
+        }
     }
 
     private fun getNewStringWithoutDublicateSymbols(oldString: String, changedString: String, startedPosition: Int): String {

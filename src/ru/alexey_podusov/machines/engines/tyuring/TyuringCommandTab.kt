@@ -51,6 +51,17 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
         engine?.commandsChanged()
     }
 
+    fun deleteRow(rowNum: Int, rowHeader: String) {
+        if (commands.size != 1 && rowNum != (commands.size - 1)) {
+            for (row in commands) {
+                row.filter { it.numberRow > rowNum }.forEach { it.numberRow-- }
+                row.filter { it.replace == rowHeader }
+                        .forEach { it.replace = "" }
+            }
+            commands.removeAt(rowNum)
+        }
+    }
+
     init {
         val row = ArrayList<TyuringCommand>()
         commands.add(row)
