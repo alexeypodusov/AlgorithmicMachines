@@ -27,7 +27,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     abstract fun createStringCommand(): BaseLineItem
     abstract fun bindCommands()
 
-    private fun initUI () {
+    private fun initUI() {
         scrollArea.widget().setLayout(scrollAreaLayout)
         lineItemWidgets.clear()
         scrollAreaLayout.addLayout(commandLinesLayout)
@@ -37,7 +37,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
     }
 
-    protected fun updateCommands() {
+    override fun updateCommands() {
         val commandSize = tab.getCommandsSize()
 
         while (lineItemWidgets.size > commandSize) {
@@ -107,17 +107,14 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
     override fun onInsertBeforeClicked() {
         tab.insertCommand(selectedCommand)
-        updateCommands()
     }
 
     override fun onInsertAfterClicked() {
         tab.insertCommand(selectedCommand + 1)
-        updateCommands()
     }
 
     override fun onDeleteCommandClicked() {
         tab.removeCommand(selectedCommand)
-        updateCommands()
     }
 
     override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {

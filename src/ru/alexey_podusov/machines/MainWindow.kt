@@ -104,10 +104,10 @@ class MainWindow : QMainWindow() {
         }
 
         commandTabWidget.setEngine(engine!!, factory)
-//
-//        commandTabWidget.connectCommands(this)
 
-//        onChangedStatusPlay(STOPPED)
+        commandTabWidget.connectCommands(this)
+
+        onChangedStatusPlay(STOPPED)
     }
 
     private fun connect() {
@@ -166,6 +166,9 @@ class MainWindow : QMainWindow() {
     }
 
     private fun updatedCommands() {
+        if(commandTabWidget.currentIndex() != commandTabWidget.count() - 1) {
+            commandTabWidget.getCurrent().updateCommands()
+        }
         isSavedChanges = false
     }
 

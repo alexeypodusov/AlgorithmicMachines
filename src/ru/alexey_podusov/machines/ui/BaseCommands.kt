@@ -27,7 +27,6 @@ abstract class BaseCommands(protected val tab: CommandTab) : QWidget() {
     abstract fun onForwardCommandClicked()
     abstract fun checkCurrentIndex()
     abstract fun onSetExecCommand(numberCommand: Int, prevCommand: Int)
-
-
+    abstract fun updateCommands()
 
 }

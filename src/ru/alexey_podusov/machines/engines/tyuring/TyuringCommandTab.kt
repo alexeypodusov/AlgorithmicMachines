@@ -1,6 +1,7 @@
 package ru.alexey_podusov.machines.engines.tyuring
 
 import com.google.gson.annotations.Expose
+import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommand
 
@@ -30,6 +31,7 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
                 row.value.filter { it.newState == columnNum }.forEach {  it.newState = -1}
                 row.value.removeAt(columnNum)
             }
+            engine?.commandsChanged()
         }
     }
 
@@ -62,10 +64,17 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
         }
     }
 
-    init {
-        val row = ArrayList<TyuringCommand>()
-        commands.add(row)
-        insertCommand(0)
+    override fun setMainEngine(engine: BaseEngine) {
+        super.setMainEngine(engine)
+        engine as TyuringEngine
+        val alphabet = engine.alphabet
+        if (commands.size == 0) {
+            for (i in 0..alphabet.length) { // + 1 строка, которая не входит в алфавит(пробел)
+                val row = ArrayList<TyuringCommand>()
+                commands.add(row)
+            }
+            insertCommand(0)
+        }
     }
 
     fun getColumnsCount(): Int {

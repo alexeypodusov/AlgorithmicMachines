@@ -38,7 +38,7 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
         scrollAreaLayout.setAlignment(commandsLayout, Qt.AlignmentFlag.AlignTop)
     }
 
-    protected fun updateCommands() {
+    override fun updateCommands() {
         tab as TyuringCommandTab
         val rowCount = tab.getRowsCount()
         val columnCount = tab.getColumnsCount()
@@ -105,7 +105,7 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
         updateSelectingCommand(rowWithoutHeader, columnWithoutHeader)
     }
 
-    protected fun updateSelectingCommand(rowWithoutHeader: Int, columnWithoutHeader: Int) {
+    private fun updateSelectingCommand(rowWithoutHeader: Int, columnWithoutHeader: Int) {
         //убираем старое выделение
         if (selectedRowWithoutHeader < rowsWithoutHeaderCount) {
             val headerWidget = commandsLayout.itemAtPosition(selectedRowWithoutHeader + 1, 0)
@@ -169,18 +169,15 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     }
 
     override fun onInsertAfterClicked() {
-        tab .insertCommand(selectedColumnWithoutHeader + 1)
-        updateCommands()
+        tab.insertCommand(selectedColumnWithoutHeader + 1)
     }
 
     override fun onInsertBeforeClicked() {
         tab.insertCommand(selectedColumnWithoutHeader)
-        updateCommands()
     }
 
     override fun onDeleteCommandClicked() {
         (tab as TyuringCommandTab).removeCommand(selectedColumnWithoutHeader)
-        updateCommands()
     }
 
     override fun onBackCommandClicked() {
