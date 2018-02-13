@@ -59,6 +59,7 @@ class TyuringEngine : BaseEngine() {
 
             newCursorPosition = lastPositionCursor - deletedString.length
 
+            deleteFromWorkareaTabs(deletedString)
             deleleteRowsInAllTabs(lastPositionCursor - 1, deletedString)
         }
         alphabetChangedSignal.emit(newCursorPosition)
@@ -73,12 +74,22 @@ class TyuringEngine : BaseEngine() {
         }
     }
 
+    private fun deleteFromWorkareaTabs(deletedString: String) {
+        if (!deletedString.isEmpty()) {
+            for (workareaTab in workareaTabs) {
+                (workareaTab as TyuringWorkareaTab).deleteSymbolFromCells(deletedString)
+            }
+            onWorkareaChanged()
+        }
+    }
+
     private fun deleleteRowsInAllTabs(startPosition: Int, deletedString: String) {
         for (commandTab in commandTabs) {
             commandTab as TyuringCommandTab
             for (i in 0 until deletedString.length) {
                 commandTab.deleteRow(startPosition - i, deletedString)
             }
+            commandsChanged()
         }
     }
 

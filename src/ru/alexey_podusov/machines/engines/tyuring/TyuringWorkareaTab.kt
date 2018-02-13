@@ -31,4 +31,10 @@ class TyuringWorkareaTab(name: String): CellsWorkareaTab(name) {
         return ""
     }
 
+    fun deleteSymbolFromCells(symbol: String) {
+        for ((i,cell) in cells.withIndex()) {
+            if (cell == symbol) cells.set(i, "")
+        }
+    }
+
 }
