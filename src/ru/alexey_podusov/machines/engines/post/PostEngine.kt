@@ -70,7 +70,7 @@ class PostEngine : BaseEngine() {
 
         executeNumberCommandList.add(comTab.commands.get(numberCommand).transition)
 
-        if (!checkValidationCommand(numberCommand, comTab)) return false
+        if (!checkValidationCommand(numberCommand, comTab, workTab)) return false
 
         when (comTab.commands.get(numberCommand).commandType) {
             ADD_MARK -> {
@@ -132,7 +132,7 @@ class PostEngine : BaseEngine() {
         val comTab = commandTabs.get(currentCommandTab) as PostCommandTab
         val workTab = workareaTabs.get(currentWorkareaTab) as PostWorkareaTab
 
-        if (!checkValidationCommand(numberCommand, comTab)) {
+        if (!checkValidationCommand(numberCommand, comTab, workTab)) {
             return false
         }
 
@@ -176,20 +176,20 @@ class PostEngine : BaseEngine() {
         return true
     }
 
-    override fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean {
-        tab as PostCommandTab
-        if (tab.commands.get(numberCommand).commandType == NULL_COMMAND) {
+    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean {
+        commandTab as PostCommandTab
+        if (commandTab.commands.get(numberCommand).commandType == NULL_COMMAND) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_NULL_TYPE, ERROR_TITLE)
             return false
         }
 
-        if (tab.commands.get(numberCommand).commandType != STOP) {
-            if (!checkTransitionNumber(tab.commands.get(numberCommand).transition, tab.getCommandsSize())) {
+        if (commandTab.commands.get(numberCommand).commandType != STOP) {
+            if (!checkTransitionNumber(commandTab.commands.get(numberCommand).transition, commandTab.getCommandsSize())) {
                 return false
             }
 
-            if (tab.commands.get(numberCommand).commandType == CHECK_MARK) {
-                if (!checkTransitionNumber(tab.commands.get(numberCommand).secondTransition, tab.getCommandsSize())) {
+            if (commandTab.commands.get(numberCommand).commandType == CHECK_MARK) {
+                if (!checkTransitionNumber(commandTab.commands.get(numberCommand).secondTransition, commandTab.getCommandsSize())) {
                     return false
                 }
             }

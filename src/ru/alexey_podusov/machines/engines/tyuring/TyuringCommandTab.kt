@@ -17,7 +17,7 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
         if (columnNum < MAX_STATES) {
             for (row in commands.withIndex()) {
                 row.value.filter { it.numberColumn >= columnNum }.forEach { it.numberColumn++ }
-                row.value.filter { it.newState >= columnNum }.forEach {  it.newState++ }
+                row.value.filter { it.newState - 1 >= columnNum }.forEach {  it.newState++ }
                 row.value.add(columnNum, TyuringCommand(numberColumn = columnNum, numberRow = row.index))
             }
             engine?.commandsChanged()
@@ -28,7 +28,7 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
         if (commands.get(0).size != 1) {
             for (row in commands.withIndex()) {
                 row.value.filter { it.numberColumn > columnNum }.forEach { it.numberColumn-- }
-                row.value.filter { it.newState == columnNum }.forEach {  it.newState = -1}
+                row.value.filter { it.newState - 1 == columnNum }.forEach {  it.newState = -1}
                 row.value.removeAt(columnNum)
             }
             engine?.commandsChanged()
