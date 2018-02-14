@@ -25,6 +25,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QAction actionPost;
     public QAction actionTyuring;
     public QAction actionMarkov;
+    public QAction actionPreferences;
     public QWidget centralWidget;
     public QVBoxLayout verticalLayout_2;
     public QVBoxLayout mainVerticalLayout;
@@ -48,6 +49,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QMenu menu;
     public QMenu menu_2;
     public QMenu menu_3;
+    public QMenu menu_4;
     public QStatusBar statusBar;
     public QToolBar mainToolBar;
 
@@ -83,6 +85,8 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionTyuring.setObjectName("actionTyuring");
         actionMarkov = new QAction(MainWindow);
         actionMarkov.setObjectName("actionMarkov");
+        actionPreferences = new QAction(MainWindow);
+        actionPreferences.setObjectName("actionPreferences");
         centralWidget = new QWidget(MainWindow);
         centralWidget.setObjectName("centralWidget");
         verticalLayout_2 = new QVBoxLayout(centralWidget);
@@ -209,6 +213,8 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         menu_2.setObjectName("menu_2");
         menu_3 = new QMenu(menuBar);
         menu_3.setObjectName("menu_3");
+        menu_4 = new QMenu(menuBar);
+        menu_4.setObjectName("menu_4");
         MainWindow.setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar.setObjectName("statusBar");
@@ -220,6 +226,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         menuBar.addAction(menu.menuAction());
         menuBar.addAction(menu_2.menuAction());
         menuBar.addAction(menu_3.menuAction());
+        menuBar.addAction(menu_4.menuAction());
         menu.addAction(actionNew);
         menu.addAction(actionOpen);
         menu.addSeparator();
@@ -235,6 +242,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         menu_3.addAction(actionReverseStep);
         menu_3.addAction(actionPause);
         menu_3.addAction(actionStop);
+        menu_4.addAction(actionPreferences);
         retranslateUi(MainWindow);
 
         MainWindow.connectSlotsByName();
@@ -256,6 +264,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionPost.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041c\u0430\u0448\u0438\u043d\u0430 \u041f\u043e\u0441\u0442\u0430", null));
         actionTyuring.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041c\u0430\u0448\u0438\u043d\u0430 \u0422\u044c\u044e\u0440\u0438\u043d\u0433\u0430", null));
         actionMarkov.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u044b\u0435 \u0430\u043b\u0433\u043e\u0440\u0438\u0442\u043c\u044b \u041c\u0430\u0440\u043a\u043e\u0432\u0430", null));
+        actionPreferences.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", null));
         labelTask.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0423\u0441\u043b\u043e\u0432\u0438\u0435", null));
         insertBeforeButton.setText("");
         insertAfterButton.setText("");
@@ -265,6 +274,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         menu.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0424\u0430\u0439\u043b", null));
         menu_2.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041c\u0430\u0448\u0438\u043d\u0430", null));
         menu_3.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0412\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u0435", null));
+        menu_4.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", null));
     } // retranslateUi
 
 }
