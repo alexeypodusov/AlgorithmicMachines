@@ -204,6 +204,7 @@ class MainWindow : QMainWindow() {
                 val engineJson = FileUtils.read(filepath)
                 factory = createFactory(currentMachine)
                 engine = factory.readEngineFromJson(engineJson)
+                savedFilePath = filepath
                 initMachine()
             } catch (e: Exception) {
                 QMessageBox.warning(this, ERROR_TITLE, READ_ERROR)

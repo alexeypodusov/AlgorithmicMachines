@@ -70,7 +70,7 @@ class PostEngine : BaseEngine() {
 
         executeNumberCommandList.add(comTab.commands.get(numberCommand).transition)
 
-        if (!checkValidationCommand(numberCommand, comTab, workTab)) return false
+        if (!checkValidationCommand(numberCommand, comTab, workTab, false)) return false
 
         when (comTab.commands.get(numberCommand).commandType) {
             ADD_MARK -> {
@@ -132,7 +132,7 @@ class PostEngine : BaseEngine() {
         val comTab = commandTabs.get(currentCommandTab) as PostCommandTab
         val workTab = workareaTabs.get(currentWorkareaTab) as PostWorkareaTab
 
-        if (!checkValidationCommand(numberCommand, comTab, workTab)) {
+        if (!checkValidationCommand(numberCommand, comTab, workTab, true)) {
             return false
         }
 
@@ -176,7 +176,7 @@ class PostEngine : BaseEngine() {
         return true
     }
 
-    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean {
+    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean {
         commandTab as PostCommandTab
         if (commandTab.commands.get(numberCommand).commandType == NULL_COMMAND) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_NULL_TYPE, ERROR_TITLE)

@@ -51,7 +51,7 @@ class MarkovEngine : BaseEngine() {
         var replacement = command.replacement
         if (command.replacement.length >= symbolEnd.length &&
                 command.replacement.takeLast(symbolEnd.length) == symbolEnd) {
-            replacement = command.replacement.substring(0..(command.replacement.length - symbolEnd.length - 1))
+            replacement = command.replacement.substring(0..(command.replacement.length - symbolEnd .length - 1))
             isFinish = true
         }
 
@@ -94,7 +94,7 @@ class MarkovEngine : BaseEngine() {
         return true
     }
 
-    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean {
+    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean {
         return true
     }
 

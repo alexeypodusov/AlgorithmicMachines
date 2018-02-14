@@ -50,7 +50,7 @@ abstract class BaseEngine : QObject() {
 
     abstract fun executeCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
     abstract fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
-    abstract fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean
+    abstract fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean
 
     fun addCommandTab(name: String): CommandTab {
         changedTabsSignal.emit()
@@ -98,11 +98,16 @@ abstract class BaseEngine : QObject() {
         workAreaChangedSignal.emit()
     }
 
+    protected open fun clearExecutingList() {
+        executeNumberCommandList.clear()
+        executeNumberCommandList.add(0)
+    }
+
+
     fun play(currentCommandTab: Int, currentWorkareaTab: Int) {
         when (statusPlay) {
             StatusPlay.STOPPED -> {
-                executeNumberCommandList.clear()
-                executeNumberCommandList.add(0)
+                clearExecutingList()
                 statusPlay = StatusPlay.PLAYING
                 emitSetExecCommand()
             }
@@ -130,8 +135,7 @@ abstract class BaseEngine : QObject() {
     fun playStep(currentCommandTab: Int, currentWorkareaTab: Int) {
         when (statusPlay) {
             StatusPlay.STOPPED -> {
-                executeNumberCommandList.clear()
-                executeNumberCommandList.add(0)
+                clearExecutingList()
                 statusPlay = StatusPlay.ON_PAUSE
                 emitSetExecCommand()
                 return
