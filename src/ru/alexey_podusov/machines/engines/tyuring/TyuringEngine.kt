@@ -250,6 +250,12 @@ class TyuringEngine : BaseEngine() {
         return true
     }
 
+    override fun clearExecutingList() {
+        super.clearExecutingList()
+        executedRowList.clear()
+    }
+
+
     override fun createCommandTab(name: String): CommandTab {
         val tab = TyuringCommandTab(name)
         tab.setMainEngine(this)
