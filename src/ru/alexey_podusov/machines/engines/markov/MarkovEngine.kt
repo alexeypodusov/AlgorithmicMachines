@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
+import ru.alexey_podusov.machines.utils.UserPreferences
 
 class MarkovEngine : BaseEngine() {
 
@@ -11,10 +12,6 @@ class MarkovEngine : BaseEngine() {
 
     data class MarkovCommand(@Expose var number: Int, @Expose var sample: String = "",
                              @Expose var replacement: String = "", @Expose var comment: String = "")
-
-    companion object {
-        val SYMBOL_END = ".!"
-    }
 
     init {
         addCommandTab("test")
@@ -39,6 +36,8 @@ class MarkovEngine : BaseEngine() {
         val comTab = commandTabs.get(currentCommandTab) as MarkovCommandTab
         val workTab = workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab
 
+        val symbolEnd = UserPreferences.instance.finalSymbolMarkov
+
         val command = comTab.commands.get(numberCommand)
 
         var isFinish = false
@@ -50,9 +49,9 @@ class MarkovEngine : BaseEngine() {
         workTab.historyString.add(workTab.string)
 
         var replacement = command.replacement
-        if (command.replacement.length >= SYMBOL_END.length &&
-                command.replacement.takeLast(SYMBOL_END.length) == SYMBOL_END) {
-            replacement = command.replacement.substring(0..(command.replacement.length - SYMBOL_END.length - 1))
+        if (command.replacement.length >= symbolEnd.length &&
+                command.replacement.takeLast(symbolEnd.length) == symbolEnd) {
+            replacement = command.replacement.substring(0..(command.replacement.length - symbolEnd.length - 1))
             isFinish = true
         }
 

@@ -11,11 +11,13 @@ import ru.alexey_podusov.machines.factories.MarkovFactory
 import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.factories.TyuringFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
+import ru.alexey_podusov.machines.ui.PreferencesDialog
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
 import ru.alexey_podusov.machines.ui.tyuring.TyuringAlphabetWidget
 import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
+import java.util.prefs.Preferences
 
 class MainWindow : QMainWindow() {
 
@@ -141,6 +143,12 @@ class MainWindow : QMainWindow() {
         ui.actionPost.triggered.connect(this, ::actionPostTriggered)
         ui.actionMarkov.triggered.connect(this, ::actionMarkovTriggered)
         ui.actionTyuring.triggered.connect(this, ::actionTyuringTriggered)
+
+        ui.actionPreferences.triggered.connect(this, ::actioPreferencesTriggered)
+    }
+
+    private fun actioPreferencesTriggered(checked: Boolean) {
+        PreferencesDialog(this).show()
     }
 
     private fun actionPostTriggered(checked: Boolean) {
