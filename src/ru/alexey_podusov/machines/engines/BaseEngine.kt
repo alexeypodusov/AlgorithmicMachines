@@ -3,6 +3,7 @@ package ru.alexey_podusov.machines.engines
 import com.google.gson.annotations.Expose
 import com.trolltech.qt.core.QObject
 import ru.alexey_podusov.machines.connect
+import ru.alexey_podusov.machines.utils.UserPreferences
 
 abstract class BaseEngine : QObject() {
     @Expose
@@ -36,8 +37,6 @@ abstract class BaseEngine : QObject() {
     val changedTabsSignal = Signal0()
     val workAreaChangedSignal = Signal0()
     val commandsChangedSignal = Signal0()
-
-    var speedTimer = 500
 
     var statusPlay: StatusPlay = StatusPlay.STOPPED
         set(value) {
@@ -114,7 +113,7 @@ abstract class BaseEngine : QObject() {
                 statusPlay = StatusPlay.PLAYING
             }
         }
-        timer.start(speedTimer)
+        timer.start(UserPreferences.instance.speed.milliseconds)
     }
 
     private fun executeWithTimer(currentCommandTab: Int, currentWorkareaTab: Int) {
@@ -123,7 +122,7 @@ abstract class BaseEngine : QObject() {
         emitSetExecCommand()
 
         if (executeCommand(executeNumberCommandList.last(), currentCommandTab, currentWorkareaTab)) {
-            timer.start(speedTimer)
+            timer.start(UserPreferences.instance.speed.milliseconds)
             emitSetExecCommand()
         } else statusPlay = StatusPlay.STOPPED
     }
