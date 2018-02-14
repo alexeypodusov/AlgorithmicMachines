@@ -50,7 +50,7 @@ abstract class BaseEngine : QObject() {
 
     abstract fun executeCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
     abstract fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
-    abstract fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean
+    abstract fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean
 
     fun addCommandTab(name: String): CommandTab {
         changedTabsSignal.emit()

@@ -30,6 +30,8 @@ class TyuringEngine : BaseEngine() {
     @Expose
     var alphabet = ""
 
+    private val executedRowList = ArrayList<Int>()
+
     val alphabetChangedSignal = Signal1<Int>()
 
     init {
@@ -117,10 +119,14 @@ class TyuringEngine : BaseEngine() {
         val comTab = commandTabs.get(currentCommandTab) as TyuringCommandTab
         val workTab = workareaTabs.get(currentWorkareaTab) as TyuringWorkareaTab
 
-        if (!checkValidationCommand(numberCommand, comTab, workTab)) return false
+        if (!checkValidationCommand(numberCommand, comTab, workTab, false)) return false
+        val rowNum = getRowNumber(workTab, comTab)
 
-        val command = comTab.commands.get(getRowNumber(workTab, comTab)).get(numberCommand)
+
+        val command = comTab.commands.get(rowNum).get(numberCommand)
         workTab.changeValueCell(workTab.currentCarriage, command.replace)
+
+        executedRowList.add(rowNum)
 
         when (command.commandType) {
             LEFT_STEP -> {
@@ -153,7 +159,42 @@ class TyuringEngine : BaseEngine() {
     }
 
     override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
-        return false
+
+        val comTab = commandTabs.get(currentCommandTab) as TyuringCommandTab
+        val workTab = workareaTabs.get(currentWorkareaTab) as TyuringWorkareaTab
+
+        if (!checkValidationCommand(numberCommand, comTab, workTab, true)) return false
+        val command = comTab.commands.get(executedRowList.last()).get(numberCommand)
+
+        var replaceString: String = ""
+        if (executedRowList.last() != comTab.commands.size - 1) {
+            replaceString = Character.toString(alphabet[executedRowList.last()])
+        }
+
+        when (command.commandType) {
+            LEFT_STEP -> {
+                if (isInTape(workTab.currentCarriage + 1)) {
+                    workTab.currentCarriage++
+                } else {
+                    sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
+                    return false
+                }
+            }
+
+            RIGHT_STEP -> {
+                if (isInTape(workTab.currentCarriage - 1)) {
+                    workTab.currentCarriage--
+                } else {
+                    sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
+                    return false
+                }
+            }
+        }
+
+        workTab.changeValueCell(workTab.currentCarriage, replaceString)
+        
+        executedRowList.removeAt(executedRowList.lastIndex)
+        return true
     }
 
     fun getRowNumber(workareaTab: TyuringWorkareaTab, commandTab: TyuringCommandTab): Int {
@@ -168,13 +209,16 @@ class TyuringEngine : BaseEngine() {
         }
     }
 
-    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab): Boolean {
+    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean {
         commandTab as TyuringCommandTab
         workareaTab as TyuringWorkareaTab
 
         var rowNumber = 0
-        val cellValue = workareaTab.getCell(workareaTab.currentCarriage)
-        rowNumber = getRowNumber(workareaTab, commandTab)
+        if (!isReverse) {
+            rowNumber = getRowNumber(workareaTab, commandTab)
+        } else {
+            rowNumber = executedRowList.last()
+        }
 
         if (rowNumber == -1) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_SYMBOL_NOT_INCLUDER, ERROR_TITLE)
