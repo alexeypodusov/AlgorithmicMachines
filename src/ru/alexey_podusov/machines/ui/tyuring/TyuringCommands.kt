@@ -224,6 +224,8 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
 
         currentExecColumn = numberCommand
         currentExecRow = rowNum
-        (commandsLayout.itemAtPosition(currentExecRow + 1, currentExecColumn + 1).widget() as TyuringTableItem).setExecBorder()
+        val widget = (commandsLayout.itemAtPosition(currentExecRow + 1, currentExecColumn + 1).widget() as TyuringTableItem)
+        widget.setExecBorder()
+        scrollArea.ensureWidgetVisible(widget)
     }
 }
