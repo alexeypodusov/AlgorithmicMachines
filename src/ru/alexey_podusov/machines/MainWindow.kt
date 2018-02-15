@@ -39,6 +39,7 @@ class MainWindow : QMainWindow() {
     val workareaTabWidget = WorkareaTabWidget()
     private var savedFilePath = ""
 
+    private val countStepLabel = QLabel(STATUS_BAR_TEXT + 0)
 
     private var isSavedChanges = true
         set(value) {
@@ -57,6 +58,8 @@ class MainWindow : QMainWindow() {
         val SAVE_TITLE = "Сохранение"
         val CANCEL_BUTTON_TEXT = "Отмена"
         val CONTINUE_BUTTON_TEXT = "Продолжить"
+
+        val STATUS_BAR_TEXT = "Шагов: "
 
 
         fun getMainWindow(): MainWindow {
@@ -86,6 +89,8 @@ class MainWindow : QMainWindow() {
         ui.commandLayout.addWidget(commandTabWidget)
         ui.workAreaLayout.addWidget(workareaTabWidget)
         changeEnableCommandButtons(false, false)
+
+        statusBar().addWidget(countStepLabel)
     }
 
     private fun initMachine() {
@@ -187,6 +192,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
+        countStepLabel.setText(STATUS_BAR_TEXT + (engine?.executeNumberCommandList!!.size - 1))
         commandTabWidget.getCurrent().onSetExecCommand(numberCommand, prevCommand)
     }
 
@@ -326,7 +332,10 @@ class MainWindow : QMainWindow() {
     private fun onReceiveMessage(messageType: BaseEngine.MessageType, text: String, title: String) {
         when (messageType) {
             MessageType.MESSAGE_ERROR -> QMessageBox.warning(this, title, text)
-            MessageType.MESSAGE_INFO -> QMessageBox.information(this, title, text)
+            MessageType.MESSAGE_INFO -> {
+                countStepLabel.setText(STATUS_BAR_TEXT + (engine?.executeNumberCommandList!!.size - 1))
+                QMessageBox.information(this, title, text)
+            }
         }
     }
 
@@ -351,7 +360,6 @@ class MainWindow : QMainWindow() {
             }
             STOPPED -> {
                 asList(commandTabWidget, workareaTabWidget).map { it.tabBar.isEnabled = true }
-
                 ui.actionPlay.isEnabled = true
                 ui.actionPause.isEnabled = false
                 ui.actionStop.isEnabled = false

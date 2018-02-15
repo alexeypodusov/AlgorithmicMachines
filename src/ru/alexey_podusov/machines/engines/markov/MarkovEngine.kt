@@ -70,16 +70,18 @@ class MarkovEngine : BaseEngine() {
             isReplaced = true
         }
 
+        executeNumberCommandList.add(numberCommand + 1)
+
         if (isFinish || (!isReplaced && (numberCommand + 1 >= comTab.commands.size))) {
-            sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT, SUCCES_TITLE)
-            statusPlay = StatusPlay.STOPPED
+            succesExecuted()
         }
 
         if (isReplaced) {
+            executeNumberCommandList.removeAt(executeNumberCommandList.lastIndex)
             executeNumberCommandList.add(0)
             isReplaced = false
         } else {
-            executeNumberCommandList.add(numberCommand + 1)
+
         }
 
         return true

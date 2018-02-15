@@ -15,7 +15,7 @@ abstract class BaseEngine : QObject() {
 
     companion object {
         val SUCCES_TITLE = "Конец программы"
-        val SUCCES_TEXT = "Конец программы"
+        val SUCCES_TEXT = "Конец программы.\nКоличество шагов: "
 
         val ERROR_TITLE = "Ошибка"
     }
@@ -44,7 +44,7 @@ abstract class BaseEngine : QObject() {
             changedStatusPlaySignal.emit(statusPlay)
         }
 
-    protected val executeNumberCommandList = ArrayList<Int>()
+    val executeNumberCommandList = ArrayList<Int>()
 
     private val timer = ExecuteTimer()
 
@@ -56,6 +56,7 @@ abstract class BaseEngine : QObject() {
         changedTabsSignal.emit()
         return createCommandTab(name)
     }
+
     fun addWorkareaTab(name: String): WorkareaTab {
         changedTabsSignal.emit()
         return createWorkareaTab(name)
@@ -174,6 +175,11 @@ abstract class BaseEngine : QObject() {
 
             setExecCommandSignal.emit(executeNumberCommandList.last(), indexPrevCommand)
         }
+    }
+
+    protected fun succesExecuted() {
+        sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT + (executeNumberCommandList.size - 1), SUCCES_TITLE)
+        statusPlay = StatusPlay.STOPPED
     }
 
     internal fun commandsChanged() {
