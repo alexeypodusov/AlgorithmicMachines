@@ -9,6 +9,8 @@ class PostWorkareaTab(name: String) : CellsWorkareaTab(name) {
     @Expose
     var cells = ArrayList<Boolean>()
 
+    var savedCells: ArrayList<Boolean>? = null
+
     init {
         for (i in 0 until COUNT_CELLS) {
             cells.add(false)
@@ -30,5 +32,30 @@ class PostWorkareaTab(name: String) : CellsWorkareaTab(name) {
             cells.set(cellIndex, cellValue)
             engine?.onWorkareaChanged()
         }
+    }
+
+    override fun saveWorkarea() {
+        super.saveWorkarea()
+        savedCells?.clear()
+        savedCells = ArrayList()
+        for (cell in cells) {
+            savedCells?.add(cell)
+        }
+        engine?.onWorkareaChanged()
+    }
+
+    override fun restoreWorkarea() {
+        super.restoreWorkarea()
+        if (savedCells != null) {
+            cells.clear()
+            for (savedCell in savedCells!!) {
+                cells.add(savedCell)
+            }
+            engine?.onWorkareaChanged()
+        }
+    }
+
+    override fun savedIsNull(): Boolean {
+        return savedCells == null
     }
 }

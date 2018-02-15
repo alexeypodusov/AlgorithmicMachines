@@ -53,6 +53,7 @@ class TyuringCellsWorkarea(tab: TyuringWorkareaTab) : BaseCellsWorkarea(tab) {
     }
 
     override fun updateWorkArea() {
+        super.updateWorkArea()
         tab as TyuringWorkareaTab
         for ((i, widget) in cellWidgets.withIndex()) {
             val cellWidget = widget as TyuringCell

@@ -19,6 +19,7 @@ class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
     }
 
     override fun updateWorkArea() {
+        super.updateWorkArea()
         tab as PostWorkareaTab
         for ((i, widget) in cellWidgets.withIndex()) {
             val cellWidget = widget as PostCell

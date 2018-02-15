@@ -22,11 +22,20 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     init {
         ui.setupUi(this)
         ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        ui.restoreButton.clicked.connect(this, ::onRestoreButtonClicked)
         initCells()
     }
 
+    override fun updateWorkArea() {
+        ui.restoreButton.isEnabled = !tab.savedIsNull()
+    }
+
     protected abstract fun createCell(): BaseCell
-    protected abstract fun onCellChanched(numberCell: Int, cellParameter:Any)
+    protected abstract fun onCellChanched(numberCell: Int, cellParameter: Any)
+
+    private fun onRestoreButtonClicked() {
+        tab.restoreWorkarea()
+    }
 
     protected fun onLeftButtonClicked() {
         (tab as CellsWorkareaTab).currentCarriage--
