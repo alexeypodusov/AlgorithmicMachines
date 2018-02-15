@@ -1,9 +1,7 @@
 package ru.alexey_podusov.machines.ui.markov
 
-import com.trolltech.qt.gui.QHBoxLayout
-import com.trolltech.qt.gui.QLabel
-import com.trolltech.qt.gui.QLineEdit
-import com.trolltech.qt.gui.QVBoxLayout
+import com.trolltech.qt.core.Qt
+import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.markov.MarkovWorkareaTab
 import ru.alexey_podusov.machines.ui.BaseWorkarea
@@ -11,10 +9,14 @@ import ru.alexey_podusov.machines.ui.BaseWorkarea
 class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
     private val mainLayout = QVBoxLayout()
     private val stringLayout = QHBoxLayout()
+    private val buttonLayout = QHBoxLayout()
     private val editText = QLineEdit()
+    private val restoreButton = QPushButton(RESTORE_BUTTON_TEXT)
 
     companion object {
         val WORKSTRING_TITLE = "Рабочая строка:"
+        val RESTORE_BUTTON_TEXT = "Восстановить строку"
+        val WIDTH_RESTORE_BUTTON = 180
         val MAX_LENGHT = 10000
     }
 
@@ -28,8 +30,19 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
         stringLayout.addWidget(QLabel(WORKSTRING_TITLE))
         stringLayout.addWidget(editText)
         mainLayout.addLayout(stringLayout)
+
+        buttonLayout.addWidget(restoreButton)
+        restoreButton.setFixedWidth(WIDTH_RESTORE_BUTTON)
+        restoreButton.clicked.connect(this, ::onRestoreButtonClicked)
+        buttonLayout.setAlignment(restoreButton, Qt.AlignmentFlag.AlignLeft)
+        mainLayout.addLayout(buttonLayout)
+
         setLayout(mainLayout)
         updateWorkArea()
+    }
+
+    private fun onRestoreButtonClicked() {
+        tab.restoreWorkarea()
     }
 
     override fun updateSizeWidget() {
@@ -37,6 +50,7 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
     }
 
     override fun updateWorkArea() {
+        restoreButton.isEnabled = !tab.savedIsNull()
         editText.setText((tab as MarkovWorkareaTab).string)
     }
 

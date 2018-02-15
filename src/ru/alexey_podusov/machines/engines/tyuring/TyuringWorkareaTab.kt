@@ -40,14 +40,17 @@ class TyuringWorkareaTab(name: String) : CellsWorkareaTab(name) {
     }
 
     override fun saveWorkarea() {
+        super.saveWorkarea()
         savedCells?.clear()
         savedCells = ArrayList()
         for (cell in cells) {
             savedCells!!.add(cell)
         }
+        engine?.onWorkareaChanged()
     }
 
     override fun restoreWorkarea() {
+        super.restoreWorkarea()
         if (savedCells != null) {
             cells.clear()
             for (savedCell in savedCells!!) {
@@ -55,6 +58,10 @@ class TyuringWorkareaTab(name: String) : CellsWorkareaTab(name) {
             }
             engine?.onWorkareaChanged()
         }
+    }
+
+    override fun savedIsNull(): Boolean {
+        return savedCells == null
     }
 
 }

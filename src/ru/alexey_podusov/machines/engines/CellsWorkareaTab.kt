@@ -12,6 +12,8 @@ abstract class CellsWorkareaTab(name: String) : WorkareaTab(name) {
             }
         }
 
+    var savedCurrentCarriage: Int = 0
+
     companion object {
         val COUNT_CELLS = 2000
         fun isInTape(number: Int): Boolean = number in -((COUNT_CELLS / 2) - 1)..((COUNT_CELLS / 2) - 1)
@@ -19,6 +21,14 @@ abstract class CellsWorkareaTab(name: String) : WorkareaTab(name) {
 
     private fun isIndexInTape(index: Int): Boolean {
         return index in 0..COUNT_CELLS
+    }
+
+    override fun saveWorkarea() {
+        savedCurrentCarriage = currentCarriage
+    }
+
+    override fun restoreWorkarea() {
+        currentCarriage = savedCurrentCarriage
     }
 
     internal fun getIndexByNum(num: Int): Int = num + ((COUNT_CELLS / 2) - 1)

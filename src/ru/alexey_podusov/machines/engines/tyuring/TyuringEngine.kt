@@ -250,8 +250,8 @@ class TyuringEngine : BaseEngine() {
         return true
     }
 
-    override fun clearExecutingList() {
-        super.clearExecutingList()
+    override fun prepareExecuting(currentWorkareaTab: Int) {
+        super.prepareExecuting(currentWorkareaTab)
         executedRowList.clear()
     }
 

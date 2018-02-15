@@ -8,7 +8,7 @@ import ru.alexey_podusov.machines.ui.BaseWorkarea
 class WorkareaTabWidget: EngineTabWidget() {
     companion object {
         val DEFAULT_WORKAREA_TAB_NAME = "Лента"
-        val MAX_HEIGHT = 140
+        val MAX_HEIGHT = 150
     }
 
     init {

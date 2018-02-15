@@ -18,11 +18,17 @@ class MarkovWorkareaTab(name: String) : WorkareaTab(name) {
 
     override fun saveWorkarea() {
         savedString = string
+        engine?.onWorkareaChanged()
     }
 
     override fun restoreWorkarea() {
         if (savedString != null) {
             string = savedString!!
+            engine?.onWorkareaChanged()
         }
+    }
+
+    override fun savedIsNull(): Boolean {
+        return (savedString == null)
     }
 }

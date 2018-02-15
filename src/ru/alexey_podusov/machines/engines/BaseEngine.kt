@@ -99,16 +99,17 @@ abstract class BaseEngine : QObject() {
         workAreaChangedSignal.emit()
     }
 
-    protected open fun clearExecutingList() {
+    protected open fun prepareExecuting(currentWorkareaTab: Int) {
         executeNumberCommandList.clear()
         executeNumberCommandList.add(0)
+        workareaTabs.get(currentWorkareaTab).saveWorkarea()
     }
 
 
     fun play(currentCommandTab: Int, currentWorkareaTab: Int) {
         when (statusPlay) {
             StatusPlay.STOPPED -> {
-                clearExecutingList()
+                prepareExecuting(currentWorkareaTab)
                 statusPlay = StatusPlay.PLAYING
                 emitSetExecCommand()
             }
@@ -119,7 +120,7 @@ abstract class BaseEngine : QObject() {
                 statusPlay = StatusPlay.PLAYING
             }
         }
-        timer.start(UserPreferences.instance.speed.milliseconds)
+        timer.start(UserPreferences.instance.speed.milliseconds, currentCommandTab, currentWorkareaTab)
     }
 
     private fun executeWithTimer(currentCommandTab: Int, currentWorkareaTab: Int) {
@@ -128,7 +129,7 @@ abstract class BaseEngine : QObject() {
         emitSetExecCommand()
 
         if (executeCommand(executeNumberCommandList.last(), currentCommandTab, currentWorkareaTab)) {
-            timer.start(UserPreferences.instance.speed.milliseconds)
+            timer.start(UserPreferences.instance.speed.milliseconds, currentCommandTab, currentWorkareaTab)
             emitSetExecCommand()
         } else statusPlay = StatusPlay.STOPPED
     }
@@ -136,7 +137,7 @@ abstract class BaseEngine : QObject() {
     fun playStep(currentCommandTab: Int, currentWorkareaTab: Int) {
         when (statusPlay) {
             StatusPlay.STOPPED -> {
-                clearExecutingList()
+                prepareExecuting(currentWorkareaTab)
                 statusPlay = StatusPlay.ON_PAUSE
                 emitSetExecCommand()
                 return
