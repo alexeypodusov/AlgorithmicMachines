@@ -12,5 +12,17 @@ class MarkovWorkareaTab(name: String) : WorkareaTab(name) {
             engine?.onWorkareaChanged()
         }
 
+    var savedString: String? = null
+
     var historyString = ArrayList<String>()
+
+    override fun saveWorkarea() {
+        savedString = string
+    }
+
+    override fun restoreWorkarea() {
+        if (savedString != null) {
+            string = savedString!!
+        }
+    }
 }

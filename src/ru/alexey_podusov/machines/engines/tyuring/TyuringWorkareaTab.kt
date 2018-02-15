@@ -5,9 +5,11 @@ import ru.alexey_podusov.machines.engines.CellsWorkareaTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
 import ru.alexey_podusov.machines.engines.post.PostWorkareaTab
 
-class TyuringWorkareaTab(name: String): CellsWorkareaTab(name) {
+class TyuringWorkareaTab(name: String) : CellsWorkareaTab(name) {
     @Expose
     var cells = ArrayList<String>()
+
+    var savedCells: ArrayList<String>? = null
 
     init {
         for (i in 0 until COUNT_CELLS) {
@@ -32,8 +34,26 @@ class TyuringWorkareaTab(name: String): CellsWorkareaTab(name) {
     }
 
     fun deleteSymbolFromCells(symbol: String) {
-        for ((i,cell) in cells.withIndex()) {
+        for ((i, cell) in cells.withIndex()) {
             if (cell == symbol) cells.set(i, "")
+        }
+    }
+
+    override fun saveWorkarea() {
+        savedCells?.clear()
+        savedCells = ArrayList()
+        for (cell in cells) {
+            savedCells!!.add(cell)
+        }
+    }
+
+    override fun restoreWorkarea() {
+        if (savedCells != null) {
+            cells.clear()
+            for (savedCell in savedCells!!) {
+                cells.add(savedCell)
+            }
+            engine?.onWorkareaChanged()
         }
     }
 
