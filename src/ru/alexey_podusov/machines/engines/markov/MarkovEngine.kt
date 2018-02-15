@@ -42,49 +42,75 @@ class MarkovEngine : BaseEngine() {
 
         var isFinish = false
 
-        if (executeNumberCommandList.size <= 1) {
-            workTab.historyString = ArrayList()
-        }
+        if (!command.sample.isEmpty() || !command.replacement.isEmpty()) {
+            if (executeNumberCommandList.size <= 1) {
+                workTab.historyString = ArrayList()
+            }
 
-        workTab.historyString.add(workTab.string)
+            workTab.historyString.add(workTab.string)
 
-        var replacement = command.replacement
-        if (command.replacement.length >= symbolEnd.length &&
-                command.replacement.takeLast(symbolEnd.length) == symbolEnd) {
-            replacement = command.replacement.substring(0..(command.replacement.length - symbolEnd .length - 1))
-            isFinish = true
-        }
+            var replacement = command.replacement
+            if (command.replacement.length >= symbolEnd.length &&
+                    command.replacement.takeLast(symbolEnd.length) == symbolEnd) {
+                replacement = command.replacement.substring(0..(command.replacement.length - symbolEnd.length - 1))
+                isFinish = true
+            }
 
-        val lastString = workTab.string
-        if (!command.sample.isEmpty()) {
-            workTab.string = workTab.string.replaceFirst(command.sample, replacement)
+            val lastString = workTab.string
+            if (!command.sample.isEmpty()) {
+                workTab.string = workTab.string.replaceFirst(command.sample, replacement)
+            } else {
+                workTab.string = replacement + workTab.string
+            }
+
+            if (command.sample.isEmpty() && command.replacement.isEmpty()) {
+                isReplaced = true
+            }
+
+            if (lastString != workTab.string) {
+                isReplaced = true
+            }
         } else {
-            workTab.string = replacement + workTab.string
+            executeNumberCommandList.removeAt(executeNumberCommandList.last())
         }
 
-        if (command.sample.isEmpty() && command.replacement.isEmpty()) {
-            isReplaced = true
-        }
 
-        if (lastString != workTab.string) {
-            isReplaced = true
-        }
+        val nextCommandNumber = findNextCommandNumber(comTab, numberCommand + 1)
+        executeNumberCommandList.add(nextCommandNumber)
 
-        executeNumberCommandList.add(numberCommand + 1)
 
-        if (isFinish || (!isReplaced && (numberCommand + 1 >= comTab.commands.size))) {
+        if (isFinish || (!isReplaced && (nextCommandNumber >= comTab.commands.size))) {
             succesExecuted()
         }
 
         if (isReplaced) {
             executeNumberCommandList.removeAt(executeNumberCommandList.lastIndex)
-            executeNumberCommandList.add(0)
+            val nextAfterReplace = findNextCommandNumber(comTab, 0)
+            if (nextAfterReplace < comTab.commands.size) {
+                executeNumberCommandList.add(nextAfterReplace)
+            } else {
+                executeNumberCommandList.add(0)
+            }
             isReplaced = false
-        } else {
-
         }
 
         return true
+    }
+
+    private fun findNextCommandNumber(comTab: MarkovCommandTab, startPosition: Int): Int {
+        var nextCommandNumber = startPosition
+        var nextCommand: MarkovCommand
+
+        while (nextCommandNumber < comTab.commands.size) {
+            nextCommand = comTab.commands.get(nextCommandNumber)
+
+            if (nextCommand.replacement != "" || nextCommand.sample != "") {
+                break
+            }
+
+            nextCommandNumber++
+        }
+        return nextCommandNumber
     }
 
     override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
