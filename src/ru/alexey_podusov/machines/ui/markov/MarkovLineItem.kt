@@ -45,36 +45,36 @@ class MarkovLineItem : BaseLineItem() {
 
         sampleLineEdit.setMaximumWidth(MAX_WIDTH_EDIT_STRING)
         sampleLineEdit.setFixedHeight(HEIGHT_STRING)
-        sampleLineEdit.editingFinished.connect(this, ::onSampleEditingFinished)
+        sampleLineEdit.textEdited.connect(this, ::onSampleTextEdited)
         stringLayout.addWidget(sampleLineEdit)
         sampleLineEdit.installEventFilter(this)
 
         replacementLineEdit.setMaximumWidth(MAX_WIDTH_EDIT_STRING)
         replacementLineEdit.setFixedHeight(HEIGHT_STRING)
-        replacementLineEdit.editingFinished.connect(this, ::onReplacementEditingFinished)
+        replacementLineEdit.textEdited.connect(this, ::onReplacementTextEdited)
         stringLayout.addWidget(replacementLineEdit)
         replacementLineEdit.installEventFilter(this)
 
         commentLineEdit.setMinimumWidth(WIDTH_COMMENT_STRING)
         commentLineEdit.setFixedHeight(HEIGHT_STRING)
         commentLineEdit.setMaxLength(255)
-        commentLineEdit.editingFinished.connect(this, ::onCommentEditingFinished)
+        commentLineEdit.textEdited.connect(this, ::onCommentTextEdited)
         stringLayout.addWidget(commentLineEdit)
         commentLineEdit.installEventFilter(this)
     }
 
-    private fun onSampleEditingFinished() {
-        sample = sampleLineEdit.text()
+    private fun onSampleTextEdited(text: String) {
+        sample = text
         onEditedSignal.emit(MarkovCommand(number, sample, replacement, comment))
     }
 
-    private fun onReplacementEditingFinished() {
-        replacement = replacementLineEdit.text()
+    private fun onReplacementTextEdited(text: String) {
+        replacement = text
         onEditedSignal.emit(MarkovCommand(number, sample, replacement, comment))
     }
 
-    private fun onCommentEditingFinished() {
-        comment = commentLineEdit.text()
+    private fun onCommentTextEdited(text: String) {
+        comment = text
         onEditedSignal.emit(MarkovCommand(number, sample, replacement, comment))
     }
 }

@@ -89,7 +89,7 @@ class TyuringTableItem : QFrame() {
         newStateNumberEdit.setMaxLength(3)
         newStateNumberEdit.setValidator(QIntValidator(0, MAX_STATES))
         newStateNumberEdit.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        newStateNumberEdit.editingFinished.connect(this, ::onNewStateEditingFinished)
+        newStateNumberEdit.textEdited.connect(this, ::onNewStateTextEdited)
         newStateNumberEdit.installEventFilter(this)
         mainLayout.addWidget(newStateNumberEdit)
 
@@ -124,9 +124,9 @@ class TyuringTableItem : QFrame() {
         onEditedSignal.emit(TyuringCommand(numberColumn, numberRow, replace, tyuringCommandType, newState))
     }
 
-    private fun onNewStateEditingFinished() {
+    private fun onNewStateTextEdited(text: String) {
         try {
-            newState = newStateNumberEdit.text().toInt()
+            newState = text.toInt()
         } catch (e: NumberFormatException) {
             newState = -1
         }

@@ -127,6 +127,7 @@ class TyuringEngine : BaseEngine() {
         workTab.changeValueCell(workTab.currentCarriage, command.replace)
 
         executedRowList.add(rowNum)
+        executeNumberCommandList.add(command.newState - 1)
 
         when (command.commandType) {
             LEFT_STEP -> {
@@ -149,11 +150,10 @@ class TyuringEngine : BaseEngine() {
         }
 
         if (command.newState == 0) {
-            sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT, SUCCES_TITLE)
-            statusPlay = StatusPlay.STOPPED
+            succesExecuted()
         }
 
-        executeNumberCommandList.add(command.newState - 1)
+
 
         return true
     }
@@ -192,7 +192,7 @@ class TyuringEngine : BaseEngine() {
         }
 
         workTab.changeValueCell(workTab.currentCarriage, replaceString)
-        
+
         executedRowList.removeAt(executedRowList.lastIndex)
         return true
     }
