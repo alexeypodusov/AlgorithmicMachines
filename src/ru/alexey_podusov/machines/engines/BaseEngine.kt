@@ -52,6 +52,9 @@ abstract class BaseEngine : QObject() {
     abstract fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean
     abstract fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean
 
+    protected abstract fun getCommandTabBaseName(): String
+    protected abstract fun getWorkareaTabBaseName(): String
+
     fun addCommandTab(name: String): CommandTab {
         changedTabsSignal.emit()
         return createCommandTab(name)
@@ -105,6 +108,34 @@ abstract class BaseEngine : QObject() {
         workareaTabs.get(currentWorkareaTab).saveWorkarea()
     }
 
+    fun getNewTabName(tabs: List<EngineTab>, name: String): String {
+        var newTabName = name
+
+        var i = 2
+        while (isTabNameBusy(newTabName, tabs)) {
+            newTabName = name + " $i"
+            i++
+        }
+
+        return newTabName
+    }
+
+    fun getNewCommandTabName(): String {
+        return getNewTabName(commandTabs as List<EngineTab>, getCommandTabBaseName())
+    }
+
+    fun getNewWorkareaTabName(): String {
+        return getNewTabName(workareaTabs as List<EngineTab>, getWorkareaTabBaseName())
+    }
+
+
+    fun isTabNameBusy(name: String, tabs: List<EngineTab>): Boolean {
+        for (tab in tabs) {
+            if (name == tab.name) return true
+        }
+
+        return false
+    }
 
     fun play(currentCommandTab: Int, currentWorkareaTab: Int) {
         when (statusPlay) {

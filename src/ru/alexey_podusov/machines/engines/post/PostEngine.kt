@@ -18,8 +18,8 @@ class PostEngine : BaseEngine() {
         STOP("! стоп")
     }
 
-    data class PostCommand(@Expose var number: Int,@Expose var commandType: PostCommandType = NULL_COMMAND,
-                           @Expose var transition: Int = -1,@Expose var secondTransition: Int = -1,@Expose var comment: String = "")
+    data class PostCommand(@Expose var number: Int, @Expose var commandType: PostCommandType = NULL_COMMAND,
+                           @Expose var transition: Int = -1, @Expose var secondTransition: Int = -1, @Expose var comment: String = "")
 
 
     companion object {
@@ -30,11 +30,22 @@ class PostEngine : BaseEngine() {
         val ERROR_BORDER = "Каретка вышла за пределы ленты!"
         val ERROR_MARK_TRUE = "Метка уже есть!"
         val ERROR_MARK_FALSE = "Метка отсутствует!"
+
+        val WORKAREA_TAB_BASE_NAME = "Строка"
+        val COMMAND_TAB_BASE_NAME = "Команды"
     }
 
     init {
-        addCommandTab("test")
-        addWorkareaTab("test")
+        addCommandTab(COMMAND_TAB_BASE_NAME)
+        addWorkareaTab(WORKAREA_TAB_BASE_NAME)
+    }
+
+    override fun getCommandTabBaseName(): String {
+        return COMMAND_TAB_BASE_NAME
+    }
+
+    override fun getWorkareaTabBaseName(): String {
+        return WORKAREA_TAB_BASE_NAME
     }
 
 
@@ -164,7 +175,7 @@ class PostEngine : BaseEngine() {
             }
 
             RIGHT_STEP -> {
-                if (isInTape( workTab.currentCarriage - 1)) {
+                if (isInTape(workTab.currentCarriage - 1)) {
                     workTab.currentCarriage--
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)

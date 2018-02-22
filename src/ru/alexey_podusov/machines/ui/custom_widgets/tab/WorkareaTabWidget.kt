@@ -25,7 +25,7 @@ class WorkareaTabWidget: EngineTabWidget() {
     }
 
     override fun addTab() {
-        val tab = engine!!.addWorkareaTab(DEFAULT_WORKAREA_TAB_NAME + " " + count().toString())
+        val tab = engine!!.addWorkareaTab(engine!!.getNewWorkareaTabName())
         addEngineTab(getNewWidget(tab), tab.name)
     }
 

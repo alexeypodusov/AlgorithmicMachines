@@ -28,7 +28,7 @@ class CommandTabWidget: EngineTabWidget() {
     }
 
     override fun addTab() {
-        val tab = engine!!.addCommandTab(DEFAULT_COMMAND_TAB_NAME + " " + count())
+        val tab = engine!!.addCommandTab(engine!!.getNewCommandTabName())
         addEngineTab(getNewWidget(tab), tab.name)
     }
 
