@@ -77,6 +77,7 @@ class PostLineItem : BaseLineItem() {
         transitionLineEdit.setMaximumWidth(3)
         transitionLineEdit.setValidator(QIntValidator(0, MAX_COMMANDS))
         transitionLineEdit.textEdited.connect(this, ::onTransitionTextEdited)
+        transitionLineEdit.clickedLinkSignal.connect(this, ::onLinkActivated)
         stringLayout.addWidget(transitionLineEdit)
         transitionLineEdit.installEventFilter(this)
 
@@ -85,6 +86,7 @@ class PostLineItem : BaseLineItem() {
         secondTransitionLineEdit.setMaximumWidth(3)
         secondTransitionLineEdit.setValidator(QIntValidator(0, MAX_COMMANDS))
         secondTransitionLineEdit.textEdited.connect(this, ::onSecondTransitionTextEdited)
+        secondTransitionLineEdit.clickedLinkSignal.connect(this, ::onLinkActivated)
         stringLayout.addWidget(secondTransitionLineEdit)
         secondTransitionLineEdit.hide()
         secondTransitionLineEdit.installEventFilter(this)

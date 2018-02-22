@@ -65,15 +65,15 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
                     clickedCommands.removeAt(i)
                 }
             }
-        }
 
-        if (clickedCommands.get(currentCommandIndex) != senderNum) {
-            clickedCommands.add(senderNum);
-        }
-        currentCommandIndex++;
-        clickedCommands.add(transitionNum);
+            if (clickedCommands.get(currentCommandIndex) != senderNum) {
+                clickedCommands.add(senderNum)
+            }
+            currentCommandIndex++
+            clickedCommands.add(transitionNum)
 
-        goToCommandByNumber(transitionNum);
+            goToCommandByNumber(transitionNum)
+        }
     }
 
     protected open fun updateSelectingCommand(numCommand: Int) {
