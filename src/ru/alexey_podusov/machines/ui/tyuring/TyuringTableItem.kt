@@ -11,15 +11,19 @@ import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandTy
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.NULL_COMMAND
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.values
 import ru.alexey_podusov.machines.ui.custom_widgets.ComboBoxWithoutScroll
+import ru.alexey_podusov.machines.ui.custom_widgets.LinkLineEdit
 
 class TyuringTableItem : QFrame() {
     private val mainLayout = QHBoxLayout()
     private val replaceEdit = QLineEdit()
     private val commandComboBox = ComboBoxWithoutScroll()
-    private val newStateNumberEdit = QLineEdit()
+    private val newStateNumberEdit = LinkLineEdit()
 
     val onEditedSignal = Signal1<TyuringCommand>()
     val inFocusSignal = Signal2<Int, Int>()
+
+    val onLinkClickedSignal = Signal3<Int, Int, Int>()
+
 
     companion object {
         val HEIGHT_STRING = 20
@@ -90,6 +94,7 @@ class TyuringTableItem : QFrame() {
         newStateNumberEdit.setValidator(QIntValidator(0, MAX_STATES))
         newStateNumberEdit.setAlignment(Qt.AlignmentFlag.AlignCenter)
         newStateNumberEdit.textEdited.connect(this, ::onNewStateTextEdited)
+        newStateNumberEdit.clickedLinkSignal.connect(this, ::onLinkActivated)
         newStateNumberEdit.installEventFilter(this)
         mainLayout.addWidget(newStateNumberEdit)
 
@@ -97,6 +102,11 @@ class TyuringTableItem : QFrame() {
 
         setLayout(mainLayout)
     }
+
+    private fun onLinkActivated(link: String) {
+        onLinkClickedSignal.emit(link.toInt() - 1, numberRow, numberColumn)
+    }
+
 
     override fun eventFilter(qObject: QObject?, event: QEvent?): Boolean {
         if (QEvent.Type.FocusIn.equals(event!!.type())) {
