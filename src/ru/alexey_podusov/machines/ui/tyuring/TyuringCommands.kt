@@ -11,6 +11,7 @@ import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommand
 import ru.alexey_podusov.machines.engines.tyuring.TyuringWorkareaTab
 import ru.alexey_podusov.machines.ui.BaseCommands
+import ru.alexey_podusov.machines.utils.UserPreferences
 
 class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     private val mainWindow = getMainWindow()
@@ -111,6 +112,13 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     }
 
     private fun onInFocusCommand(rowWithoutHeader: Int, columnWithoutHeader: Int) {
+
+        val isAutoDeleting = UserPreferences.instance.autoDeleteEmptyCommands
+        if (isAutoDeleting && selectedColumnWithoutHeader < columnWithoutHeaderCount && selectedColumnWithoutHeader != columnWithoutHeader) {
+            if (columnWithoutHeaderCount != 1 && tab.isEmptyCommand(selectedColumnWithoutHeader)) {
+                tab.removeCommand(selectedColumnWithoutHeader)
+            }
+        }
         updateSelectingCommand(rowWithoutHeader, columnWithoutHeader)
     }
 
@@ -196,10 +204,11 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
 
     override fun onInsertBeforeClicked() {
         tab.insertCommand(selectedColumnWithoutHeader)
+        updateSelectingCommand(selectedRowWithoutHeader, selectedColumnWithoutHeader + 1)
     }
 
     override fun onDeleteCommandClicked() {
-        (tab as TyuringCommandTab).removeCommand(selectedColumnWithoutHeader)
+        tab.removeCommand(selectedColumnWithoutHeader)
     }
 
     override fun onBackCommandClicked() {

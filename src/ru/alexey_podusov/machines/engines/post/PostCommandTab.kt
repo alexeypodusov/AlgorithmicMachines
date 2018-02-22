@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommand
+import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.NULL_COMMAND
+import java.util.Arrays.asList
 
 class PostCommandTab(name: String) : CommandTab(name) {
     companion object {
@@ -48,4 +50,11 @@ class PostCommandTab(name: String) : CommandTab(name) {
         return commands.size
     }
 
+    override fun isEmptyCommand(number: Int): Boolean {
+        val command = commands.get(number)
+        return command.comment.isEmpty() &&
+                command.commandType == NULL_COMMAND &&
+                command.secondTransition == -1 &&
+                command.transition == -1
+    }
 }

@@ -82,7 +82,6 @@ class TyuringTableItem : QFrame() {
         commandComboBox.setFixedSize(COMMAND_COMBO_BOX_WIDHT, HEIGHT_STRING)
         values().forEach { commandComboBox.addItem(it.text) }
         commandComboBox.currentIndexChanged.connect(this, ::onComboBoxIndexChanged)
-        commandComboBox.installEventFilter(this)
         mainLayout.addWidget(commandComboBox)
 
         newStateNumberEdit.setFixedSize(NEW_STATE_NUMBER_WIDHT, HEIGHT_STRING)
@@ -122,6 +121,7 @@ class TyuringTableItem : QFrame() {
     private fun onComboBoxIndexChanged(index: Int) {
         tyuringCommandType = TyuringCommandType.values()[index]
         onEditedSignal.emit(TyuringCommand(numberColumn, numberRow, replace, tyuringCommandType, newState))
+        inFocusSignal.emit(numberRow, numberColumn)
     }
 
     private fun onNewStateTextEdited(text: String) {

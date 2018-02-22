@@ -86,6 +86,19 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
     }
 
     override fun getCommandsSize(): Int {
-        return 0
+        return commands.size
+    }
+
+
+    override fun isEmptyCommand(number: Int): Boolean {
+        for (row in commands) {
+            val command = row.get(number)
+            if (!command.replace.isEmpty() ||
+                    command.newState != -1 ||
+                    command.commandType != TyuringEngine.TyuringCommandType.NULL_COMMAND) {
+                return false
+            }
+        }
+        return true
     }
 }
