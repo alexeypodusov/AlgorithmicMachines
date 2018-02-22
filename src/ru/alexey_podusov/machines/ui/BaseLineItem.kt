@@ -90,11 +90,11 @@ abstract class BaseLineItem : QFrame() {
         onLinkStringSignal.emit(link.toInt(), number)
     }
 
-    override fun eventFilter(arg__1: QObject?, arg__2: QEvent?): Boolean {
-        if (QEvent.Type.FocusIn.equals(arg__2!!.type())) {
+    override fun eventFilter(obj: QObject?, event: QEvent?): Boolean {
+        if (QEvent.Type.FocusIn.equals(event!!.type())) {
             inFocusSignal.emit(number)
         }
-        return super.eventFilter(arg__1, arg__2)
+        return super.eventFilter(obj, event)
     }
 
     open fun setExecBorder(prevCommand: Int) {

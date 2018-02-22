@@ -10,11 +10,12 @@ import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommand
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.NULL_COMMAND
 import ru.alexey_podusov.machines.engines.tyuring.TyuringEngine.TyuringCommandType.values
+import ru.alexey_podusov.machines.ui.custom_widgets.ComboBoxWithoutScroll
 
 class TyuringTableItem : QFrame() {
     private val mainLayout = QHBoxLayout()
     private val replaceEdit = QLineEdit()
-    private val commandComboBox = QComboBox()
+    private val commandComboBox = ComboBoxWithoutScroll()
     private val newStateNumberEdit = QLineEdit()
 
     val onEditedSignal = Signal1<TyuringCommand>()
