@@ -9,10 +9,11 @@ import ru.alexey_podusov.machines.engines.post.PostEngine.*
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.CHECK_MARK
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.NULL_COMMAND
 import ru.alexey_podusov.machines.ui.BaseLineItem
+import ru.alexey_podusov.machines.ui.custom_widgets.ComboBoxWithoutScroll
 import ru.alexey_podusov.machines.ui.custom_widgets.LinkLineEdit
 
 class PostLineItem : BaseLineItem() {
-    private val commandComboBox = QComboBox()
+    private val commandComboBox = ComboBoxWithoutScroll()
     private val transitionLineEdit = LinkLineEdit()
     private val secondTransitionLineEdit = LinkLineEdit()
     private val commentLineEdit = QLineEdit()
