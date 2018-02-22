@@ -71,7 +71,6 @@ class PostLineItem : BaseLineItem() {
         commandComboBox.currentIndexChanged.connect(this, ::onComboBoxIndexChanged)
         stringLayout.addWidget(commandComboBox)
         PostCommandType.values().forEach { commandComboBox.addItem(it.text) }
-        commandComboBox.installEventFilter(this)
 
         transitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         transitionLineEdit.setMaximumWidth(3)
@@ -101,6 +100,7 @@ class PostLineItem : BaseLineItem() {
         postCommandType = PostCommandType.values()[index]
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))
+        inFocusSignal.emit(number)
     }
 
     private fun onTransitionTextEdited(text: String) {

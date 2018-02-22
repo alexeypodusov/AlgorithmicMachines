@@ -3,6 +3,7 @@ package ru.alexey_podusov.machines.engines.markov
 import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.markov.MarkovEngine.MarkovCommand
+import java.util.Arrays.asList
 
 class MarkovCommandTab(name: String): CommandTab(name) {
     companion object {
@@ -40,4 +41,14 @@ class MarkovCommandTab(name: String): CommandTab(name) {
     override fun getCommandsSize(): Int {
         return commands.size
     }
+
+    override fun isEmptyCommand(number: Int): Boolean {
+        val command = commands.get(number)
+        return asList(command.comment,
+                command.replacement,
+                command.sample)
+                .filter { it.isEmpty() }
+                .count() == 3
+    }
+
 }

@@ -7,6 +7,7 @@ import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.post.PostCommandTab
+import ru.alexey_podusov.machines.utils.UserPreferences
 
 abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     protected val lineItemWidgets = ArrayList<BaseLineItem>()
@@ -89,6 +90,12 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
 
     protected open fun onInFocusCommand(numCommand: Int) {
+        val isAutoDeleting = UserPreferences.instance.autoDeleteEmptyCommands
+        if (isAutoDeleting && selectedCommand < lineItemWidgets.size && selectedCommand != numCommand) {
+            if (lineItemWidgets.size != 1 && tab.isEmptyCommand(selectedCommand)) {
+                tab.removeCommand(selectedCommand)
+            }
+        }
         updateSelectingCommand(numCommand)
     }
 
@@ -107,6 +114,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
     override fun onInsertBeforeClicked() {
         tab.insertCommand(selectedCommand)
+        updateSelectingCommand(selectedCommand + 1)
     }
 
     override fun onInsertAfterClicked() {
