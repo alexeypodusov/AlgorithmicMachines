@@ -25,6 +25,8 @@ class TyuringEngine : BaseEngine() {
         val ERROR_SYMBOL_NOT_INCLUDER = "Символа нет в алфавите!"
 
         val ERROR_BORDER = "Каретка вышла за пределы ленты!"
+        val WORKAREA_TAB_BASE_NAME = "Лента"
+        val COMMAND_TAB_BASE_NAME = "Команды"
     }
 
     @Expose
@@ -35,8 +37,16 @@ class TyuringEngine : BaseEngine() {
     val alphabetChangedSignal = Signal1<Int>()
 
     init {
-        addCommandTab("test")
-        addWorkareaTab("test")
+        addCommandTab(COMMAND_TAB_BASE_NAME)
+        addWorkareaTab(WORKAREA_TAB_BASE_NAME)
+    }
+
+    override fun getCommandTabBaseName(): String {
+        return COMMAND_TAB_BASE_NAME
+    }
+
+    override fun getWorkareaTabBaseName(): String {
+        return WORKAREA_TAB_BASE_NAME
     }
 
     fun changeAlphabet(currentPositionCursor: Int, changedString: String) {

@@ -13,9 +13,22 @@ class MarkovEngine : BaseEngine() {
     data class MarkovCommand(@Expose var number: Int, @Expose var sample: String = "",
                              @Expose var replacement: String = "", @Expose var comment: String = "")
 
+    companion object {
+        val WORKAREA_TAB_BASE_NAME = "Строка"
+        val COMMAND_TAB_BASE_NAME = "Команды"
+    }
+
     init {
-        addCommandTab("test")
-        addWorkareaTab("test")
+        addCommandTab(COMMAND_TAB_BASE_NAME)
+        addWorkareaTab(WORKAREA_TAB_BASE_NAME)
+    }
+
+    override fun getCommandTabBaseName(): String {
+        return COMMAND_TAB_BASE_NAME
+    }
+
+    override fun getWorkareaTabBaseName(): String {
+        return WORKAREA_TAB_BASE_NAME
     }
 
     override fun createCommandTab(name: String): CommandTab {
