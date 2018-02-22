@@ -23,5 +23,8 @@ class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
 
     private fun onEditedString(command: PostEngine.PostCommand) {
         (tab as PostCommandTab).changeCommand(command)
+        if (command.number == tab.getCommandsSize() - 1) {
+            tab.insertCommand(command.number + 1)
+        }
     }
 }

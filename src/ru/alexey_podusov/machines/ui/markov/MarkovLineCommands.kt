@@ -24,5 +24,8 @@ class MarkovLineCommands(tab: MarkovCommandTab) : BaseLineCommands(tab) {
 
     private fun onEditedString(command: MarkovEngine.MarkovCommand) {
         (tab as MarkovCommandTab).changeCommand(command)
+        if (command.number == tab.getCommandsSize() - 1) {
+            tab.insertCommand(command.number + 1)
+        }
     }
 }

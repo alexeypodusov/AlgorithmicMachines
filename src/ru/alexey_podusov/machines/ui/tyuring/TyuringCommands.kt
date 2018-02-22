@@ -160,6 +160,9 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
 
     private fun onCommandEdited(command: TyuringCommand) {
         (tab as TyuringCommandTab).changeCommand(command)
+        if (command.numberColumn == tab.getColumnsCount() - 1) {
+            tab.insertCommand(command.numberColumn + 1)
+        }
     }
 
     private fun bindCommands() {
