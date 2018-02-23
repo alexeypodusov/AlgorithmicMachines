@@ -29,6 +29,10 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     private var currentExecColumn = -1
     private var currentExecRow = -1
 
+    private val transCommands = ArrayList<CommandRowAndColumn>()
+
+    data class CommandRowAndColumn(var row: Int, var column: Int)
+
     companion object {
         val HEIGHT_COLUMN_HEADER = 20
         val WIDTH_ROW_HEADER = 40
@@ -38,6 +42,7 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     init {
         initUI()
         updateCommands()
+        transCommands.add(CommandRowAndColumn(0,0))
     }
 
     private fun initUI() {
@@ -108,7 +113,26 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
         val tableItem = TyuringTableItem()
         tableItem.onEditedSignal.connect(this, ::onCommandEdited)
         tableItem.inFocusSignal.connect(this, ::onInFocusCommand)
+        tableItem.onLinkClickedSignal.connect(this, ::onClickNewState)
         commandsLayout.addWidget(tableItem, row, column)
+    }
+
+    private fun onClickNewState(transitionColumnNum: Int, senderRow: Int, senderColumn: Int) {
+        if (transitionColumnNum < columnWithoutHeaderCount) {
+            if (transCommands.size > 1) {
+                for (i in transCommands.size - 1 downTo currentTransCommandIndex + 1) {
+                    transCommands.removeAt(i)
+                }
+            }
+
+            if (transCommands.get(currentTransCommandIndex).column != senderColumn) {
+                transCommands.add(CommandRowAndColumn(senderRow, senderColumn))
+            }
+            currentTransCommandIndex++
+            transCommands.add(CommandRowAndColumn(selectedRowWithoutHeader, transitionColumnNum))
+
+            goToCommandByTransCommandIndex(currentTransCommandIndex)
+        }
     }
 
     private fun onInFocusCommand(rowWithoutHeader: Int, columnWithoutHeader: Int) {
@@ -214,16 +238,30 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
         tab.removeCommand(selectedColumnWithoutHeader)
     }
 
-    override fun onBackCommandClicked() {
+    override fun goToCommandByTransCommandIndex(commandIndexTransition: Int): Boolean {
+        val transitionCommand = transCommands.get(commandIndexTransition)
 
+        if (transitionCommand.column >= columnWithoutHeaderCount) {
+            transCommands.removeAt(commandIndexTransition)
+            return false
+        }
+
+        var transRow = transitionCommand.row
+
+        if (transRow >= rowsWithoutHeaderCount) {
+            transRow = 0
+        }
+
+        checkCurrentIndex()
+        updateSelectingCommand(transRow, transitionCommand.column)
+        val widget = commandsLayout.itemAtPosition(transRow + 1, transitionCommand.column + 1).widget()
+        scrollArea.ensureWidgetVisible(widget)
+
+        return true
     }
 
-    override fun onForwardCommandClicked() {
-
-    }
-
-    override fun checkCurrentIndex() {
-
+    override fun getTransCommandsSize(): Int {
+        return transCommands.size
     }
 
     override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {

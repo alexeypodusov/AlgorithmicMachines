@@ -8,10 +8,6 @@ import ru.alexey_podusov.machines.engines.EngineTab
 import ru.alexey_podusov.machines.ui.BaseCommands
 
 class CommandTabWidget: EngineTabWidget() {
-    companion object {
-        val DEFAULT_COMMAND_TAB_NAME = "Команды"
-    }
-
     override fun addWidgetsFromEngine() {
         clear()
         engine!!.commandTabs.forEach { addEngineTab(getNewWidget(it), it.name) }

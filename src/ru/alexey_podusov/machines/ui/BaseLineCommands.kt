@@ -6,23 +6,21 @@ import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 import ru.alexey_podusov.machines.engines.CommandTab
-import ru.alexey_podusov.machines.engines.post.PostCommandTab
 import ru.alexey_podusov.machines.utils.UserPreferences
 
 abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     protected val lineItemWidgets = ArrayList<BaseLineItem>()
-    protected val clickedCommands = ArrayList<Int>()
+    protected val transCommands = ArrayList<Int>()
 
     private val scrollAreaLayout = QVBoxLayout()
     protected val commandLinesLayout = QVBoxLayout()
-    protected var currentCommandIndex: Int = 0
     protected var selectedCommand = 0
     protected var currentExecCommand = -1
 
     init {
         initUI()
         updateCommands()
-        clickedCommands.add(0)
+        transCommands.add(0)
     }
 
     abstract fun createStringCommand(): BaseLineItem
@@ -60,20 +58,20 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
     private fun onLinkStringClicked(transitionNum: Int, senderNum: Int) {
         if (transitionNum < lineItemWidgets.size) {
-            if (clickedCommands.size > 1) {
-                for (i in clickedCommands.size - 1 downTo currentCommandIndex + 1) {
-                    clickedCommands.removeAt(i)
+            if (transCommands.size > 1) {
+                for (i in transCommands.size - 1 downTo currentTransCommandIndex + 1) {
+                    transCommands.removeAt(i)
                 }
             }
-        }
 
-        if (clickedCommands.get(currentCommandIndex) != senderNum) {
-            clickedCommands.add(senderNum);
-        }
-        currentCommandIndex++;
-        clickedCommands.add(transitionNum);
+            if (transCommands.get(currentTransCommandIndex) != senderNum) {
+                transCommands.add(senderNum)
+            }
+            currentTransCommandIndex++
+            transCommands.add(transitionNum)
 
-        goToCommandByNumber(transitionNum);
+            goToCommandByTransCommandIndex(currentTransCommandIndex)
+        }
     }
 
     protected open fun updateSelectingCommand(numCommand: Int) {
@@ -99,10 +97,24 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
         updateSelectingCommand(numCommand)
     }
 
-    protected open fun goToCommandByNumber(transitionNum: Int) {
+    override fun goToCommandByTransCommandIndex(commandIndexTransition: Int): Boolean {
+        val transitionNum = transCommands.get(commandIndexTransition)
+
+        if (transitionNum >= lineItemWidgets.size) {
+            transCommands.removeAt(commandIndexTransition)
+            return false
+        }
+
         checkCurrentIndex()
         updateSelectingCommand(transitionNum)
+
         scrollArea.ensureWidgetVisible(lineItemWidgets.get(transitionNum))
+
+        return true
+    }
+
+    override fun getTransCommandsSize(): Int {
+        return transCommands.size
     }
 
     protected open fun deselectExecCommand() {
@@ -130,26 +142,6 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
         lineItemWidgets.get(numberCommand).setExecBorder(prevCommand)
         scrollArea.ensureWidgetVisible(lineItemWidgets.get(numberCommand))
         currentExecCommand = numberCommand
-    }
-
-    override fun onBackCommandClicked() {
-        if (currentCommandIndex > 0) {
-            --currentCommandIndex
-            goToCommandByNumber(clickedCommands.get(currentCommandIndex))
-        }
-    }
-
-    override fun onForwardCommandClicked() {
-        if (currentCommandIndex < (clickedCommands.size - 1)) {
-            ++currentCommandIndex
-            goToCommandByNumber(clickedCommands.get(currentCommandIndex))
-        }
-    }
-
-    override fun checkCurrentIndex() {
-        val backEnable: Boolean = currentCommandIndex != 0
-        val forwardEnable: Boolean = !(currentCommandIndex == (clickedCommands.size - 1))
-        enableCommandButtonsChange.emit(backEnable, forwardEnable)
     }
 
     override fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {

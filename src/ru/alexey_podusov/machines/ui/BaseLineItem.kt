@@ -86,7 +86,7 @@ abstract class BaseLineItem : QFrame() {
         setStyleSheet(NOSELECT_STRING_CSS)
     }
 
-    private fun onLinkActivated(link: String) {
+    protected fun onLinkActivated(link: String) {
         onLinkStringSignal.emit(link.toInt(), number)
     }
 
