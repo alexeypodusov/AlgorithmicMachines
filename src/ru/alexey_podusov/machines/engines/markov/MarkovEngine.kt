@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
+import ru.alexey_podusov.machines.engines.markov.MarkovWorkareaTab.*
 import ru.alexey_podusov.machines.utils.UserPreferences
 
 class MarkovEngine : BaseEngine() {
@@ -53,7 +54,7 @@ class MarkovEngine : BaseEngine() {
 
         val command = comTab.commands.get(numberCommand)
 
-        var isFinish = false
+        var isFinish = false //последняя выполняемая команда
 
         if (!command.sample.isEmpty() || !command.replacement.isEmpty()) {
             if (executeNumberCommandList.size <= 1) {
@@ -63,6 +64,8 @@ class MarkovEngine : BaseEngine() {
             workTab.historyString.add(workTab.string)
 
             var replacement = command.replacement
+
+            //если в команде присутствует символ завершения
             if (command.replacement.length >= symbolEnd.length &&
                     command.replacement.takeLast(symbolEnd.length) == symbolEnd) {
                 replacement = command.replacement.substring(0..(command.replacement.length - symbolEnd.length - 1))
@@ -81,7 +84,20 @@ class MarkovEngine : BaseEngine() {
             }
 
             if (lastString != workTab.string) {
+                val startPosition = lastString.indexOf(replacement)
+
+                val historyItem = HistoryChangesItem(
+                        numberCommand,
+                        command.sample,
+                        command.replacement,
+                        lastString,
+                        workTab.string,
+                        startPosition)
+
+                workTab.detailedHistoryReplacement.add(historyItem)
+
                 isReplaced = true
+                onWorkareaChanged()
             }
         } else {
             executeNumberCommandList.removeAt(executeNumberCommandList.last())
@@ -126,8 +142,17 @@ class MarkovEngine : BaseEngine() {
         return nextCommandNumber
     }
 
+    override fun prepareExecuting(currentWorkareaTab: Int) {
+        super.prepareExecuting(currentWorkareaTab)
+        (workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab).detailedHistoryReplacement.clear()
+    }
+
     override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
         val workTab = workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab
+
+        if (workTab.string != workTab.historyString.last()) {
+            workTab.detailedHistoryReplacement.removeAt(workTab.detailedHistoryReplacement.lastIndex)
+        }
 
         workTab.string = workTab.historyString.last()
         workTab.historyString.removeAt(workTab.historyString.size - 1)
