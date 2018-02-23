@@ -8,6 +8,8 @@ import ru.alexey_podusov.machines.MachineType
 import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.markov.MarkovWorkareaTab
+import com.trolltech.qt.gui.QTextCursor
+
 
 class HistoryChangesDialog(var mainWindow: MainWindow, var tab: MarkovWorkareaTab?) : QDialog(mainWindow) {
     val mainLayout = QVBoxLayout()
@@ -15,12 +17,16 @@ class HistoryChangesDialog(var mainWindow: MainWindow, var tab: MarkovWorkareaTa
 
     companion object {
         val TITLE = "Протокол замен. Вкладка: "
+        val FIRST_STRING_TAMPLATE = "%d: <font color=\"red\">%s</font> -> <font color=\"red\">%s</font> (правило: %d)"
+        val RED_STRING_TAMPLATE = "<font color=\"red\">%s</font>"
+
         val START_WIDTH = 400
         val START_HEIGHT = 200
     }
 
     init {
         initUI()
+        onWorkareaChanged()
     }
 
     private fun initUI() {
@@ -42,11 +48,64 @@ class HistoryChangesDialog(var mainWindow: MainWindow, var tab: MarkovWorkareaTa
         tab!!.engine!!.changedTabsSignal!!.connect(this, ::onTabsChanged)
     }
 
-    private fun bindView() {
+    private fun onWorkareaChanged() {
+        var currentReplacementCount = textEdit.document().lineCount() / 2
+        val countFromTab = tab!!.detailedHistoryReplacement.size
 
+        while (currentReplacementCount < countFromTab) {
+            addReplacement(currentReplacementCount + 1)
+            currentReplacementCount++
+        }
+
+        while (currentReplacementCount > countFromTab) {
+            for (i in 0..1) {
+                removeLastLine()
+            }
+            currentReplacementCount--
+        }
     }
 
-    private fun onWorkareaChanged() {
+    private fun removeLastLine() {
+        val cursor = textEdit.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+        cursor.select(QTextCursor.SelectionType.LineUnderCursor)
+        cursor.removeSelectedText()
+        cursor.deletePreviousChar()
+    }
+
+    private fun addReplacement(index: Int) {
+        val historyItem = tab!!.detailedHistoryReplacement.get(index - 1)
+        val firstString = String.format(FIRST_STRING_TAMPLATE,
+                index,
+                historyItem.sample,
+                historyItem.replacement,
+                historyItem.numberRules)
+
+        textEdit.append(firstString)
+
+        var beforeString = historyItem.beforeString
+
+        var redPartBeforeString = beforeString.substring(historyItem.startPositionChanged,
+                historyItem.startPositionChanged + historyItem.sample.length)
+
+        redPartBeforeString = String.format(RED_STRING_TAMPLATE, redPartBeforeString)
+
+        beforeString = beforeString.replaceRange(historyItem.startPositionChanged,
+                historyItem.startPositionChanged + historyItem.sample.length,
+                redPartBeforeString)
+
+
+        var afterString = historyItem.afterString
+        var redPartAfterString = afterString.substring(historyItem.startPositionChanged,
+                historyItem.startPositionChanged + historyItem.replacement.length)
+
+        redPartAfterString = String.format(RED_STRING_TAMPLATE, redPartAfterString)
+
+        afterString = afterString.replaceRange(historyItem.startPositionChanged,
+                historyItem.startPositionChanged + historyItem.replacement.length,
+                redPartAfterString)
+
+        textEdit.append(beforeString + " -> " + afterString)
     }
 
     private fun onTabsChanged() {

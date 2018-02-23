@@ -84,7 +84,11 @@ class MarkovEngine : BaseEngine() {
             }
 
             if (lastString != workTab.string) {
-                val startPosition = lastString.indexOf(replacement)
+
+                var startPosition = 0
+                if (!command.sample.isEmpty()) {
+                    startPosition = lastString.indexOf(command.sample)
+                }
 
                 val historyItem = HistoryChangesItem(
                         numberCommand,
@@ -145,6 +149,7 @@ class MarkovEngine : BaseEngine() {
     override fun prepareExecuting(currentWorkareaTab: Int) {
         super.prepareExecuting(currentWorkareaTab)
         (workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab).detailedHistoryReplacement.clear()
+        onWorkareaChanged()
     }
 
     override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
