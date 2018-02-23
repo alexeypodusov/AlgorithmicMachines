@@ -17,6 +17,7 @@ class MarkovEngine : BaseEngine() {
     companion object {
         val WORKAREA_TAB_BASE_NAME = "Строка"
         val COMMAND_TAB_BASE_NAME = "Команды"
+        val COUNT_REPLACEMENT_TEXT = "Количество замен: "
     }
 
     init {
@@ -106,14 +107,16 @@ class MarkovEngine : BaseEngine() {
         } else {
             executeNumberCommandList.removeAt(executeNumberCommandList.last())
         }
-
-
+        
         val nextCommandNumber = findNextCommandNumber(comTab, numberCommand + 1)
         executeNumberCommandList.add(nextCommandNumber)
 
 
         if (isFinish || (!isReplaced && (nextCommandNumber >= comTab.commands.size))) {
-            succesExecuted()
+            sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT + (executeNumberCommandList.size - 1) + '\n'
+                    + COUNT_REPLACEMENT_TEXT + workTab.detailedHistoryReplacement.size,
+                    SUCCES_TITLE)
+            statusPlay = StatusPlay.STOPPED
         }
 
         if (isReplaced) {
