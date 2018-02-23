@@ -19,6 +19,8 @@ class PreferencesDialog(parent: QWidget) : QDialog(parent) {
         flags.clear(Qt.WindowType.WindowContextHelpButtonHint)
         setWindowFlags(flags)
 
+        setFixedSize(size())
+
         bindView()
 
         ui.cancelButton.clicked.connect(this, ::cancelButtonClicked)

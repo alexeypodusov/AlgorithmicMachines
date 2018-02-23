@@ -30,7 +30,7 @@ class UserPreferences private constructor() {
                 return GsonBuilder()
                         .create()
                         .fromJson<UserPreferences>(prefJsonString, UserPreferences::class.java)
-            } catch ( e: Exception) {
+            } catch (e: Exception) {
                 return UserPreferences()
             }
         }

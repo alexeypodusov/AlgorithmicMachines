@@ -16,6 +16,15 @@ class MarkovWorkareaTab(name: String) : WorkareaTab(name) {
 
     var historyString = ArrayList<String>()
 
+    var detailedHistoryReplacement = ArrayList<HistoryChangesItem>()
+
+    data class HistoryChangesItem(var numberRules: Int,
+                                  var sample: String,
+                                  var replacement: String,
+                                  var beforeString: String,
+                                  var afterString: String,
+                                  var startPositionChanged: Int)
+
     override fun saveWorkarea() {
         savedString = string
         engine?.onWorkareaChanged()

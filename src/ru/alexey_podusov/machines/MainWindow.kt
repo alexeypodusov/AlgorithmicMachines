@@ -24,6 +24,8 @@ class MainWindow : QMainWindow() {
     val keyReleaseSignal = Signal1<QKeyEvent>()
     val keyPressSignal = Signal1<QKeyEvent>()
 
+    val currentMachineChanged = Signal0()
+
     private val ui = Ui_MainWindow()
     private val alphabetContainerWidget = QWidget()
     private val alphabetContainerLayout = QHBoxLayout()
@@ -94,6 +96,8 @@ class MainWindow : QMainWindow() {
     }
 
     private fun initMachine() {
+        currentMachineChanged.emit()
+
         engine!!.sendMessageSignal.connect(this, ::onReceiveMessage)
         engine!!.changedStatusPlaySignal.connect(this, ::onChangedStatusPlay)
         engine!!.workAreaChangedSignal.connect(this, ::onUpdatedWorkarea)
