@@ -1,18 +1,17 @@
 package ru.alexey_podusov.machines.ui.markov
 
-import com.trolltech.qt.core.Qt
-import com.trolltech.qt.gui.QDialog
+import com.trolltech.qt.gui.QTextCursor
 import com.trolltech.qt.gui.QTextEdit
 import com.trolltech.qt.gui.QVBoxLayout
 import ru.alexey_podusov.machines.MachineType
 import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
+import ru.alexey_podusov.machines.engines.EngineTab
 import ru.alexey_podusov.machines.engines.markov.MarkovWorkareaTab
-import com.trolltech.qt.gui.QTextCursor
 import ru.alexey_podusov.machines.ui.TabDialog
 
 
-class MarkovHistoryChangesDialog(mainWindow: MainWindow, tab: MarkovWorkareaTab?) : TabDialog(mainWindow, tab) {
+class MarkovHistoryChangesDialog(mainWindow: MainWindow, tab: EngineTab?) : TabDialog(mainWindow, tab) {
     val mainLayout = QVBoxLayout()
     val textEdit = QTextEdit()
 
@@ -105,13 +104,8 @@ class MarkovHistoryChangesDialog(mainWindow: MainWindow, tab: MarkovWorkareaTab?
         textEdit.append(beforeString + " -> " + afterString)
     }
 
-    override fun onTabsChanged() {
-        if (tab != null && tab!!.engine != null) {
-            if (tab!!.engine!!.workareaTabs.contains(tab!!)) {
-                return
-            }
-        }
-        close()
+    override fun getTabList(): List<EngineTab> {
+        return tab!!.engine!!.workareaTabs
     }
 
     override fun getCurrentMachine(): MachineType {

@@ -17,7 +17,16 @@ abstract class TabDialog(var mainWindow: MainWindow, var tab: EngineTab?) : QDia
         tab!!.engine!!.changedTabsSignal!!.connect(this, ::onTabsChanged)
     }
 
-    abstract fun onTabsChanged()
+    private fun onTabsChanged() {
+        if (tab != null && tab!!.engine != null) {
+            if (getTabList().contains(tab!!)) {
+                return
+            }
+        }
+        close()
+    }
+
+    abstract fun getTabList(): List<EngineTab>
     abstract fun getCurrentMachine(): MachineType
 
     private fun onCurrentMachineChange() {

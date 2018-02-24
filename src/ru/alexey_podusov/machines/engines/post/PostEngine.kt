@@ -8,14 +8,14 @@ import ru.alexey_podusov.machines.engines.WorkareaTab
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.*
 
 class PostEngine : BaseEngine() {
-    enum class PostCommandType(var text: String) {
-        NULL_COMMAND(""),
-        ADD_MARK("V добавить метку"),
-        DELETE_MARK("X удалить метку"),
-        LEFT_STEP("<- шаг влево"),
-        RIGHT_STEP("-> шаг вправо"),
-        CHECK_MARK("? проверить"),
-        STOP("! стоп")
+    enum class PostCommandType(var text: String, var shortText: String) {
+        NULL_COMMAND("", ""),
+        ADD_MARK("V добавить метку", "V"),
+        DELETE_MARK("X удалить метку", "X"),
+        LEFT_STEP("<- шаг влево", "<-"),
+        RIGHT_STEP("-> шаг вправо", "->"),
+        CHECK_MARK("? проверить", "?"),
+        STOP("! стоп", "")
     }
 
     data class PostCommand(@Expose var number: Int, @Expose var commandType: PostCommandType = NULL_COMMAND,

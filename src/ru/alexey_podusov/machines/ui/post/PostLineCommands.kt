@@ -2,6 +2,7 @@ package ru.alexey_podusov.machines.ui.post
 
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QPushButton
+import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.post.PostCommandTab
 import ru.alexey_podusov.machines.engines.post.PostEngine
@@ -35,7 +36,9 @@ class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
             schemeDialog!!.close()
         }
 
-        //schemeDialog = sc
+        schemeDialog = PostCommandsSchemeDialog(MainWindow.getMainWindow(), tab)
+        schemeDialog!!.show()
+
     }
 
     override fun createStringCommand(): BaseLineItem {

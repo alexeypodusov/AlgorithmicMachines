@@ -61,7 +61,7 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
         if (historyChangesDialog != null && historyChangesDialog!!.isVisible) {
             historyChangesDialog!!.close()
         }
-        historyChangesDialog = MarkovHistoryChangesDialog(MainWindow.getMainWindow(), tab as MarkovWorkareaTab)
+        historyChangesDialog = MarkovHistoryChangesDialog(MainWindow.getMainWindow(), tab)
         historyChangesDialog!!.show()
     }
 
