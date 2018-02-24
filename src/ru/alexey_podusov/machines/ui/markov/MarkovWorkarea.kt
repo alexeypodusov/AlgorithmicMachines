@@ -15,7 +15,7 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
     private val restoreButton = QPushButton(RESTORE_BUTTON_TEXT)
     private val showHistoryButton = QPushButton(SHOW_HISTORY_BUTTON_TEXT)
 
-    private var historyChangesDialog: HistoryChangesDialog? = null
+    private var historyChangesDialog: MarkovHistoryChangesDialog? = null
 
     companion object {
         val WORKSTRING_TITLE = "Рабочая строка:"
@@ -61,7 +61,7 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
         if (historyChangesDialog != null && historyChangesDialog!!.isVisible) {
             historyChangesDialog!!.close()
         }
-        historyChangesDialog = HistoryChangesDialog(MainWindow.getMainWindow(), tab as MarkovWorkareaTab)
+        historyChangesDialog = MarkovHistoryChangesDialog(MainWindow.getMainWindow(), tab as MarkovWorkareaTab)
         historyChangesDialog!!.show()
     }
 
