@@ -207,8 +207,9 @@ class MainWindow : QMainWindow() {
     private fun actionOpenTriggered(checked: Boolean) {
         if (checkCloseWithoutSave()) {
             val filter = ALGORITHMIC_MACHINES + " (" + MachineType.values().joinToString(" ") { "*." + it.fileFormat } + ")"
-            val filepath = QFileDialog.getOpenFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
+            var filepath = QFileDialog.getOpenFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
             if (filepath.isEmpty()) return
+            if (QFileInfo(filepath).suffix().isEmpty()) filepath += ("." + currentMachine.fileFormat)
             try {
                 currentMachine = MachineType.getTypeByFileFormat(QFileInfo(filepath).suffix())
                 val engineJson = FileUtils.read(filepath)
