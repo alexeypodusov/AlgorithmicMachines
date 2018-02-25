@@ -15,7 +15,7 @@ class PostEngine : BaseEngine() {
         LEFT_STEP("<- шаг влево", "<-"),
         RIGHT_STEP("-> шаг вправо", "->"),
         CHECK_MARK("? проверить", "?"),
-        STOP("! стоп", "")
+        STOP("! стоп", "!")
     }
 
     data class PostCommand(@Expose var number: Int, @Expose var commandType: PostCommandType = NULL_COMMAND,
