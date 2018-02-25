@@ -1,6 +1,7 @@
 package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.core.Qt
+import com.trolltech.qt.gui.QHBoxLayout
 import com.trolltech.qt.gui.QVBoxLayout
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
@@ -15,7 +16,9 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     private val scrollAreaLayout = QVBoxLayout()
     protected val commandLinesLayout = QVBoxLayout()
     protected var selectedCommand = 0
-    protected var currentExecCommand = -1
+    var currentExecCommand = -1
+
+    protected val buttonsLayout = QHBoxLayout()
 
     init {
         initUI()
@@ -33,7 +36,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
         scrollAreaWidget.setLayout(scrollAreaLayout)
         scrollArea.widget().setLayout(scrollAreaLayout)
         scrollAreaLayout.setAlignment(commandLinesLayout, Qt.AlignmentFlag.AlignTop)
-
+        mainLayout.addLayout(buttonsLayout)
     }
 
     override fun updateCommands() {
