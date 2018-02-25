@@ -272,8 +272,6 @@ class MainWindow : QMainWindow() {
         val filepath = QFileDialog.getSaveFileName(this, ui.actionSaveAs.text(), "", QFileDialog.Filter(filter))
 
         if (filepath.isEmpty()) return false
-
-        if (QFileInfo(filepath).suffix().isEmpty()) filepath + "." + currentMachine.fileFormat
         try {
             saveFileEngine(filepath)
         } catch (e: Exception) {
