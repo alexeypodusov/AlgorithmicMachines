@@ -9,7 +9,7 @@ import ru.alexey_podusov.machines.engines.EngineTab
 import ru.alexey_podusov.machines.engines.post.PostCommandTab
 import ru.alexey_podusov.machines.ui.TabDialog
 
-class PostCommandsSchemeDialog(mainWindow: MainWindow, tab: EngineTab?) : TabDialog(mainWindow, tab) {
+class PostCommandsSchemeDialog(mainWindow: MainWindow, tab: EngineTab?, var commandWidget: PostLineCommands?) : TabDialog(mainWindow, tab) {
     private val mainLayout = QVBoxLayout()
     private val scene = PostGraphicsScene()
     private val graphicsView = PostGraphicsView(scene)
@@ -71,6 +71,7 @@ class PostCommandsSchemeDialog(mainWindow: MainWindow, tab: EngineTab?) : TabDia
 
     private fun onCommandsChanged() {
         scene.draw((tab as PostCommandTab).commands)
+        updateExecCommand()
     }
 
     override fun getTabList(): List<EngineTab> {
@@ -79,6 +80,10 @@ class PostCommandsSchemeDialog(mainWindow: MainWindow, tab: EngineTab?) : TabDia
 
     override fun getCurrentMachine(): MachineType {
         return MachineType.POST
+    }
+
+    fun updateExecCommand() {
+        scene.setExecCommand(commandWidget?.currentExecCommand!!)
     }
 
 

@@ -4,6 +4,8 @@ import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QPushButton
 import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
+import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 import ru.alexey_podusov.machines.engines.post.PostCommandTab
 import ru.alexey_podusov.machines.engines.post.PostEngine
 import ru.alexey_podusov.machines.ui.BaseLineItem
@@ -36,7 +38,7 @@ class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
             schemeDialog!!.close()
         }
 
-        schemeDialog = PostCommandsSchemeDialog(MainWindow.getMainWindow(), tab)
+        schemeDialog = PostCommandsSchemeDialog(MainWindow.getMainWindow(), tab, this)
         schemeDialog!!.show()
 
     }
@@ -59,6 +61,23 @@ class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
         (tab as PostCommandTab).changeCommand(command)
         if (command.number == tab.getCommandsSize() - 1) {
             tab.insertCommand(command.number + 1)
+        }
+    }
+
+    override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
+        super.onSetExecCommand(numberCommand, prevCommand)
+        if (schemeDialog != null && schemeDialog!!.isVisible) {
+            schemeDialog?.updateExecCommand()
+        }
+    }
+
+    override fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {
+        super.onChangedStatusPlay(statusPlay)
+
+        if (statusPlay == STOPPED) {
+            if (schemeDialog != null && schemeDialog!!.isVisible) {
+                schemeDialog?.updateExecCommand()
+            }
         }
     }
 }

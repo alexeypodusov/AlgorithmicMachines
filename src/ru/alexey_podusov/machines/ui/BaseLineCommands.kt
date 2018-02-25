@@ -16,7 +16,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     private val scrollAreaLayout = QVBoxLayout()
     protected val commandLinesLayout = QVBoxLayout()
     protected var selectedCommand = 0
-    protected var currentExecCommand = -1
+    var currentExecCommand = -1
 
     protected val buttonsLayout = QHBoxLayout()
 

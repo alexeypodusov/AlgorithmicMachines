@@ -31,9 +31,15 @@ class PostGraphicsScene : QGraphicsScene() {
     }
 
     var currentColorPen = ColorPen.values().get(0)
+    val mainPen = QPen(QColor.black)
+
+
+    var currentExecCommand = -1
 
     val busyLeftXList = ArrayList<busyXItem>()
     val busyRightXList = ArrayList<busyXItem>()
+
+    val commandShapeItems = ArrayList<QAbstractGraphicsShapeItem >()
 
     data class busyXItem(var x: Double, var startNumberCommand: Int, var endNumberCommand: Int)
 
@@ -44,20 +50,23 @@ class PostGraphicsScene : QGraphicsScene() {
         val WIDTH_RECT = 150.0
         val HEIGHT_RECT = 35.0
         val SPACE = 50.0
+
+        val PEN_EXEC_WIDTH = 3
     }
 
     fun draw(commands: ArrayList<PostCommand>) {
         clear()
+
+        commandShapeItems.clear()
+
         busyLeftXList.clear()
         busyRightXList.clear()
-        val pen = QPen()
-        pen.setColor(QColor.black)
 
         var currentY = START_Y_RECT
         currentColorPen = ColorPen.values().get(0)
         for (command in commands) {
 
-            drawCommand(command, currentY, pen)
+            drawCommand(command, currentY)
             drawRelationLine(command, currentY, commands.size)
 
             currentY += (HEIGHT_RECT + SPACE)
@@ -126,9 +135,9 @@ class PostGraphicsScene : QGraphicsScene() {
     }
 
 
-    private fun drawCommand(command: PostCommand, currentY: Double, pen: QPen) {
+    private fun drawCommand(command: PostCommand, currentY: Double) {
         if (command.commandType != CHECK_MARK) {
-            addRect(START_X_RECT, currentY, WIDTH_RECT, HEIGHT_RECT, pen)
+            commandShapeItems.add(addRect(START_X_RECT, currentY, WIDTH_RECT, HEIGHT_RECT))
         } else {
             val polygonF = QPolygonF()
             polygonF.add(START_X_RECT, currentY + HEIGHT_RECT / 2)
@@ -136,7 +145,7 @@ class PostGraphicsScene : QGraphicsScene() {
             polygonF.add(START_X_RECT + WIDTH_RECT, currentY + HEIGHT_RECT / 2)
             polygonF.add(START_X_RECT + WIDTH_RECT / 2, currentY + HEIGHT_RECT)
             polygonF.add(START_X_RECT, currentY + HEIGHT_RECT / 2)
-            addPolygon(polygonF)
+            commandShapeItems.add(addPolygon(polygonF))
         }
 
         var text = command.number.toString() + " " +
@@ -264,6 +273,21 @@ class PostGraphicsScene : QGraphicsScene() {
         }
     }
 
+    fun setExecCommand(numberCommand: Int) {
+        if (currentExecCommand != -1 && currentExecCommand < commandShapeItems.size - 1 ) {
+            commandShapeItems.get(currentExecCommand).setPen(mainPen)
+        }
+
+        if (numberCommand != -1 && numberCommand < commandShapeItems.size - 1) {
+            val pen = QPen()
+            pen.setWidth(PEN_EXEC_WIDTH)
+            pen.setColor(QColor.darkGreen)
+            commandShapeItems.get(numberCommand).setPen(pen)
+
+            views().get(0).ensureVisible(commandShapeItems.get(numberCommand))
+            currentExecCommand = numberCommand
+        }
+    }
 
     private fun drawDownArrow(x: Double, y: Double, pen: QPen = QPen(QColor.black)) {
         addLine(x, y, x + 5, y - 10, pen)
