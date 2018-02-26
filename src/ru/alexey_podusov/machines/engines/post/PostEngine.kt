@@ -21,7 +21,6 @@ class PostEngine : BaseEngine() {
     data class PostCommand(@Expose var number: Int, @Expose var commandType: PostCommandType = NULL_COMMAND,
                            @Expose var transition: Int = -1, @Expose var secondTransition: Int = -1, @Expose var comment: String = "")
 
-
     companion object {
         val ERROR_NULL_TYPE = "Не указана команда!"
         val ERROR_TRANSITION_NULL = "Не указан номер строки для перехода!"

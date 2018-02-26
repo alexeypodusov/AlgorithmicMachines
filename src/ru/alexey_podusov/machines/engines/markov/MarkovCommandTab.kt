@@ -8,10 +8,22 @@ import java.util.Arrays.asList
 class MarkovCommandTab(name: String): CommandTab(name) {
     companion object {
         val MAX_COMMANDS = 999
+
+        fun isEmptyCommand(command: MarkovCommand): Boolean {
+            return asList(command.comment,
+                    command.replacement,
+                    command.sample)
+                    .filter { it.isEmpty() }
+                    .count() == 3
+        }
     }
 
     @Expose
     var commands = ArrayList<MarkovCommand>()
+    set(value) {
+        field = value
+        engine?.commandsChanged()
+    }
 
     init {
         insertCommand(0)
