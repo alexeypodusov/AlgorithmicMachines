@@ -2,19 +2,22 @@ package ru.alexey_podusov.machines.ui.markov
 
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.engines.markov.MarkovEngine.MarkovCommand
+import ru.alexey_podusov.machines.utils.UserPreferences
 
 class MarkovSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(document) {
     private val numberCommandFormat = QTextCharFormat()
     private val sampleFormat = QTextCharFormat()
     private val arrowFormat = QTextCharFormat()
     private val replacementFormat = QTextCharFormat()
+    private val endSymbolFormat = QTextCharFormat()
 
     data class MarkovCommandSyntaxField(var index: Int = -1, var length: Int = -1)
     data class MarkovCommandSyntax(var command: MarkovCommand = MarkovCommand(number = -1),
                                    var numberField: MarkovCommandSyntaxField = MarkovCommandSyntaxField(),
                                    var sampleField: MarkovCommandSyntaxField = MarkovCommandSyntaxField(),
                                    var arrowField: MarkovCommandSyntaxField = MarkovCommandSyntaxField(),
-                                   var replacementField: MarkovCommandSyntaxField = MarkovCommandSyntaxField())
+                                   var replacementField: MarkovCommandSyntaxField = MarkovCommandSyntaxField(),
+                                   var endSymbolField: MarkovCommandSyntaxField = MarkovCommandSyntaxField())
 
     init {
         numberCommandFormat.setForeground(QBrush(QColor(QColor.fromRgb(0, 0, 128))))
@@ -28,6 +31,9 @@ class MarkovSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(doc
 
         replacementFormat.setForeground(QBrush(QColor(QColor.fromRgb(0, 128, 128))))
         replacementFormat.setFontWeight(QFont.Weight.Bold.value())
+
+        endSymbolFormat.setForeground(QBrush(QColor(QColor.red)))
+        endSymbolFormat.setFontWeight(QFont.Weight.Bold.value())
     }
 
     companion object {
@@ -114,6 +120,15 @@ class MarkovSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(doc
             commandSyntax.replacementField.index = textWithoutAddedFields.indexOf(command.replacement, startIndexForSearchField)
             commandSyntax.replacementField.length = command.replacement.length
 
+
+            val symbolEnd = UserPreferences.instance.finalSymbolMarkov
+            if (command.replacement.length >= symbolEnd.length &&
+                    command.replacement.takeLast(symbolEnd.length) == symbolEnd) {
+                commandSyntax.replacementField.length = command.replacement.length - symbolEnd.length
+                commandSyntax.endSymbolField.length = symbolEnd.length
+                commandSyntax.endSymbolField.index = commandSyntax.replacementField.index + commandSyntax.replacementField.length
+            }
+
             return commandSyntax
 
         }
@@ -137,6 +152,10 @@ class MarkovSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(doc
 
             if (commandSyntax.replacementField.index != -1) {
                 setFormat(commandSyntax.replacementField.index, commandSyntax.replacementField.length, replacementFormat)
+            }
+
+            if (commandSyntax.endSymbolField.index != -1) {
+                setFormat(commandSyntax.endSymbolField.index, commandSyntax.endSymbolField.length, endSymbolFormat)
             }
         }
     }

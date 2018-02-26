@@ -56,7 +56,7 @@ class PostCommandsSchemeDialog(mainWindow: MainWindow, tab: EngineTab?, var comm
         val filter ="Portable network graphics(*.png)"
         var filepath = QFileDialog.getSaveFileName(this, SAVE_BUTTON_TEXT, "", QFileDialog.Filter(filter))
         if (filepath.isEmpty()) return
-        if (QFileInfo(filepath).suffix().isEmpty()) filepath += (".png")
+        if (QFileInfo(filepath).suffix().isEmpty()) filepath += ".png"
         try {
             val image = QImage(scene.sceneRect().size().toSize(), QImage.Format.Format_ARGB32)
             image.fill(Qt.GlobalColor.white)
