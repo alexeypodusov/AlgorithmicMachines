@@ -10,6 +10,7 @@ import ru.alexey_podusov.machines.engines.post.PostCommandTab
 import ru.alexey_podusov.machines.engines.post.PostEngine
 import ru.alexey_podusov.machines.ui.BaseLineItem
 import ru.alexey_podusov.machines.ui.BaseLineCommands
+import ru.alexey_podusov.machines.ui.BaseTextEditorDialog
 
 class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
     private val showSchemeButton = QPushButton()
@@ -23,6 +24,10 @@ class PostLineCommands(tab: PostCommandTab) : BaseLineCommands(tab) {
 
     init {
         initUI()
+    }
+
+    override fun createTextEditorDialog(): BaseTextEditorDialog {
+        return PostTextEditorDialog(MainWindow.getMainWindow(), tab)
     }
 
     private fun initUI() {

@@ -2,11 +2,16 @@ package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.QHBoxLayout
+import com.trolltech.qt.gui.QPushButton
 import com.trolltech.qt.gui.QVBoxLayout
+import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 import ru.alexey_podusov.machines.engines.CommandTab
+import ru.alexey_podusov.machines.ui.post.PostCommandsSchemeDialog
+import ru.alexey_podusov.machines.ui.post.PostLineCommands
+import ru.alexey_podusov.machines.ui.post.PostTextEditorDialog
 import ru.alexey_podusov.machines.utils.UserPreferences
 
 abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
@@ -19,6 +24,13 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     var currentExecCommand = -1
 
     protected val buttonsLayout = QHBoxLayout()
+    private val showTextEditorButton = QPushButton()
+    private var textEditorDialog: BaseTextEditorDialog? = null
+
+    companion object {
+        val SHOW_TEXT_EDITOR_BUTTON_TEXT = "Текстовый редактор"
+        val WIDTH_SHOW_TEXT_EDITOR_BUTTON = 200
+    }
 
     init {
         initUI()
@@ -37,6 +49,23 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
         scrollArea.widget().setLayout(scrollAreaLayout)
         scrollAreaLayout.setAlignment(commandLinesLayout, Qt.AlignmentFlag.AlignTop)
         mainLayout.addLayout(buttonsLayout)
+
+        showTextEditorButton.setText(SHOW_TEXT_EDITOR_BUTTON_TEXT)
+        showTextEditorButton.setFixedWidth(WIDTH_SHOW_TEXT_EDITOR_BUTTON)
+        showTextEditorButton.clicked.connect(this, ::onShowTextEditorButtonClicked)
+        buttonsLayout.addWidget(showTextEditorButton)
+        buttonsLayout.setAlignment(showTextEditorButton, Qt.AlignmentFlag.AlignLeft)
+    }
+
+    abstract fun createTextEditorDialog(): BaseTextEditorDialog
+
+    private fun onShowTextEditorButtonClicked() {
+        if (textEditorDialog != null && textEditorDialog!!.isVisible) {
+            textEditorDialog!!.close()
+        }
+
+        textEditorDialog = createTextEditorDialog()
+        textEditorDialog!!.show()
     }
 
     override fun updateCommands() {

@@ -10,10 +10,21 @@ import java.util.Arrays.asList
 class PostCommandTab(name: String) : CommandTab(name) {
     companion object {
         val MAX_COMMANDS = 999
+
+        fun isEmptyCommand(command: PostCommand): Boolean {
+            return command.comment.isEmpty() &&
+                    command.commandType == NULL_COMMAND &&
+                    command.secondTransition == -1 &&
+                    command.transition == -1
+        }
     }
 
     @Expose
     var commands = ArrayList<PostCommand>()
+    set(value) {
+        field = value
+        engine?.commandsChanged()
+    }
 
     init {
         insertCommand(0)

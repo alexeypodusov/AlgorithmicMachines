@@ -1,10 +1,13 @@
 package ru.alexey_podusov.machines.ui.markov
 
+import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.markov.MarkovCommandTab
 import ru.alexey_podusov.machines.engines.markov.MarkovEngine
 import ru.alexey_podusov.machines.ui.BaseLineCommands
 import ru.alexey_podusov.machines.ui.BaseLineItem
+import ru.alexey_podusov.machines.ui.BaseTextEditorDialog
+import ru.alexey_podusov.machines.ui.post.PostTextEditorDialog
 
 class MarkovLineCommands(tab: MarkovCommandTab) : BaseLineCommands(tab) {
     override fun createStringCommand(): BaseLineItem {
@@ -27,5 +30,9 @@ class MarkovLineCommands(tab: MarkovCommandTab) : BaseLineCommands(tab) {
         if (command.number == tab.getCommandsSize() - 1) {
             tab.insertCommand(command.number + 1)
         }
+    }
+
+    override fun createTextEditorDialog(): BaseTextEditorDialog {
+        return MarkovTextEditorDialog(MainWindow.getMainWindow(), tab)
     }
 }
