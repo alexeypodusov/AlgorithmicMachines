@@ -82,7 +82,7 @@ class PostSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(docum
             val commandSyntax = PostCommandSyntax(command)
             commandSyntax.numberField.index = textWithoutAddedFields.indexOf(fields.get(0))
             commandSyntax.numberField.length = fields.get(0).length
-            textWithoutAddedFields.replace(fields.get(0), "")
+            textWithoutAddedFields.replaceFirst(fields.get(0), "")
             startIndexForSearchField = commandSyntax.numberField.index + commandSyntax.numberField.length
 
 
@@ -101,6 +101,7 @@ class PostSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(docum
                                 commandSyntax.commandTypeField.index = textWithoutAddedFields.indexOf(s, startIndexForSearchField)
                                 commandSyntax.commandTypeField.length = s.length
                                 startIndexForSearchField = commandSyntax.commandTypeField.index + commandSyntax.commandTypeField.length
+                                textWithoutAddedFields.replaceFirst(s,"")
                                 continue
                             }
                         }
@@ -112,6 +113,7 @@ class PostSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(docum
                                 commandSyntax.transitionField.index = textWithoutAddedFields.indexOf(s, startIndexForSearchField)
                                 commandSyntax.transitionField.length = s.length
                                 startIndexForSearchField = commandSyntax.transitionField.index + commandSyntax.transitionField.length
+                                textWithoutAddedFields.replaceFirst(s,"")
                                 continue
                             }
                         }
@@ -123,6 +125,7 @@ class PostSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(docum
                                 commandSyntax.secondTransitionField.index = textWithoutAddedFields.indexOf(s, startIndexForSearchField)
                                 commandSyntax.secondTransitionField.length = s.length
                                 startIndexForSearchField = commandSyntax.secondTransitionField.index + commandSyntax.secondTransitionField.length
+                                textWithoutAddedFields.replaceFirst(s,"")
                                 continue
                             }
                         }
@@ -134,12 +137,6 @@ class PostSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(docum
             }
 
             return commandSyntax
-        }
-    }
-
-    private fun deleteLastEmtyCommands() {
-        while (!commands.isEmpty() && PostCommandTab.isEmptyCommand(commands.last())) {
-            commands.removeAt(commands.lastIndex)
         }
     }
 
@@ -161,14 +158,6 @@ class PostSyntaxHightlighter(document: QTextDocument) : QSyntaxHighlighter(docum
             if (commandSyntax.secondTransitionField.index != -1) {
                 setFormat(commandSyntax.secondTransitionField.index, commandSyntax.secondTransitionField.length, secondTransitionCommandFormat)
             }
-
-//            while (commandSyntax.command.number > commands.size - 1) {
-//                commands.add(PostCommand(commands.size))
-//            }
-//
-//            commands.set(commandSyntax.command.number, commandSyntax.command)
-//
-//            deleteLastEmtyCommands()
         } else {
             setFormat(0, text!!.length, errorCommandFormat)
         }
