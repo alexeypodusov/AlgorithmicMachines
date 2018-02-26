@@ -1,5 +1,6 @@
 package ru.alexey_podusov.machines.ui.post
 
+import com.trolltech.qt.core.QFileInfo
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.MachineType
@@ -53,9 +54,9 @@ class PostCommandsSchemeDialog(mainWindow: MainWindow, tab: EngineTab?, var comm
 
     private fun onSaveButtonClicked() {
         val filter ="Portable network graphics(*.png)"
-        val filepath = QFileDialog.getSaveFileName(this, SAVE_BUTTON_TEXT, "", QFileDialog.Filter(filter))
+        var filepath = QFileDialog.getSaveFileName(this, SAVE_BUTTON_TEXT, "", QFileDialog.Filter(filter))
         if (filepath.isEmpty()) return
-
+        if (QFileInfo(filepath).suffix().isEmpty()) filepath += (".png")
         try {
             val image = QImage(scene.sceneRect().size().toSize(), QImage.Format.Format_ARGB32)
             image.fill(Qt.GlobalColor.white)
