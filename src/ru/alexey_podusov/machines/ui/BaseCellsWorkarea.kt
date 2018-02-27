@@ -1,33 +1,74 @@
 package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.core.Qt
-import com.trolltech.qt.gui.QApplication
-import com.trolltech.qt.gui.QHBoxLayout
+import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
+import ru.alexey_podusov.machines.engines.CellsWorkareaTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
+import ru.alexey_podusov.machines.engines.post.PostCommandTab
+import ru.alexey_podusov.machines.forms.post.Ui_PostWorkAreaWidget
 
 abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     protected val ui = Ui_PostWorkAreaWidget()
-    protected val cellWidgets = ArrayList<CellBase>()
+    protected val cellWidgets = ArrayList<BaseCell>()
 
     protected var countCells: Int = 0
     protected var numberWidgetCarriage: Int = 0
 
     companion object {
         val SPACING_CELL_LAYOUT = 6
+        val ICON_GO_LEFT = QIcon("res/icons/ic_go_left.png")
+        val ICON_GO_RIGHT = QIcon("res/icons/ic_go_right.png")
     }
 
     init {
         ui.setupUi(this)
-        ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
+        initUI()
         initCells()
     }
 
-    protected abstract fun createCell(): CellBase
-    protected abstract fun onCellChanched(numberCell: Int, cellParameter:Any)
-    protected abstract fun onLeftButtonClicked()
-    protected abstract fun onRightButtonClicked()
+    private fun initUI() {
+        ui.LeftPushButton.setIcon(ICON_GO_LEFT)
+        ui.RightPushButton.setIcon(ICON_GO_RIGHT)
+        
+        ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        ui.restoreButton.clicked.connect(this, ::onRestoreButtonClicked)
+        ui.goToLineEdit.setValidator(QIntValidator(-999, 999))
+        ui.goToLineEdit.textEdited.connect(this, ::onGoToTextEdited)
+    }
+
+    private fun onGoToTextEdited(text: String) {
+        if (!text.isEmpty()) {
+            (tab as CellsWorkareaTab).currentCarriage = text.toInt()
+        } else {
+            (tab as CellsWorkareaTab).currentCarriage = 0
+        }
+    }
+
+    override fun updateWorkArea() {
+        ui.restoreButton.isEnabled = !tab.savedIsNull()
+        if ((tab as CellsWorkareaTab).currentCarriage != 0) {
+            ui.goToLineEdit.setText(tab.currentCarriage.toString())
+        } else {
+            ui.goToLineEdit.setText("")
+        }
+    }
+
+    protected abstract fun createCell(): BaseCell
+    protected abstract fun onCellChanched(numberCell: Int, cellParameter: Any)
+
+    private fun onRestoreButtonClicked() {
+        tab.restoreWorkarea()
+    }
+
+    protected fun onLeftButtonClicked() {
+        (tab as CellsWorkareaTab).currentCarriage--
+    }
+
+    protected fun onRightButtonClicked() {
+        (tab as CellsWorkareaTab).currentCarriage++
+    }
 
     override fun connect() {
         ui.LeftPushButton.clicked.connect(this, ::onLeftButtonClicked)
@@ -39,12 +80,12 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
         val scrollAreaLayout = QHBoxLayout()
 
         countCells = (QApplication.desktop().width() /
-                (CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
+                (BaseCell.WIDTH_CELL + SPACING_CELL_LAYOUT)) + 100
 
         numberWidgetCarriage = countCells / 2
 
         for (i: Int in 0..countCells) {
-            val cell: CellBase = createCell()
+            val cell: BaseCell = createCell()
             cellWidgets.add(cell)
 
             cell.onCellChanchedSignal.connect(this, ::onCellChanched)
@@ -58,7 +99,7 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     }
 
     override fun updateSizeWidget() {
-        val widthCellWithSpacing: Int = CellBase.WIDTH_CELL + SPACING_CELL_LAYOUT
+        val widthCellWithSpacing: Int = BaseCell.WIDTH_CELL + SPACING_CELL_LAYOUT
         val widthScrollArea: Int = ui.scrollArea.size().width()
 
         val leftCellNumber = numberWidgetCarriage - (widthScrollArea / widthCellWithSpacing) / 2

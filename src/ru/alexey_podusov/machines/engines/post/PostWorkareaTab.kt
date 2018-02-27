@@ -1,28 +1,20 @@
 package ru.alexey_podusov.machines.engines.post
 
+import com.google.gson.annotations.Expose
+import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.CellsWorkareaTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
 
-class PostWorkareaTab(name: String, engine: PostEngine) : WorkareaTab(name, engine) {
+class PostWorkareaTab(name: String) : CellsWorkareaTab(name) {
+    @Expose
     var cells = ArrayList<Boolean>()
 
-    var currentCarriage: Int = 0 //not index! fact number cell
-        set(value) {
-            if (isInTape(value)) {
-                field = value
-                engine.onWorkareaChanged()
-            }
-        }
-
-    companion object {
-        val COUNT_CELLS = 2000
-        fun isInTape(number: Int): Boolean = number in -((COUNT_CELLS / 2) - 1)..((COUNT_CELLS / 2) - 1)
-    }
+    var savedCells: ArrayList<Boolean>? = null
 
     init {
-        for (i in 0..COUNT_CELLS) {
+        for (i in 0 until COUNT_CELLS) {
             cells.add(false)
         }
-
     }
 
     fun getCell(numCell: Int): Boolean {
@@ -38,14 +30,32 @@ class PostWorkareaTab(name: String, engine: PostEngine) : WorkareaTab(name, engi
         if (isInTape(numCell)) {
             val cellIndex = getIndexByNum(numCell)
             cells.set(cellIndex, cellValue)
-            engine.onWorkareaChanged()
+            engine?.onWorkareaChanged()
         }
     }
 
-
-    private fun isIndexInTape(index: Int): Boolean {
-        return index in 0..COUNT_CELLS
+    override fun saveWorkarea() {
+        super.saveWorkarea()
+        savedCells?.clear()
+        savedCells = ArrayList()
+        for (cell in cells) {
+            savedCells?.add(cell)
+        }
+        engine?.onWorkareaChanged()
     }
 
-    internal fun getIndexByNum(num: Int): Int = num + ((COUNT_CELLS / 2) - 1)
+    override fun restoreWorkarea() {
+        super.restoreWorkarea()
+        if (savedCells != null) {
+            cells.clear()
+            for (savedCell in savedCells!!) {
+                cells.add(savedCell)
+            }
+            engine?.onWorkareaChanged()
+        }
+    }
+
+    override fun savedIsNull(): Boolean {
+        return savedCells == null
+    }
 }

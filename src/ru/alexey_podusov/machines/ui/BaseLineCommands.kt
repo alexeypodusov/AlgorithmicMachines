@@ -1,42 +1,74 @@
 package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.core.Qt
+import com.trolltech.qt.gui.QHBoxLayout
+import com.trolltech.qt.gui.QPushButton
 import com.trolltech.qt.gui.QVBoxLayout
+import ru.alexey_podusov.machines.MainWindow
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.StatusPlay.STOPPED
 import ru.alexey_podusov.machines.engines.CommandTab
+import ru.alexey_podusov.machines.ui.post.PostCommandsSchemeDialog
+import ru.alexey_podusov.machines.ui.post.PostLineCommands
+import ru.alexey_podusov.machines.ui.post.PostTextEditorDialog
+import ru.alexey_podusov.machines.utils.UserPreferences
 
 abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     protected val lineItemWidgets = ArrayList<BaseLineItem>()
-    protected val clickedCommands = ArrayList<Int>()
+    protected val transCommands = ArrayList<Int>()
 
     private val scrollAreaLayout = QVBoxLayout()
     protected val commandLinesLayout = QVBoxLayout()
-    protected var currentCommandIndex: Int = 0
     protected var selectedCommand = 0
-    protected var currentExecCommand = -1
+    var currentExecCommand = -1
+
+    protected val buttonsLayout = QHBoxLayout()
+    private val showTextEditorButton = QPushButton()
+    private var textEditorDialog: BaseTextEditorDialog? = null
+
+    companion object {
+        val SHOW_TEXT_EDITOR_BUTTON_TEXT = "Текстовый редактор"
+        val WIDTH_SHOW_TEXT_EDITOR_BUTTON = 200
+    }
 
     init {
-        layoutsManipulation()
+        initUI()
         updateCommands()
-        clickedCommands.add(0)
+        transCommands.add(0)
     }
 
     abstract fun createStringCommand(): BaseLineItem
     abstract fun bindCommands()
 
-    private fun layoutsManipulation() {
+    private fun initUI() {
         scrollArea.widget().setLayout(scrollAreaLayout)
         lineItemWidgets.clear()
         scrollAreaLayout.addLayout(commandLinesLayout)
         scrollAreaWidget.setLayout(scrollAreaLayout)
         scrollArea.widget().setLayout(scrollAreaLayout)
         scrollAreaLayout.setAlignment(commandLinesLayout, Qt.AlignmentFlag.AlignTop)
+        mainLayout.addLayout(buttonsLayout)
 
+        showTextEditorButton.setText(SHOW_TEXT_EDITOR_BUTTON_TEXT)
+        showTextEditorButton.setFixedWidth(WIDTH_SHOW_TEXT_EDITOR_BUTTON)
+        showTextEditorButton.clicked.connect(this, ::onShowTextEditorButtonClicked)
+        buttonsLayout.addWidget(showTextEditorButton)
+        buttonsLayout.setAlignment(showTextEditorButton, Qt.AlignmentFlag.AlignLeft)
     }
 
-    protected fun updateCommands() {
+    abstract fun createTextEditorDialog(): BaseTextEditorDialog
+
+    private fun onShowTextEditorButtonClicked() {
+        if (textEditorDialog != null && textEditorDialog!!.isVisible) {
+            textEditorDialog!!.close()
+        }
+
+        textEditorDialog = createTextEditorDialog()
+        textEditorDialog!!.show()
+    }
+
+    override fun updateCommands() {
         val commandSize = tab.getCommandsSize()
 
         while (lineItemWidgets.size > commandSize) {
@@ -58,20 +90,20 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
     private fun onLinkStringClicked(transitionNum: Int, senderNum: Int) {
         if (transitionNum < lineItemWidgets.size) {
-            if (clickedCommands.size > 1) {
-                for (i in clickedCommands.size - 1 downTo currentCommandIndex + 1) {
-                    clickedCommands.removeAt(i)
+            if (transCommands.size > 1) {
+                for (i in transCommands.size - 1 downTo currentTransCommandIndex + 1) {
+                    transCommands.removeAt(i)
                 }
             }
-        }
 
-        if (clickedCommands.get(currentCommandIndex) != senderNum) {
-            clickedCommands.add(senderNum);
-        }
-        currentCommandIndex++;
-        clickedCommands.add(transitionNum);
+            if (transCommands.get(currentTransCommandIndex) != senderNum) {
+                transCommands.add(senderNum)
+            }
+            currentTransCommandIndex++
+            transCommands.add(transitionNum)
 
-        goToCommandByNumber(transitionNum);
+            goToCommandByTransCommandIndex(currentTransCommandIndex)
+        }
     }
 
     protected open fun updateSelectingCommand(numCommand: Int) {
@@ -88,13 +120,33 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
 
 
     protected open fun onInFocusCommand(numCommand: Int) {
+        val isAutoDeleting = UserPreferences.instance.autoDeleteEmptyCommands
+        if (isAutoDeleting && selectedCommand < lineItemWidgets.size && selectedCommand != numCommand) {
+            if (lineItemWidgets.size != 1 && tab.isEmptyCommand(selectedCommand)) {
+                tab.removeCommand(selectedCommand)
+            }
+        }
         updateSelectingCommand(numCommand)
     }
 
-    protected open fun goToCommandByNumber(transitionNum: Int) {
+    override fun goToCommandByTransCommandIndex(commandIndexTransition: Int): Boolean {
+        val transitionNum = transCommands.get(commandIndexTransition)
+
+        if (transitionNum >= lineItemWidgets.size) {
+            transCommands.removeAt(commandIndexTransition)
+            return false
+        }
+
         checkCurrentIndex()
         updateSelectingCommand(transitionNum)
+
         scrollArea.ensureWidgetVisible(lineItemWidgets.get(transitionNum))
+
+        return true
+    }
+
+    override fun getTransCommandsSize(): Int {
+        return transCommands.size
     }
 
     protected open fun deselectExecCommand() {
@@ -103,31 +155,25 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
         }
     }
 
+
+    override fun onInsertBeforeClicked() {
+        tab.insertCommand(selectedCommand)
+        updateSelectingCommand(selectedCommand + 1)
+    }
+
+    override fun onInsertAfterClicked() {
+        tab.insertCommand(selectedCommand + 1)
+    }
+
+    override fun onDeleteCommandClicked() {
+        tab.removeCommand(selectedCommand)
+    }
+
     override fun onSetExecCommand(numberCommand: Int, prevCommand: Int) {
         deselectExecCommand()
         lineItemWidgets.get(numberCommand).setExecBorder(prevCommand)
         scrollArea.ensureWidgetVisible(lineItemWidgets.get(numberCommand))
         currentExecCommand = numberCommand
-    }
-
-    override fun onBackCommandClicked() {
-        if (currentCommandIndex > 0) {
-            --currentCommandIndex
-            goToCommandByNumber(clickedCommands.get(currentCommandIndex))
-        }
-    }
-
-    override fun onForwardCommandClicked() {
-        if (currentCommandIndex < (clickedCommands.size - 1)) {
-            ++currentCommandIndex
-            goToCommandByNumber(clickedCommands.get(currentCommandIndex))
-        }
-    }
-
-    override fun checkCurrentIndex() {
-        val backEnable: Boolean = currentCommandIndex != 0
-        val forwardEnable: Boolean = !(currentCommandIndex == (clickedCommands.size - 1))
-        enableCommandButtonsChange.emit(backEnable, forwardEnable)
     }
 
     override fun onChangedStatusPlay(statusPlay: BaseEngine.StatusPlay) {

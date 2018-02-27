@@ -5,15 +5,15 @@ import com.trolltech.qt.gui.QIntValidator
 import com.trolltech.qt.gui.QLineEdit
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.post.PostCommandTab.Companion.MAX_COMMANDS
-import ru.alexey_podusov.machines.engines.post.PostEngine
 import ru.alexey_podusov.machines.engines.post.PostEngine.*
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.CHECK_MARK
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.NULL_COMMAND
 import ru.alexey_podusov.machines.ui.BaseLineItem
+import ru.alexey_podusov.machines.ui.custom_widgets.ComboBoxWithoutScroll
 import ru.alexey_podusov.machines.ui.custom_widgets.LinkLineEdit
 
 class PostLineItem : BaseLineItem() {
-    private val commandComboBox = QComboBox()
+    private val commandComboBox = ComboBoxWithoutScroll()
     private val transitionLineEdit = LinkLineEdit()
     private val secondTransitionLineEdit = LinkLineEdit()
     private val commentLineEdit = QLineEdit()
@@ -65,17 +65,19 @@ class PostLineItem : BaseLineItem() {
     }
 
     init {
+        scaleFactor = 3
+
         commandComboBox.setMinimumWidth(WIDTH_COMMAND_STRING)
         commandComboBox.setFixedHeight(HEIGHT_STRING)
         commandComboBox.currentIndexChanged.connect(this, ::onComboBoxIndexChanged)
         stringLayout.addWidget(commandComboBox)
         PostCommandType.values().forEach { commandComboBox.addItem(it.text) }
-        commandComboBox.installEventFilter(this)
 
         transitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         transitionLineEdit.setMaximumWidth(3)
         transitionLineEdit.setValidator(QIntValidator(0, MAX_COMMANDS))
-        transitionLineEdit.editingFinished.connect(this, ::onTransitionEditingFinished)
+        transitionLineEdit.textEdited.connect(this, ::onTransitionTextEdited)
+        transitionLineEdit.clickedLinkSignal.connect(this, ::onLinkActivated)
         stringLayout.addWidget(transitionLineEdit)
         transitionLineEdit.installEventFilter(this)
 
@@ -83,7 +85,8 @@ class PostLineItem : BaseLineItem() {
         secondTransitionLineEdit.setFixedSize(WIDTH_TRANSITION_STRING, HEIGHT_STRING)
         secondTransitionLineEdit.setMaximumWidth(3)
         secondTransitionLineEdit.setValidator(QIntValidator(0, MAX_COMMANDS))
-        secondTransitionLineEdit.editingFinished.connect(this, ::onSecondTransitionEditingFinished)
+        secondTransitionLineEdit.textEdited.connect(this, ::onSecondTransitionTextEdited)
+        secondTransitionLineEdit.clickedLinkSignal.connect(this, ::onLinkActivated)
         stringLayout.addWidget(secondTransitionLineEdit)
         secondTransitionLineEdit.hide()
         secondTransitionLineEdit.installEventFilter(this)
@@ -92,7 +95,7 @@ class PostLineItem : BaseLineItem() {
         commentLineEdit.setFixedHeight(HEIGHT_STRING)
         commentLineEdit.setMaxLength(255)
         stringLayout.addWidget(commentLineEdit)
-        commentLineEdit.editingFinished.connect(this, ::onCommentLineEditEditinFinished)
+        commentLineEdit.textEdited.connect(this, ::onCommentLineTextEdited)
         commentLineEdit.installEventFilter(this)
     }
 
@@ -100,11 +103,12 @@ class PostLineItem : BaseLineItem() {
         postCommandType = PostCommandType.values()[index]
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))
+        inFocusSignal.emit(number)
     }
 
-    private fun onTransitionEditingFinished() {
+    private fun onTransitionTextEdited(text: String) {
         try {
-            transition = transitionLineEdit.text().toInt()
+            transition = text.toInt()
         } catch (e: NumberFormatException) {
             transition = -1
         }
@@ -112,9 +116,9 @@ class PostLineItem : BaseLineItem() {
                 transition, secondTransition, comment))
     }
 
-    private fun onSecondTransitionEditingFinished() {
+    private fun onSecondTransitionTextEdited(text: String) {
         try {
-            secondTransition = secondTransitionLineEdit.text().toInt()
+            secondTransition = text.toInt()
         } catch (e: NumberFormatException) {
             secondTransition = -1
         }
@@ -122,9 +126,18 @@ class PostLineItem : BaseLineItem() {
                 transition, secondTransition, comment))
     }
 
-    private fun onCommentLineEditEditinFinished() {
-        comment = commentLineEdit.text()
+    private fun onCommentLineTextEdited(text: String) {
+        comment = text
         onEditedSignal.emit(PostCommand(number, postCommandType,
                 transition, secondTransition, comment))
+    }
+
+    override fun setExecBorder(prevCommand: Int) {
+        super.setExecBorder(prevCommand)
+        if (prevCommand != -1) {
+            val link = "<a href='$prevCommand'>$prevCommand</a>"
+            previousNumberString.setText(link)
+            previousStringWidget.show()
+        }
     }
 }

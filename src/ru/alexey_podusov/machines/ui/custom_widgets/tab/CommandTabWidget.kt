@@ -8,10 +8,6 @@ import ru.alexey_podusov.machines.engines.EngineTab
 import ru.alexey_podusov.machines.ui.BaseCommands
 
 class CommandTabWidget: EngineTabWidget() {
-    companion object {
-        val DEFAULT_COMMAND_TAB_NAME = "Команды"
-    }
-
     override fun addWidgetsFromEngine() {
         clear()
         engine!!.commandTabs.forEach { addEngineTab(getNewWidget(it), it.name) }
@@ -28,7 +24,7 @@ class CommandTabWidget: EngineTabWidget() {
     }
 
     override fun addTab() {
-        val tab = engine!!.addCommandTab(DEFAULT_COMMAND_TAB_NAME + " " + count())
+        val tab = engine!!.addCommandTab(engine!!.getNewCommandTabName())
         addEngineTab(getNewWidget(tab), tab.name)
     }
 
@@ -38,5 +34,9 @@ class CommandTabWidget: EngineTabWidget() {
 
     override fun removeTabFromEngine(index: Int) {
         engine!!.removeCommandTab(index)
+    }
+
+    override fun renameTab(index: Int, text: String) {
+        engine!!.renameCommandTab(index, text)
     }
 }

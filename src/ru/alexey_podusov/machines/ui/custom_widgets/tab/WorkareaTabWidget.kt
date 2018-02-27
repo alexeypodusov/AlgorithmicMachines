@@ -7,12 +7,11 @@ import ru.alexey_podusov.machines.ui.BaseWorkarea
 
 class WorkareaTabWidget: EngineTabWidget() {
     companion object {
-        val DEFAULT_WORKAREA_TAB_NAME = "Лента"
-        val MAX_HEIGHT = 140
+        val MAX_HEIGHT = 160
     }
 
     init {
-        setMaximumHeight(MAX_HEIGHT)
+        setFixedHeight(MAX_HEIGHT)
     }
 
     override fun addWidgetsFromEngine() {
@@ -25,7 +24,7 @@ class WorkareaTabWidget: EngineTabWidget() {
     }
 
     override fun addTab() {
-        val tab = engine!!.addWorkareaTab(DEFAULT_WORKAREA_TAB_NAME + " " + count().toString())
+        val tab = engine!!.addWorkareaTab(engine!!.getNewWorkareaTabName())
         addEngineTab(getNewWidget(tab), tab.name)
     }
 
@@ -35,5 +34,9 @@ class WorkareaTabWidget: EngineTabWidget() {
 
     override fun removeTabFromEngine(index: Int) {
         engine!!.removeWorkareTab(index)
+    }
+
+    override fun renameTab(index: Int, text: String) {
+        engine!!.renameWorkareaTab(index, text)
     }
 }

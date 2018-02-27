@@ -1,49 +1,63 @@
 package ru.alexey_podusov.machines.engines.post
 
+import com.google.gson.annotations.Expose
 import ru.alexey_podusov.machines.engines.BaseEngine
+import ru.alexey_podusov.machines.engines.CellsWorkareaTab.Companion.isInTape
 import ru.alexey_podusov.machines.engines.CommandTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
 import ru.alexey_podusov.machines.engines.post.PostEngine.PostCommandType.*
-import ru.alexey_podusov.machines.engines.post.PostWorkareaTab.Companion.isInTape
 
 class PostEngine : BaseEngine() {
-    enum class PostCommandType(var text: String) {
-        NULL_COMMAND(""),
-        ADD_MARK("V добавить метку"),
-        DELETE_MARK("X удалить метку"),
-        LEFT_STEP("<- шаг влево"),
-        RIGHT_STEP("-> шаг вправо"),
-        CHECK_MARK("? проверить"),
-        STOP("! стоп")
+    enum class PostCommandType(var text: String, var shortText: String) {
+        NULL_COMMAND("", ""),
+        ADD_MARK("V добавить метку", "V"),
+        DELETE_MARK("X удалить метку", "X"),
+        LEFT_STEP("<- шаг влево", "<-"),
+        RIGHT_STEP("-> шаг вправо", "->"),
+        CHECK_MARK("? проверить", "?"),
+        STOP("! стоп", "!")
     }
 
-    data class PostCommand(var number: Int, var commandType: PostCommandType = NULL_COMMAND,
-                           var transition: Int = -1, var secondTransition: Int = -1, var comment: String = "")
-
+    data class PostCommand(@Expose var number: Int, @Expose var commandType: PostCommandType = NULL_COMMAND,
+                           @Expose var transition: Int = -1, @Expose var secondTransition: Int = -1, @Expose var comment: String = "")
 
     companion object {
-        val SUCCES_TITLE = "Конец программы"
-        val SUCCES_TEXT = "Конец программы"
-
         val ERROR_NULL_TYPE = "Не указана команда!"
         val ERROR_TRANSITION_NULL = "Не указан номер строки для перехода!"
         val ERROR_TRANSITION_NOT_EXIST = "Строки с таким номером не существует!"
 
-        val ERROR_TITLE = "Ошибка"
         val ERROR_BORDER = "Каретка вышла за пределы ленты!"
         val ERROR_MARK_TRUE = "Метка уже есть!"
         val ERROR_MARK_FALSE = "Метка отсутствует!"
+
+        val WORKAREA_TAB_BASE_NAME = "Строка"
+        val COMMAND_TAB_BASE_NAME = "Команды"
+    }
+
+    init {
+        addCommandTab(COMMAND_TAB_BASE_NAME)
+        addWorkareaTab(WORKAREA_TAB_BASE_NAME)
+    }
+
+    override fun getCommandTabBaseName(): String {
+        return COMMAND_TAB_BASE_NAME
+    }
+
+    override fun getWorkareaTabBaseName(): String {
+        return WORKAREA_TAB_BASE_NAME
     }
 
 
-    override fun addCommandTab(name: String): CommandTab {
-        val tab = PostCommandTab(name, this)
+    override fun createCommandTab(name: String): CommandTab {
+        val tab = PostCommandTab(name)
+        tab.setMainEngine(this)
         commandTabs.add(tab)
         return tab
     }
 
-    override fun addWorkareaTab(name: String): WorkareaTab {
-        val tab = PostWorkareaTab(name, this)
+    override fun createWorkareaTab(name: String): WorkareaTab {
+        val tab = PostWorkareaTab(name)
+        tab.setMainEngine(this)
         workareaTabs.add(tab)
         return tab
     }
@@ -66,7 +80,7 @@ class PostEngine : BaseEngine() {
 
         executeNumberCommandList.add(comTab.commands.get(numberCommand).transition)
 
-        if (!checkValidationCommand(numberCommand, comTab)) return false
+        if (!checkValidationCommand(numberCommand, comTab, workTab, false)) return false
 
         when (comTab.commands.get(numberCommand).commandType) {
             ADD_MARK -> {
@@ -113,7 +127,7 @@ class PostEngine : BaseEngine() {
             }
 
             STOP -> {
-                sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT, SUCCES_TITLE)
+                succesExecuted()
             }
 
             else -> {
@@ -127,7 +141,7 @@ class PostEngine : BaseEngine() {
         val comTab = commandTabs.get(currentCommandTab) as PostCommandTab
         val workTab = workareaTabs.get(currentWorkareaTab) as PostWorkareaTab
 
-        if (!checkValidationCommand(numberCommand, comTab)) {
+        if (!checkValidationCommand(numberCommand, comTab, workTab, true)) {
             return false
         }
 
@@ -160,7 +174,7 @@ class PostEngine : BaseEngine() {
             }
 
             RIGHT_STEP -> {
-                if (isInTape( workTab.currentCarriage - 1)) {
+                if (isInTape(workTab.currentCarriage - 1)) {
                     workTab.currentCarriage--
                 } else {
                     sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_BORDER, ERROR_TITLE)
@@ -171,20 +185,20 @@ class PostEngine : BaseEngine() {
         return true
     }
 
-    override fun checkValidationCommand(numberCommand: Int, tab: CommandTab): Boolean {
-        tab as PostCommandTab
-        if (tab.commands.get(numberCommand).commandType == NULL_COMMAND) {
+    override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean {
+        commandTab as PostCommandTab
+        if (commandTab.commands.get(numberCommand).commandType == NULL_COMMAND) {
             sendMessageSignal.emit(MessageType.MESSAGE_ERROR, ERROR_NULL_TYPE, ERROR_TITLE)
             return false
         }
 
-        if (tab.commands.get(numberCommand).commandType != STOP) {
-            if (!checkTransitionNumber(tab.commands.get(numberCommand).transition, tab.getCommandsSize())) {
+        if (commandTab.commands.get(numberCommand).commandType != STOP) {
+            if (!checkTransitionNumber(commandTab.commands.get(numberCommand).transition, commandTab.getCommandsSize())) {
                 return false
             }
 
-            if (tab.commands.get(numberCommand).commandType == CHECK_MARK) {
-                if (!checkTransitionNumber(tab.commands.get(numberCommand).secondTransition, tab.getCommandsSize())) {
+            if (commandTab.commands.get(numberCommand).commandType == CHECK_MARK) {
+                if (!checkTransitionNumber(commandTab.commands.get(numberCommand).secondTransition, commandTab.getCommandsSize())) {
                     return false
                 }
             }

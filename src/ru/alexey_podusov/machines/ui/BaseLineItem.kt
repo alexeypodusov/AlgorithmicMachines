@@ -5,6 +5,8 @@ import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
+import ru.alexey_podusov.machines.ui.post.PostCommandsSchemeDialog
+import ru.alexey_podusov.machines.ui.post.PostTextEditorDialog
 
 abstract class BaseLineItem : QFrame() {
     val onLinkStringSignal = Signal2<Int, Int>()
@@ -24,6 +26,8 @@ abstract class BaseLineItem : QFrame() {
             field = value
             numberStringLabel.setText("$value")
         }
+
+    var scaleFactor = 3
 
     var isSelected: Boolean = false
         set(value) {
@@ -84,25 +88,20 @@ abstract class BaseLineItem : QFrame() {
         setStyleSheet(NOSELECT_STRING_CSS)
     }
 
-    private fun onLinkActivated(link: String) {
+    protected fun onLinkActivated(link: String) {
         onLinkStringSignal.emit(link.toInt(), number)
     }
 
-    override fun eventFilter(arg__1: QObject?, arg__2: QEvent?): Boolean {
-        if (QEvent.Type.FocusIn.equals(arg__2!!.type())) {
+    override fun eventFilter(obj: QObject?, event: QEvent?): Boolean {
+        if (QEvent.Type.FocusIn.equals(event!!.type())) {
             inFocusSignal.emit(number)
         }
-        return super.eventFilter(arg__1, arg__2)
+        return super.eventFilter(obj, event)
     }
 
     open fun setExecBorder(prevCommand: Int) {
         setStyleSheet(SELECT_STRING_CSS)
-        setFixedHeight(3*HEIGHT_STRING)
-        if (prevCommand != -1) {
-            val link = "<a href='$prevCommand'>$prevCommand</a>"
-            previousNumberString.setText(link)
-            previousStringWidget.show()
-        }
+        setFixedHeight(scaleFactor*HEIGHT_STRING)
     }
 
     open fun hideExecBorder() {

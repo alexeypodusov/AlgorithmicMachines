@@ -3,7 +3,7 @@ package ru.alexey_podusov.machines.ui
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 
-abstract class CellBase : QWidget() {
+abstract class BaseCell : QWidget() {
     companion object {
         val WIDTH_CELL = 22
         val HEIGHT_ELEMENT = 30
@@ -21,6 +21,10 @@ abstract class CellBase : QWidget() {
 
     var isActive: Boolean = true
         set(value) {
+            when(value) {
+                true -> label.show()
+                false -> label.hide()
+            }
             label.isVisible = value
             elementWidget.isEnabled = value
         }
@@ -32,6 +36,7 @@ abstract class CellBase : QWidget() {
         }
 
     init {
+        elementWidget.setObjectName("cell")
         elementWidget.setFixedSize(WIDTH_CELL, HEIGHT_ELEMENT)
 
         label.setFixedSize(WIDTH_CELL, HEIGHT_LABEL)
@@ -44,7 +49,7 @@ abstract class CellBase : QWidget() {
 
     abstract fun createElementWidget(): QWidget
 
-    fun setCurrent() {
+    open fun setCurrent() {
         label.setStyleSheet(CSS_COLOR_CURRENT)
         elementWidget.setStyleSheet(CSS_BORDER_CURRENT)
     }

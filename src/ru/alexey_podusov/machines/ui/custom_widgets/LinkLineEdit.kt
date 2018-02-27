@@ -4,6 +4,7 @@ import com.trolltech.qt.core.QEvent
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.MainWindow
+import ru.alexey_podusov.machines.MainWindow.Companion.getMainWindow
 import ru.alexey_podusov.machines.connect
 
 class LinkLineEdit : QLineEdit() {
@@ -61,10 +62,6 @@ class LinkLineEdit : QLineEdit() {
         }
     }
 
-
-    private fun getMainWindow(): MainWindow {
-        return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
-    }
 
     override fun mouseMoveEvent(arg__1: QMouseEvent?) {
         super.mouseMoveEvent(arg__1)
