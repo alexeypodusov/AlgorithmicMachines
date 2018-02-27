@@ -17,6 +17,9 @@
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QVBoxLayout" name="mainVerticalLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
       <item>
        <layout class="QVBoxLayout" name="taskLayout">
         <item>
@@ -52,6 +55,9 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="workAreaLayout"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="playBarLayout"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="commandBarLayout">

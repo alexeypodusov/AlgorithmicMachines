@@ -111,7 +111,7 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
         LeftPushButton.setText("");
         RightPushButton.setText("");
         restoreButton.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "\u0412\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u043b\u0435\u043d\u0442\u0443", null));
-        label.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "\u041f\u0435\u0440\u0435\u043a\u0442\u0438 \u043a: ", null));
+        label.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a: ", null));
     } // retranslateUi
 
 }

@@ -31,7 +31,7 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     private fun initUI() {
         ui.LeftPushButton.setIcon(ICON_GO_LEFT)
         ui.RightPushButton.setIcon(ICON_GO_RIGHT)
-
+        
         ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         ui.restoreButton.clicked.connect(this, ::onRestoreButtonClicked)
         ui.goToLineEdit.setValidator(QIntValidator(-999, 999))

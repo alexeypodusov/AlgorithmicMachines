@@ -33,6 +33,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QLabel labelTask;
     public QTextEdit taskTextEdit;
     public QVBoxLayout workAreaLayout;
+    public QHBoxLayout playBarLayout;
     public QHBoxLayout commandBarLayout;
     public QVBoxLayout buttonsVerticalLayout;
     public QPushButton insertBeforeButton;
@@ -123,6 +124,13 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         workAreaLayout.setObjectName("workAreaLayout");
 
         mainVerticalLayout.addLayout(workAreaLayout);
+
+        playBarLayout = new QHBoxLayout();
+        playBarLayout.setSpacing(6);
+        playBarLayout.setMargin(11);
+        playBarLayout.setObjectName("playBarLayout");
+
+        mainVerticalLayout.addLayout(playBarLayout);
 
         commandBarLayout = new QHBoxLayout();
         commandBarLayout.setSpacing(6);

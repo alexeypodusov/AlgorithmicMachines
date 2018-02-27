@@ -1,7 +1,6 @@
 package ru.alexey_podusov.machines
 
 import com.trolltech.qt.core.QFileInfo
-import com.trolltech.qt.core.QSize
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.engines.BaseEngine
@@ -14,14 +13,12 @@ import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.factories.TyuringFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
 import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
-import ru.alexey_podusov.machines.ui.BaseWorkarea
 import ru.alexey_podusov.machines.ui.PreferencesDialog
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
 import ru.alexey_podusov.machines.ui.tyuring.TyuringAlphabetWidget
 import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
-import java.util.prefs.Preferences
 
 class MainWindow : QMainWindow() {
 
@@ -78,6 +75,11 @@ class MainWindow : QMainWindow() {
         val ICON_COLUMN_INSERT_AFTER = QIcon("res/icons/ic_insert_column_after.png")
         val ICON_COLUMN_INSERT_BEFORE = QIcon("res/icons/ic_insert_column_before.png")
         val ICON_DELETE = QIcon("res/icons/ic_delete.png")
+        val ICON_PLAY = QIcon("res/icons/ic_play.png")
+        val ICON_STOP = QIcon("res/icons/ic_stop.png")
+        val ICON_PAUSE = QIcon("res/icons/ic_pause.png")
+        val ICON_NEXT_STEP = QIcon("res/icons/ic_next_step.png")
+        val ICON_REVERSE_STEP_STEP = QIcon("res/icons/ic_reverse_step.png")
 
         fun getMainWindow(): MainWindow {
             return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
@@ -123,6 +125,26 @@ class MainWindow : QMainWindow() {
         ui.deleteCommand.setIcon(ICON_DELETE)
         ui.forwardCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_RIGHT)
         ui.backCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_LEFT)
+
+
+        ui.actionPlay.setIcon(ICON_PLAY)
+        ui.actionStop.setIcon(ICON_STOP)
+        ui.actionPause.setIcon(ICON_PAUSE)
+        ui.actionNextStep.setIcon(ICON_NEXT_STEP)
+        ui.actionReverseStep.setIcon(ICON_REVERSE_STEP_STEP)
+
+        val playToolBar = QToolBar()
+
+        playToolBar.addAction(ui.actionPlay)
+        playToolBar.addAction(ui.actionPause)
+        playToolBar.addAction(ui.actionStop)
+        playToolBar.addAction(ui.actionReverseStep)
+        playToolBar.addAction(ui.actionNextStep)
+
+        playToolBar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        playToolBar.setStyleSheet("QToolBar{border: none;}")
+        ui.playBarLayout.addWidget(playToolBar)
+        ui.playBarLayout.setAlignment(playToolBar, Qt.AlignmentFlag.AlignHCenter)
 
         val palette = QPalette(palette())
         palette.setColor(QPalette.ColorRole.Window, QColor.white)

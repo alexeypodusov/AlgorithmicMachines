@@ -130,7 +130,7 @@
        <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Перекти к: </string>
+          <string>Перейти к: </string>
          </property>
         </widget>
        </item>
