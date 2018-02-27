@@ -80,6 +80,7 @@ class MainWindow : QMainWindow() {
         val ICON_PAUSE = QIcon("res/icons/ic_pause.png")
         val ICON_NEXT_STEP = QIcon("res/icons/ic_next_step.png")
         val ICON_REVERSE_STEP_STEP = QIcon("res/icons/ic_reverse_step.png")
+        val ICON_WINDOW = QIcon("res/icons/ic_window_icon.png")
 
         fun getMainWindow(): MainWindow {
             return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
@@ -122,10 +123,11 @@ class MainWindow : QMainWindow() {
 
         initToolbar()
 
+        setWindowIcon(ICON_WINDOW)
+
         ui.deleteCommand.setIcon(ICON_DELETE)
         ui.forwardCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_RIGHT)
         ui.backCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_LEFT)
-
 
         ui.actionPlay.setIcon(ICON_PLAY)
         ui.actionStop.setIcon(ICON_STOP)
