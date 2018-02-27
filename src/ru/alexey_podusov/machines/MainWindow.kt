@@ -1,6 +1,7 @@
 package ru.alexey_podusov.machines
 
 import com.trolltech.qt.core.QFileInfo
+import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.MessageType
@@ -11,13 +12,13 @@ import ru.alexey_podusov.machines.factories.MarkovFactory
 import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.factories.TyuringFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
+import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
 import ru.alexey_podusov.machines.ui.PreferencesDialog
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
 import ru.alexey_podusov.machines.ui.tyuring.TyuringAlphabetWidget
 import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
-import java.util.prefs.Preferences
 
 class MainWindow : QMainWindow() {
 
@@ -63,11 +64,26 @@ class MainWindow : QMainWindow() {
 
         val STATUS_BAR_TEXT = "Шагов: "
 
+        val ICON_NEW = QIcon("res/icons/ic_newfile.png")
+        val ICON_OPEN = QIcon("res/icons/ic_openfile.png")
+        val ICON_SAVE = QIcon("res/icons/ic_save.png")
+        val ICON_SAVEAS = QIcon("res/icons/ic_saveas.png")
+        val ICON_SETTINGS = QIcon("res/icons/ic_settings.png")
+        val ICON_CLOSE = QIcon("res/icons/ic_exit.png")
+        val ICON_INSERT_AFTER = QIcon("res/icons/ic_insert_after.png")
+        val ICON_INSERT_BEFORE = QIcon("res/icons/ic_insert_before.png")
+        val ICON_COLUMN_INSERT_AFTER = QIcon("res/icons/ic_insert_column_after.png")
+        val ICON_COLUMN_INSERT_BEFORE = QIcon("res/icons/ic_insert_column_before.png")
+        val ICON_DELETE = QIcon("res/icons/ic_delete.png")
+        val ICON_PLAY = QIcon("res/icons/ic_play.png")
+        val ICON_STOP = QIcon("res/icons/ic_stop.png")
+        val ICON_PAUSE = QIcon("res/icons/ic_pause.png")
+        val ICON_NEXT_STEP = QIcon("res/icons/ic_next_step.png")
+        val ICON_REVERSE_STEP_STEP = QIcon("res/icons/ic_reverse_step.png")
 
         fun getMainWindow(): MainWindow {
             return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
         }
-
     }
 
     init {
@@ -77,8 +93,68 @@ class MainWindow : QMainWindow() {
         createNewFile()
     }
 
+    private fun initToolbar() {
+        ui.actionNew.setIcon(ICON_NEW)
+        ui.actionOpen.setIcon(ICON_OPEN)
+        ui.actionSave.setIcon(ICON_SAVE)
+        ui.actionSaveAs.setIcon(ICON_SAVEAS)
+        ui.actionPreferences.setIcon(ICON_SETTINGS)
+        ui.actionExit.setIcon(ICON_CLOSE)
+
+        val firstSpacerWidget = QWidget(this)
+        val secondSpacerWidget = QWidget(this)
+        asList(firstSpacerWidget, secondSpacerWidget).forEach { it.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding) }
+
+        ui.mainToolBar.addWidget(firstSpacerWidget)
+        ui.mainToolBar.addAction(ui.actionNew)
+        ui.mainToolBar.addAction(ui.actionOpen)
+        ui.mainToolBar.addAction(ui.actionSave)
+        ui.mainToolBar.addAction(ui.actionSaveAs)
+        ui.mainToolBar.addAction(ui.actionPreferences)
+        ui.mainToolBar.addAction(ui.actionExit)
+        ui.mainToolBar.addWidget(secondSpacerWidget)
+
+        ui.mainToolBar.isMovable = false
+    }
+
     private fun setupUi() {
         ui.setupUi(this)
+
+        initToolbar()
+
+        ui.deleteCommand.setIcon(ICON_DELETE)
+        ui.forwardCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_RIGHT)
+        ui.backCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_LEFT)
+
+
+        ui.actionPlay.setIcon(ICON_PLAY)
+        ui.actionStop.setIcon(ICON_STOP)
+        ui.actionPause.setIcon(ICON_PAUSE)
+        ui.actionNextStep.setIcon(ICON_NEXT_STEP)
+        ui.actionReverseStep.setIcon(ICON_REVERSE_STEP_STEP)
+
+        val playToolBar = QToolBar()
+
+        playToolBar.addAction(ui.actionPlay)
+        playToolBar.addAction(ui.actionPause)
+        playToolBar.addAction(ui.actionStop)
+        playToolBar.addAction(ui.actionReverseStep)
+        playToolBar.addAction(ui.actionNextStep)
+
+        playToolBar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        playToolBar.setStyleSheet("QToolBar{border: none;}")
+        ui.playBarLayout.addWidget(playToolBar)
+        ui.playBarLayout.setAlignment(playToolBar, Qt.AlignmentFlag.AlignHCenter)
+
+        val palette = QPalette(palette())
+        palette.setColor(QPalette.ColorRole.Window, QColor.white)
+        setAutoFillBackground(true)
+        setPalette(palette)
+
+        val widthWindow = (QApplication.desktop().width() * 0.40).toInt()
+        val heightWindow = (QApplication.desktop().height() * 0.65).toInt()
+        setGeometry(QApplication.desktop().width() / 2 - widthWindow / 2, QApplication.desktop().height() / 2 - heightWindow / 2, widthWindow, heightWindow)
+
 
         ui.buttonsVerticalLayout.setContentsMargins(0, 30, 0, 0)
         alphabetContainerWidget.setLayout(alphabetContainerLayout)
@@ -96,6 +172,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun initMachine() {
+        setWindowTitle(ALGORITHMIC_MACHINES + ": " + currentMachine.nameMachine)
         currentMachineChanged.emit()
 
         engine!!.sendMessageSignal.connect(this, ::onReceiveMessage)
@@ -118,6 +195,12 @@ class MainWindow : QMainWindow() {
             tyuringAlphabetWidget = TyuringAlphabetWidget()
             alphabetContainerLayout.addWidget(tyuringAlphabetWidget)
             tyuringAlphabetWidget.engine = engine as TyuringEngine
+
+            ui.insertBeforeButton.setIcon(ICON_COLUMN_INSERT_BEFORE)
+            ui.insertAfterButton.setIcon(ICON_COLUMN_INSERT_AFTER)
+        } else {
+            ui.insertBeforeButton.setIcon(ICON_INSERT_BEFORE)
+            ui.insertAfterButton.setIcon(ICON_INSERT_AFTER)
         }
 
         commandTabWidget.setEngine(engine!!, factory)
@@ -189,7 +272,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun updatedCommands() {
-        if(commandTabWidget.currentIndex() != commandTabWidget.count() - 1) {
+        if (commandTabWidget.currentIndex() != commandTabWidget.count() - 1) {
             commandTabWidget.getCurrent().updateCommands()
         }
         isSavedChanges = false

@@ -33,6 +33,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QLabel labelTask;
     public QTextEdit taskTextEdit;
     public QVBoxLayout workAreaLayout;
+    public QHBoxLayout playBarLayout;
     public QHBoxLayout commandBarLayout;
     public QVBoxLayout buttonsVerticalLayout;
     public QPushButton insertBeforeButton;
@@ -123,6 +124,13 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         workAreaLayout.setObjectName("workAreaLayout");
 
         mainVerticalLayout.addLayout(workAreaLayout);
+
+        playBarLayout = new QHBoxLayout();
+        playBarLayout.setSpacing(6);
+        playBarLayout.setMargin(11);
+        playBarLayout.setObjectName("playBarLayout");
+
+        mainVerticalLayout.addLayout(playBarLayout);
 
         commandBarLayout = new QHBoxLayout();
         commandBarLayout.setSpacing(6);
@@ -221,6 +229,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         MainWindow.setStatusBar(statusBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar.setObjectName("mainToolBar");
+        mainToolBar.setToolButtonStyle(com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonTextUnderIcon);
         MainWindow.addToolBar(com.trolltech.qt.core.Qt.ToolBarArea.TopToolBarArea, mainToolBar);
 
         menuBar.addAction(menu.menuAction());
@@ -266,8 +275,11 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionMarkov.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u044b\u0435 \u0430\u043b\u0433\u043e\u0440\u0438\u0442\u043c\u044b \u041c\u0430\u0440\u043a\u043e\u0432\u0430", null));
         actionPreferences.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438", null));
         labelTask.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "\u0423\u0441\u043b\u043e\u0432\u0438\u0435", null));
+        insertBeforeButton.setToolTip(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<html><head/><body><p>\u0412\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u043f\u0435\u0440\u0435\u0434</p></body></html>", null));
         insertBeforeButton.setText("");
+        insertAfterButton.setToolTip(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<html><head/><body><p>\u0412\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u043f\u043e\u0441\u043b\u0435</p></body></html>", null));
         insertAfterButton.setText("");
+        deleteCommand.setToolTip(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "<html><head/><body><p>\u0423\u0434\u0430\u043b\u0438\u0442\u044c</p></body></html>", null));
         deleteCommand.setText("");
         backCommandButton.setText("");
         forwardCommandButton.setText("");
