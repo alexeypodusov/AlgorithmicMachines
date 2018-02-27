@@ -96,6 +96,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun initMachine() {
+        setWindowTitle(ALGORITHMIC_MACHINES + ": " + currentMachine.nameMachine)
         currentMachineChanged.emit()
 
         engine!!.sendMessageSignal.connect(this, ::onReceiveMessage)
