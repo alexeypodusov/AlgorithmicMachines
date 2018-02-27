@@ -21,6 +21,10 @@ abstract class BaseCell : QWidget() {
 
     var isActive: Boolean = true
         set(value) {
+            when(value) {
+                true -> label.show()
+                false -> label.hide()
+            }
             label.isVisible = value
             elementWidget.isEnabled = value
         }

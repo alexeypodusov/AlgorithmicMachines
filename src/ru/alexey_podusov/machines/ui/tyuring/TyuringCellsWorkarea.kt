@@ -63,9 +63,7 @@ class TyuringCellsWorkarea(tab: TyuringWorkareaTab) : BaseCellsWorkarea(tab) {
             if (CellsWorkareaTab.isInTape(numberCell)) {
                 cellWidget.number = numberCell
                 cellWidget.cellValue = tab.getCell(numberCell)
-                if (!cellWidget.isActive) {
-                    cellWidget.isActive = true
-                }
+                cellWidget.isActive = true
             } else cellWidget.isActive = false
         }
     }

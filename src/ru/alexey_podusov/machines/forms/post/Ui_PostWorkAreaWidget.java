@@ -21,6 +21,9 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
     public QPushButton RightPushButton;
     public QHBoxLayout bottomButtonLayout;
     public QPushButton restoreButton;
+    public QSpacerItem horizontalSpacer_2;
+    public QLabel label;
+    public QLineEdit goToLineEdit;
     public QSpacerItem horizontalSpacer;
 
     public Ui_PostWorkAreaWidget() { super(); }
@@ -28,7 +31,7 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
     public void setupUi(QWidget PostWorkAreaWidget)
     {
         PostWorkAreaWidget.setObjectName("PostWorkAreaWidget");
-        PostWorkAreaWidget.resize(new QSize(578, 133).expandedTo(PostWorkAreaWidget.minimumSizeHint()));
+        PostWorkAreaWidget.resize(new QSize(699, 267).expandedTo(PostWorkAreaWidget.minimumSizeHint()));
         PostWorkAreaWidget.setMinimumSize(new QSize(150, 0));
         PostWorkAreaWidget.setToolTip("");
         horizontalLayout_2 = new QHBoxLayout(PostWorkAreaWidget);
@@ -52,7 +55,7 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
         scrollArea.setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents.setGeometry(new QRect(0, 0, 482, 78));
+        scrollAreaWidgetContents.setGeometry(new QRect(0, 0, 603, 212));
         scrollArea.setWidget(scrollAreaWidgetContents);
 
         cellsLayout.addWidget(scrollArea);
@@ -76,6 +79,22 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
 
         bottomButtonLayout.addWidget(restoreButton);
 
+        horizontalSpacer_2 = new QSpacerItem(40, 20, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
+
+        bottomButtonLayout.addItem(horizontalSpacer_2);
+
+        label = new QLabel(PostWorkAreaWidget);
+        label.setObjectName("label");
+
+        bottomButtonLayout.addWidget(label);
+
+        goToLineEdit = new QLineEdit(PostWorkAreaWidget);
+        goToLineEdit.setObjectName("goToLineEdit");
+        goToLineEdit.setMaximumSize(new QSize(50, 16777215));
+        goToLineEdit.setMaxLength(4);
+
+        bottomButtonLayout.addWidget(goToLineEdit);
+
         horizontalSpacer = new QSpacerItem(40, 20, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
 
         bottomButtonLayout.addItem(horizontalSpacer);
@@ -97,6 +116,7 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
         LeftPushButton.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "PushButton", null));
         RightPushButton.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "PushButton", null));
         restoreButton.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "\u0412\u043e\u0441\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u043b\u0435\u043d\u0442\u0443", null));
+        label.setText(com.trolltech.qt.core.QCoreApplication.translate("PostWorkAreaWidget", "\u041f\u0435\u0440\u0435\u043a\u0442\u0438 \u043a: ", null));
     } // retranslateUi
 
 }

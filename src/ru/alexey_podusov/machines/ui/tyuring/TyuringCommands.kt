@@ -99,7 +99,7 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     private fun addColumnHeader(column: Int) {
         val headerItem = TyuringHeaderLabel()
         headerItem.setText("Q$column")
-        headerItem.setFixedHeight(HEIGHT_COLUMN_HEADER)
+        //headerItem.setFixedHeight(HEIGHT_COLUMN_HEADER)
         commandsLayout.addWidget(headerItem, 0, column)
     }
 

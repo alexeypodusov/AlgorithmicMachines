@@ -10,6 +10,7 @@ class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
     init {
         connect()
     }
+
     override fun onCellChanched(numberCell: Int, cellParameter: Any) {
         (tab as PostWorkareaTab).changeValueCell(numberCell, cellParameter as Boolean)
     }
@@ -29,9 +30,7 @@ class PostCellsWorkarea(tab: PostWorkareaTab) : BaseCellsWorkarea(tab) {
             if (isInTape(numberCell)) {
                 cellWidget.number = numberCell
                 cellWidget.isMark = tab.getCell(numberCell)
-                if (!cellWidget.isActive) {
-                    cellWidget.isActive = true
-                }
+                cellWidget.isActive = true
             } else cellWidget.isActive = false
         }
     }
