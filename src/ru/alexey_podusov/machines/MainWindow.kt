@@ -13,6 +13,8 @@ import ru.alexey_podusov.machines.factories.MarkovFactory
 import ru.alexey_podusov.machines.factories.PostFactory
 import ru.alexey_podusov.machines.factories.TyuringFactory
 import ru.alexey_podusov.machines.forms.Ui_MainWindow
+import ru.alexey_podusov.machines.ui.BaseCellsWorkarea
+import ru.alexey_podusov.machines.ui.BaseWorkarea
 import ru.alexey_podusov.machines.ui.PreferencesDialog
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.CommandTabWidget
 import ru.alexey_podusov.machines.ui.custom_widgets.tab.WorkareaTabWidget
@@ -71,6 +73,11 @@ class MainWindow : QMainWindow() {
         val ICON_SAVEAS = QIcon("res/icons/ic_saveas.png")
         val ICON_SETTINGS = QIcon("res/icons/ic_settings.png")
         val ICON_CLOSE = QIcon("res/icons/ic_exit.png")
+        val ICON_INSERT_AFTER = QIcon("res/icons/ic_insert_after.png")
+        val ICON_INSERT_BEFORE = QIcon("res/icons/ic_insert_before.png")
+        val ICON_COLUMN_INSERT_AFTER = QIcon("res/icons/ic_insert_column_after.png")
+        val ICON_COLUMN_INSERT_BEFORE = QIcon("res/icons/ic_insert_column_before.png")
+        val ICON_DELETE = QIcon("res/icons/ic_delete.png")
 
         fun getMainWindow(): MainWindow {
             return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
@@ -113,11 +120,14 @@ class MainWindow : QMainWindow() {
 
         initToolbar()
 
+        ui.deleteCommand.setIcon(ICON_DELETE)
+        ui.forwardCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_RIGHT)
+        ui.backCommandButton.setIcon(BaseCellsWorkarea.ICON_GO_LEFT)
+
         val palette = QPalette(palette())
         palette.setColor(QPalette.ColorRole.Window, QColor.white)
         setAutoFillBackground(true)
         setPalette(palette)
-        //setStyleSheet("background-color:white;")
 
         val widthWindow = (QApplication.desktop().width() * 0.33).toInt()
         val heightWindow = (QApplication.desktop().height() * 0.60).toInt()
@@ -163,6 +173,12 @@ class MainWindow : QMainWindow() {
             tyuringAlphabetWidget = TyuringAlphabetWidget()
             alphabetContainerLayout.addWidget(tyuringAlphabetWidget)
             tyuringAlphabetWidget.engine = engine as TyuringEngine
+
+            ui.insertBeforeButton.setIcon(ICON_COLUMN_INSERT_BEFORE)
+            ui.insertAfterButton.setIcon(ICON_COLUMN_INSERT_AFTER)
+        } else {
+            ui.insertBeforeButton.setIcon(ICON_INSERT_BEFORE)
+            ui.insertAfterButton.setIcon(ICON_INSERT_AFTER)
         }
 
         commandTabWidget.setEngine(engine!!, factory)

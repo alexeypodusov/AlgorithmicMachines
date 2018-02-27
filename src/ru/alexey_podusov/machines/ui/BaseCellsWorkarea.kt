@@ -1,9 +1,7 @@
 package ru.alexey_podusov.machines.ui
 
 import com.trolltech.qt.core.Qt
-import com.trolltech.qt.gui.QApplication
-import com.trolltech.qt.gui.QHBoxLayout
-import com.trolltech.qt.gui.QIntValidator
+import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.CellsWorkareaTab
 import ru.alexey_podusov.machines.engines.WorkareaTab
@@ -19,15 +17,25 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
 
     companion object {
         val SPACING_CELL_LAYOUT = 6
+        val ICON_GO_LEFT = QIcon("res/icons/ic_go_left.png")
+        val ICON_GO_RIGHT = QIcon("res/icons/ic_go_right.png")
     }
 
     init {
         ui.setupUi(this)
+
+        initUI()
+        initCells()
+    }
+
+    private fun initUI() {
+        ui.LeftPushButton.setIcon(ICON_GO_LEFT)
+        ui.RightPushButton.setIcon(ICON_GO_RIGHT)
+
         ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         ui.restoreButton.clicked.connect(this, ::onRestoreButtonClicked)
         ui.goToLineEdit.setValidator(QIntValidator(-999, 999))
         ui.goToLineEdit.textEdited.connect(this, ::onGoToTextEdited)
-        initCells()
     }
 
     private fun onGoToTextEdited(text: String) {
