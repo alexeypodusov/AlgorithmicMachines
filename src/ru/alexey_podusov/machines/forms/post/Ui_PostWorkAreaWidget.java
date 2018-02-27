@@ -24,7 +24,6 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
     public QSpacerItem horizontalSpacer_2;
     public QLabel label;
     public QLineEdit goToLineEdit;
-    public QSpacerItem horizontalSpacer;
 
     public Ui_PostWorkAreaWidget() { super(); }
 
@@ -44,7 +43,7 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
         LeftPushButton = new QPushButton(PostWorkAreaWidget);
         LeftPushButton.setObjectName("LeftPushButton");
         LeftPushButton.setMinimumSize(new QSize(30, 70));
-        LeftPushButton.setMaximumSize(new QSize(30, 70));
+        LeftPushButton.setMaximumSize(new QSize(30, 85));
 
         cellsLayout.addWidget(LeftPushButton);
 
@@ -63,7 +62,7 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
         RightPushButton = new QPushButton(PostWorkAreaWidget);
         RightPushButton.setObjectName("RightPushButton");
         RightPushButton.setMinimumSize(new QSize(30, 70));
-        RightPushButton.setMaximumSize(new QSize(30, 70));
+        RightPushButton.setMaximumSize(new QSize(30, 85));
 
         cellsLayout.addWidget(RightPushButton);
 
@@ -94,10 +93,6 @@ public class Ui_PostWorkAreaWidget implements com.trolltech.qt.QUiForm<QWidget>
         goToLineEdit.setMaxLength(4);
 
         bottomButtonLayout.addWidget(goToLineEdit);
-
-        horizontalSpacer = new QSpacerItem(40, 20, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
-
-        bottomButtonLayout.addItem(horizontalSpacer);
 
 
         mainLayout.addLayout(bottomButtonLayout);

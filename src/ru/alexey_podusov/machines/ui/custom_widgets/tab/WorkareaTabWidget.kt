@@ -7,11 +7,11 @@ import ru.alexey_podusov.machines.ui.BaseWorkarea
 
 class WorkareaTabWidget: EngineTabWidget() {
     companion object {
-        val MAX_HEIGHT = 150
+        val MAX_HEIGHT = 160
     }
 
     init {
-        setMaximumHeight(MAX_HEIGHT)
+        setFixedHeight(MAX_HEIGHT)
     }
 
     override fun addWidgetsFromEngine() {

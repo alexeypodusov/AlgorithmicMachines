@@ -44,7 +44,7 @@
          <property name="maximumSize">
           <size>
            <width>30</width>
-           <height>70</height>
+           <height>85</height>
           </size>
          </property>
          <property name="text">
@@ -86,7 +86,7 @@
          <property name="maximumSize">
           <size>
            <width>30</width>
-           <height>70</height>
+           <height>85</height>
           </size>
          </property>
          <property name="text">
@@ -146,19 +146,6 @@
           <number>4</number>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>com.trolltech.qt.core.Qt.Orientation.Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </item>
