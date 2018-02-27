@@ -21,6 +21,7 @@ import ru.alexey_podusov.machines.utils.FileUtils
 import java.util.Arrays.asList
 
 class MainWindow : QMainWindow() {
+    val playToolBar = QToolBar()
 
     val keyReleaseSignal = Signal1<QKeyEvent>()
     val keyPressSignal = Signal1<QKeyEvent>()
@@ -135,7 +136,6 @@ class MainWindow : QMainWindow() {
         ui.actionNextStep.setIcon(ICON_NEXT_STEP)
         ui.actionReverseStep.setIcon(ICON_REVERSE_STEP_STEP)
 
-        val playToolBar = QToolBar()
 
         playToolBar.addAction(ui.actionPlay)
         playToolBar.addAction(ui.actionPause)
@@ -476,6 +476,9 @@ class MainWindow : QMainWindow() {
 
     override fun closeEvent(event: QCloseEvent?) {
         if (checkCloseWithoutSave()) {
+            ui.mainToolBar.clear()
+            removeToolBar(ui.mainToolBar)
+            playToolBar.clear()
             event!!.accept()
         } else {
             event!!.ignore()
