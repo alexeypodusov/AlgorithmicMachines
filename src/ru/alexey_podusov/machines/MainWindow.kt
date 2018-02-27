@@ -151,8 +151,8 @@ class MainWindow : QMainWindow() {
         setAutoFillBackground(true)
         setPalette(palette)
 
-        val widthWindow = (QApplication.desktop().width() * 0.33).toInt()
-        val heightWindow = (QApplication.desktop().height() * 0.60).toInt()
+        val widthWindow = (QApplication.desktop().width() * 0.40).toInt()
+        val heightWindow = (QApplication.desktop().height() * 0.65).toInt()
         setGeometry(QApplication.desktop().width() / 2 - widthWindow / 2, QApplication.desktop().height() / 2 - heightWindow / 2, widthWindow, heightWindow)
 
 
