@@ -35,7 +35,7 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
 
     companion object {
         val HEIGHT_COLUMN_HEADER = 20
-        val WIDTH_ROW_HEADER = 40
+        val WIDTH_ROW_HEADER = 60
         val EMPTY_REPLACE_TITLE = "Пробел"
     }
 
@@ -99,7 +99,7 @@ class TyuringCommands(tab: TyuringCommandTab) : BaseCommands(tab) {
     private fun addColumnHeader(column: Int) {
         val headerItem = TyuringHeaderLabel()
         headerItem.setText("Q$column")
-        //headerItem.setFixedHeight(HEIGHT_COLUMN_HEADER)
+        headerItem.setFixedHeight(HEIGHT_COLUMN_HEADER)
         commandsLayout.addWidget(headerItem, 0, column)
     }
 
