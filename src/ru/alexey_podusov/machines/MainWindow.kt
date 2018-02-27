@@ -1,6 +1,8 @@
 package ru.alexey_podusov.machines
 
 import com.trolltech.qt.core.QFileInfo
+import com.trolltech.qt.core.QSize
+import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.engines.BaseEngine
 import ru.alexey_podusov.machines.engines.BaseEngine.MessageType
@@ -63,11 +65,16 @@ class MainWindow : QMainWindow() {
 
         val STATUS_BAR_TEXT = "Шагов: "
 
+        val ICON_NEW = QIcon("res/icons/ic_newfile.png")
+        val ICON_OPEN = QIcon("res/icons/ic_openfile.png")
+        val ICON_SAVE = QIcon("res/icons/ic_save.png")
+        val ICON_SAVEAS = QIcon("res/icons/ic_saveas.png")
+        val ICON_SETTINGS = QIcon("res/icons/ic_settings.png")
+        val ICON_CLOSE = QIcon("res/icons/ic_exit.png")
 
         fun getMainWindow(): MainWindow {
             return QApplication.topLevelWidgets().first { it is MainWindow } as MainWindow
         }
-
     }
 
     init {
@@ -77,8 +84,45 @@ class MainWindow : QMainWindow() {
         createNewFile()
     }
 
+    private fun initToolbar() {
+        ui.actionNew.setIcon(ICON_NEW)
+        ui.actionOpen.setIcon(ICON_OPEN)
+        ui.actionSave.setIcon(ICON_SAVE)
+        ui.actionSaveAs.setIcon(ICON_SAVEAS)
+        ui.actionPreferences.setIcon(ICON_SETTINGS)
+        ui.actionExit.setIcon(ICON_CLOSE)
+
+        val firstSpacerWidget = QWidget(this)
+        val secondSpacerWidget = QWidget(this)
+        asList(firstSpacerWidget, secondSpacerWidget).forEach { it.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding) }
+
+        ui.mainToolBar.addWidget(firstSpacerWidget)
+        ui.mainToolBar.addAction(ui.actionNew)
+        ui.mainToolBar.addAction(ui.actionOpen)
+        ui.mainToolBar.addAction(ui.actionSave)
+        ui.mainToolBar.addAction(ui.actionSaveAs)
+        ui.mainToolBar.addAction(ui.actionPreferences)
+        ui.mainToolBar.addAction(ui.actionExit)
+        ui.mainToolBar.addWidget(secondSpacerWidget)
+
+        ui.mainToolBar.isMovable = false
+    }
+
     private fun setupUi() {
         ui.setupUi(this)
+
+        initToolbar()
+
+        val palette = QPalette(palette())
+        palette.setColor(QPalette.ColorRole.Window, QColor.white)
+        setAutoFillBackground(true)
+        setPalette(palette)
+        //setStyleSheet("background-color:white;")
+
+        val widthWindow = (QApplication.desktop().width() * 0.33).toInt()
+        val heightWindow = (QApplication.desktop().height() * 0.60).toInt()
+        setGeometry(QApplication.desktop().width() / 2 - widthWindow / 2, QApplication.desktop().height() / 2 - heightWindow / 2, widthWindow, heightWindow)
+
 
         ui.buttonsVerticalLayout.setContentsMargins(0, 30, 0, 0)
         alphabetContainerWidget.setLayout(alphabetContainerLayout)
@@ -190,7 +234,7 @@ class MainWindow : QMainWindow() {
     }
 
     private fun updatedCommands() {
-        if(commandTabWidget.currentIndex() != commandTabWidget.count() - 1) {
+        if (commandTabWidget.currentIndex() != commandTabWidget.count() - 1) {
             commandTabWidget.getCurrent().updateCommands()
         }
         isSavedChanges = false

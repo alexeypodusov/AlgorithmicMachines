@@ -221,6 +221,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         MainWindow.setStatusBar(statusBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar.setObjectName("mainToolBar");
+        mainToolBar.setToolButtonStyle(com.trolltech.qt.core.Qt.ToolButtonStyle.ToolButtonTextUnderIcon);
         MainWindow.addToolBar(com.trolltech.qt.core.Qt.ToolBarArea.TopToolBarArea, mainToolBar);
 
         menuBar.addAction(menu.menuAction());
