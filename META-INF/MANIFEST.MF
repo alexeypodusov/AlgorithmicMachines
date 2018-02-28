@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: qtjambi-native-win64-msvc2013x64-4.8.7.jar kotlin-stdlib.j
+ ar kotlin-reflect.jar kotlin-test.jar qtjambi-4.8.7.jar gson-2.8.2.ja
+ r
+Main-Class: ru.alexey_podusov.machines.MainKt
+

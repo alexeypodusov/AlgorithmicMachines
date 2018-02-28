@@ -20,7 +20,7 @@ class FileUtils {
             val file = QFile(filepath)
             var result: String
             if (file.open(QIODevice.OpenModeFlag.ReadOnly)) {
-                result = String(file.readAll().toByteArray(), Charset.defaultCharset())
+                result = String(file.readAll().toByteArray(), Charset.forName("UTF-8"))
                 file.close()
                 return result
             } else return ""

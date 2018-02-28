@@ -30,7 +30,7 @@ class PostEngine : BaseEngine() {
         val ERROR_MARK_TRUE = "Метка уже есть!"
         val ERROR_MARK_FALSE = "Метка отсутствует!"
 
-        val WORKAREA_TAB_BASE_NAME = "Строка"
+        val WORKAREA_TAB_BASE_NAME = "Лента"
         val COMMAND_TAB_BASE_NAME = "Команды"
     }
 
@@ -120,7 +120,8 @@ class PostEngine : BaseEngine() {
             }
 
             CHECK_MARK -> {
-                if (!workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
+                //если cells[currentCarriage] == true
+                if (workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
                     executeNumberCommandList.removeAt(executeNumberCommandList.size - 1)
                     executeNumberCommandList.add(comTab.commands.get(numberCommand).secondTransition)
                 }
