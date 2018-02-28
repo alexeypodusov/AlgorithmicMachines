@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="win64:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/win64_jar</output-path>
+    <root id="archive" name="win64_jar.jar">
+      <element id="module-output" name="AlgorithmicMachines" />
+    </root>
+  </artifact>
+</component>
