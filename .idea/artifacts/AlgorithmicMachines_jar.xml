@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="AlgorithmicMachines:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/AlgorithmicMachines_jar</output-path>
-    <root id="archive" name="AlgorithmicMachines.jar">
-      <element id="module-output" name="AlgorithmicMachines" />
-    </root>
-  </artifact>
-</component>

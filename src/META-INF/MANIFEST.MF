@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Class-Path: lib/kotlin/kotlin-reflect.jar lib/kotlin/kotlin-stdlib.jar
   lib/kotlin/kotlin-stdlib-sources.jar lib/kotlin/kotlin-test.jar lib/
- qtjambi-4.8.7.jar lib/qtjambi-native-linux32-gcc-4.8.7.jar lib/qtjamb
- i-native-win64-msvc2013x64-4.8.7.jar
+ qtJambi/win64/qtjambi-4.8.7.jar lib/qtJambi/win64/qtjambi-native-win6
+ 4-msvc2013x64-4.8.7.jar lib/gson-2.8.2.jar
 Main-Class: ru.alexey_podusov.machines.MainKt
 
