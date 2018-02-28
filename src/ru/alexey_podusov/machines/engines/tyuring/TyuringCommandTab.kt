@@ -29,6 +29,7 @@ class TyuringCommandTab(name: String) : CommandTab(name) {
             for (row in commands.withIndex()) {
                 row.value.filter { it.numberColumn > columnNum }.forEach { it.numberColumn-- }
                 row.value.filter { it.newState - 1 == columnNum }.forEach {  it.newState = -1}
+                row.value.filter { it.newState - 1 > columnNum }.forEach {  it.newState--}
                 row.value.removeAt(columnNum)
             }
             engine?.commandsChanged()
