@@ -120,7 +120,8 @@ class PostEngine : BaseEngine() {
             }
 
             CHECK_MARK -> {
-                if (!workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
+                //если cells[currentCarriage] == true
+                if (workTab.cells.get(workTab.getIndexByNum(workTab.currentCarriage))) {
                     executeNumberCommandList.removeAt(executeNumberCommandList.size - 1)
                     executeNumberCommandList.add(comTab.commands.get(numberCommand).secondTransition)
                 }
