@@ -52,6 +52,8 @@ class PostCommandTab(name: String) : CommandTab(name) {
             commands.filter { it.number > number }.forEach { it.number-- }
             commands.filter { it.transition == number }.forEach { it.transition = -1 }
             commands.filter { it.secondTransition == number }.forEach { it.secondTransition = -1 }
+            commands.filter { it.transition > number }.forEach { it.transition-- }
+            commands.filter { it.secondTransition > number }.forEach { it.secondTransition-- }
             commands.removeAt(number)
             engine?.commandsChanged()
         }
