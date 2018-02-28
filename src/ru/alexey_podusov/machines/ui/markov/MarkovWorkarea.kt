@@ -74,11 +74,11 @@ class MarkovWorkarea(tab: MarkovWorkareaTab): BaseWorkarea(tab) {
         editText.setText((tab as MarkovWorkareaTab).string)
     }
 
-    private fun onEditingFinished() {
-        (tab as MarkovWorkareaTab).string = editText.text()
+    private fun onTextEdited(text: String) {
+        (tab as MarkovWorkareaTab).string = text
     }
 
     override fun connect() {
-        editText.editingFinished.connect(this, ::onEditingFinished)
+        editText.textEdited.connect(this, ::onTextEdited)
     }
 }
