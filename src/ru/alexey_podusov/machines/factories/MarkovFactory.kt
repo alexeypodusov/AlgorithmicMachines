@@ -25,6 +25,7 @@ class MarkovFactory: IFactory {
                 .create()
 
         val engine = gson.fromJson<MarkovEngine>(json, MarkovEngine::class.java)
+        engine.createHistoryListForAllTabs()
         engine.setMainEngineOnTabs()
         return engine
     }
