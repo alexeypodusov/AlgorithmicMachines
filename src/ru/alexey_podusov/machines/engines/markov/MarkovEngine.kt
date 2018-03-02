@@ -62,7 +62,7 @@ class MarkovEngine : BaseEngine() {
                 workTab.historyString = ArrayList()
             }
 
-            workTab.historyString.add(workTab.string)
+            workTab.historyString!!.add(workTab.string)
 
             var replacement = command.replacement
 
@@ -99,7 +99,7 @@ class MarkovEngine : BaseEngine() {
                         workTab.string,
                         startPosition)
 
-                workTab.detailedHistoryReplacement.add(historyItem)
+                workTab.detailedHistoryReplacement!!.add(historyItem)
 
                 isReplaced = true
                 onWorkareaChanged()
@@ -114,7 +114,7 @@ class MarkovEngine : BaseEngine() {
 
         if (isFinish || (!isReplaced && (nextCommandNumber >= comTab.commands.size))) {
             sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT + (executeNumberCommandList.size - 1) + '\n'
-                    + COUNT_REPLACEMENT_TEXT + workTab.detailedHistoryReplacement.size,
+                    + COUNT_REPLACEMENT_TEXT + workTab.detailedHistoryReplacement!!.size,
                     SUCCES_TITLE)
             statusPlay = StatusPlay.STOPPED
         }
@@ -151,21 +151,34 @@ class MarkovEngine : BaseEngine() {
 
     override fun prepareExecuting(currentWorkareaTab: Int) {
         super.prepareExecuting(currentWorkareaTab)
-        (workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab).detailedHistoryReplacement.clear()
+        (workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab).detailedHistoryReplacement!!.clear()
         onWorkareaChanged()
     }
 
     override fun reverseExecuteCommand(numberCommand: Int, currentCommandTab: Int, currentWorkareaTab: Int): Boolean {
         val workTab = workareaTabs.get(currentWorkareaTab) as MarkovWorkareaTab
 
-        if (workTab.string != workTab.historyString.last()) {
-            workTab.detailedHistoryReplacement.removeAt(workTab.detailedHistoryReplacement.lastIndex)
+        if (workTab.string != workTab.historyString!!.last()) {
+            workTab.detailedHistoryReplacement!!.removeAt(workTab.detailedHistoryReplacement!!.lastIndex)
         }
 
-        workTab.string = workTab.historyString.last()
-        workTab.historyString.removeAt(workTab.historyString.size - 1)
+        workTab.string = workTab.historyString!!.last()
+        workTab.historyString!!.removeAt(workTab.historyString!!.size - 1)
 
         return true
+    }
+
+    fun createHistoryListForAllTabs() {
+        for (workareaTab in workareaTabs) {
+            workareaTab as MarkovWorkareaTab
+            if (workareaTab.detailedHistoryReplacement == null) {
+                workareaTab.detailedHistoryReplacement = ArrayList()
+            }
+
+            if (workareaTab.historyString == null) {
+                workareaTab.historyString = ArrayList()
+            }
+        }
     }
 
     override fun checkValidationCommand(numberCommand: Int, commandTab: CommandTab, workareaTab: WorkareaTab, isReverse: Boolean): Boolean {

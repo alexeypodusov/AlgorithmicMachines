@@ -14,9 +14,9 @@ class MarkovWorkareaTab(name: String) : WorkareaTab(name) {
 
     var savedString: String? = null
 
-    var historyString = ArrayList<String>()
+    var historyString: ArrayList<String>? = ArrayList()
 
-    var detailedHistoryReplacement = ArrayList<HistoryChangesItem>()
+    var detailedHistoryReplacement: ArrayList<HistoryChangesItem>? = ArrayList()
 
     data class HistoryChangesItem(var numberRules: Int,
                                   var sample: String,
