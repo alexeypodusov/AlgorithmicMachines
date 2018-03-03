@@ -6,4 +6,5 @@ fun main(args: Array<String>) {
     QApplication.initialize(args)
     MainWindow().show()
     QApplication.execStatic()
+    QApplication.shutdown()
 }
