@@ -5,8 +5,6 @@ import com.trolltech.qt.core.QObject
 import com.trolltech.qt.core.Qt
 import com.trolltech.qt.gui.*
 import ru.alexey_podusov.machines.connect
-import ru.alexey_podusov.machines.ui.post.PostCommandsSchemeDialog
-import ru.alexey_podusov.machines.ui.post.PostTextEditorDialog
 
 abstract class BaseLineItem : QFrame() {
     val onLinkStringSignal = Signal2<Int, Int>()
@@ -14,17 +12,12 @@ abstract class BaseLineItem : QFrame() {
 
     protected val mainLayout = QVBoxLayout()
     protected val stringLayout = QHBoxLayout()
-    protected val numberStringLabel = QLabel()
-
-    protected val previousStringWidget = QWidget()
-    protected val previousStringText = QLabel(previousStringWidget)
-    protected val previousNumberString = QLabel(previousStringWidget)
-    protected val linkLayout = QHBoxLayout()
+    protected val numberLineLabel = QLabel()
 
     var number: Int = 0
         set(value) {
             field = value
-            numberStringLabel.setText("$value")
+            numberLineLabel.setText("$value")
         }
 
     var scaleFactor = 3
@@ -32,64 +25,46 @@ abstract class BaseLineItem : QFrame() {
     var isSelected: Boolean = false
         set(value) {
             when(value) {
-                true -> numberStringLabel.setStyleSheet("color: green")
-                false -> numberStringLabel.setStyleSheet("color: black")
+                true -> numberLineLabel.setStyleSheet("color: green")
+                false -> numberLineLabel.setStyleSheet("color: black")
             }
             field = value
         }
 
     companion object {
+        val HEIGHT_WIDGET = 26
         val HEIGHT_STRING = 20
         val WIDTH_NUMBER_STRING = 20
-        val LINK_LAYOUT_MARGIN = 20
 
         val PREVIOUS_STRING_TEXT = "Предыдущая строка: "
 
         val SELECT_STRING_CSS = """#commandString{
                                         padding-right: 5px;
-                                        border:1px solid green;
+                                        background-color: #99db88
                                         }"""
 
         val NOSELECT_STRING_CSS = """#commandString{
-                                        padding: 0px;
-                                        border:0px solid green;
+                                        padding-right: 5px;
                                         }"""
     }
 
     init {
         setObjectName("commandString")
 
-        numberStringLabel.setMinimumWidth(WIDTH_NUMBER_STRING)
-        numberStringLabel.setFixedHeight(HEIGHT_STRING)
-        numberStringLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        stringLayout.addWidget(numberStringLabel)
+        numberLineLabel.setMinimumWidth(WIDTH_NUMBER_STRING)
+        numberLineLabel.setFixedHeight(HEIGHT_STRING)
+        numberLineLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        stringLayout.addWidget(numberLineLabel)
 
         mainLayout.setContentsMargins(0, 0, 0, 0)
         mainLayout.addLayout(stringLayout)
 
-        previousStringText.setText(PREVIOUS_STRING_TEXT)
-        linkLayout.addWidget(previousStringText)
-
-        previousNumberString.linkActivated.connect(this, ::onLinkActivated)
-        linkLayout.addWidget(previousNumberString)
-
-        linkLayout.setContentsMargins(LINK_LAYOUT_MARGIN, 0, 0, 0)
-        linkLayout.setAlignment(Qt.Alignment(Qt.AlignmentFlag.AlignLeft))
-
-        previousStringWidget.setLayout(linkLayout)
-
-        previousStringWidget.hide()
         mainLayout.setAlignment(Qt.Alignment(Qt.AlignmentFlag.AlignVCenter))
-        mainLayout.addWidget(previousStringWidget)
 
         setLayout(mainLayout)
 
-        setFixedHeight(HEIGHT_STRING)
+        setFixedHeight(HEIGHT_WIDGET)
         setStyleSheet(NOSELECT_STRING_CSS)
-    }
-
-    protected fun onLinkActivated(link: String) {
-        onLinkStringSignal.emit(link.toInt(), number)
     }
 
     override fun eventFilter(obj: QObject?, event: QEvent?): Boolean {
@@ -101,12 +76,9 @@ abstract class BaseLineItem : QFrame() {
 
     open fun setExecBorder(prevCommand: Int) {
         setStyleSheet(SELECT_STRING_CSS)
-        setFixedHeight(scaleFactor*HEIGHT_STRING)
     }
 
     open fun hideExecBorder() {
         setStyleSheet(NOSELECT_STRING_CSS)
-        setFixedHeight(HEIGHT_STRING)
-        previousStringWidget.hide()
     }
 }

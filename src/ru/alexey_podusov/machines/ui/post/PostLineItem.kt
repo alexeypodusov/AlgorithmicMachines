@@ -2,6 +2,7 @@ package ru.alexey_podusov.machines.ui.post
 
 import com.trolltech.qt.gui.QComboBox
 import com.trolltech.qt.gui.QIntValidator
+import com.trolltech.qt.gui.QLabel
 import com.trolltech.qt.gui.QLineEdit
 import ru.alexey_podusov.machines.connect
 import ru.alexey_podusov.machines.engines.post.PostCommandTab.Companion.MAX_COMMANDS
@@ -17,11 +18,13 @@ class PostLineItem : BaseLineItem() {
     private val transitionLineEdit = LinkLineEdit()
     private val secondTransitionLineEdit = LinkLineEdit()
     private val commentLineEdit = QLineEdit()
+    private val previousStringText = QLabel()
+    private val previousNumberString = QLabel()
 
     val onEditedSignal = Signal1<PostCommand>()
 
     companion object {
-        val WIDTH_COMMAND_STRING = 80
+        val WIDTH_COMMAND_STRING = 120
         val WIDTH_TRANSITION_STRING = 70
         val WIDTH_COMMENT_STRING = 50
     }
@@ -97,6 +100,14 @@ class PostLineItem : BaseLineItem() {
         stringLayout.addWidget(commentLineEdit)
         commentLineEdit.textEdited.connect(this, ::onCommentLineTextEdited)
         commentLineEdit.installEventFilter(this)
+
+        previousStringText.setText(PREVIOUS_STRING_TEXT)
+        stringLayout.addWidget(previousStringText)
+
+        previousNumberString.linkActivated.connect(this, ::onLinkActivated)
+        stringLayout.addWidget(previousNumberString)
+
+        hideExecBorder()
     }
 
     private fun onComboBoxIndexChanged(index: Int) {
@@ -137,7 +148,18 @@ class PostLineItem : BaseLineItem() {
         if (prevCommand != -1) {
             val link = "<a href='$prevCommand'>$prevCommand</a>"
             previousNumberString.setText(link)
-            previousStringWidget.show()
+            previousStringText.show()
+            previousNumberString.show()
         }
+    }
+
+    override fun hideExecBorder() {
+        super.hideExecBorder()
+        previousStringText.hide()
+        previousNumberString.hide()
+    }
+
+    private fun onLinkActivated(link: String) {
+        onLinkStringSignal.emit(link.toInt(), number)
     }
 }

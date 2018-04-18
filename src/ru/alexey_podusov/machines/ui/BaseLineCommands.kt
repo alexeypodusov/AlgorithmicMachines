@@ -44,6 +44,7 @@ abstract class BaseLineCommands(tab: CommandTab) : BaseCommands(tab) {
     private fun initUI() {
         scrollArea.widget().setLayout(scrollAreaLayout)
         lineItemWidgets.clear()
+        commandLinesLayout.setSpacing(0)
         scrollAreaLayout.addLayout(commandLinesLayout)
         scrollAreaWidget.setLayout(scrollAreaLayout)
         scrollArea.widget().setLayout(scrollAreaLayout)
