@@ -46,7 +46,7 @@ class MarkovHistoryChangesDialog(mainWindow: MainWindow, tab: EngineTab?) : TabD
 
     private fun onWorkareaChanged() {
         var currentReplacementCount = textEdit.document().lineCount() / 2
-        val countFromTab = (tab!! as MarkovWorkareaTab).detailedHistoryReplacement.size
+        val countFromTab = (tab!! as MarkovWorkareaTab).detailedHistoryReplacement!!.size
 
         while (currentReplacementCount < countFromTab) {
             addReplacement(currentReplacementCount + 1)
@@ -70,7 +70,7 @@ class MarkovHistoryChangesDialog(mainWindow: MainWindow, tab: EngineTab?) : TabD
     }
 
     private fun addReplacement(index: Int) {
-        val historyItem = (tab!! as MarkovWorkareaTab).detailedHistoryReplacement.get(index - 1)
+        val historyItem = (tab!! as MarkovWorkareaTab).detailedHistoryReplacement!!.get(index - 1)
         val firstString = String.format(FIRST_STRING_TAMPLATE,
                 index,
                 historyItem.sample,

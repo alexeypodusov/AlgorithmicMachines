@@ -32,13 +32,10 @@ class TyuringTableItem : QFrame() {
         val NEW_STATE_NUMBER_WIDHT = 30
 
         val SELECT_ITEM_CSS = """#commandItem{
-                                        margin-right: 5px;
-                                        border:1px solid green;
+                                        background-color: #99db88
                                         }"""
 
         val NOSELECT_ITEM_CSS = """#commandItem{
-                                        margin: 0px;
-                                        border:0px solid green;
                                         }"""
     }
 
