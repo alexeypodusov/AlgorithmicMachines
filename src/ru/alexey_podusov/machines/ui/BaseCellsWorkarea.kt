@@ -39,6 +39,7 @@ abstract class BaseCellsWorkarea(tab: WorkareaTab) : BaseWorkarea(tab) {
     }
 
     private fun onGoToTextEdited(text: String) {
+        if ("-".equals(text)) return
         if (!text.isEmpty()) {
             (tab as CellsWorkareaTab).currentCarriage = text.toInt()
         } else {
