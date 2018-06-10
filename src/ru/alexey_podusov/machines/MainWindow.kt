@@ -205,6 +205,20 @@ class MainWindow : QMainWindow() {
             ui.insertAfterButton.setIcon(ICON_INSERT_AFTER)
         }
 
+        /*
+         т.к. адекватно работают только в Машине Поста
+         в машине Тьюринга тупняк, а в Маркове вообще не нужны
+        */
+        ui.forwardCommandButton.isHidden = true
+        ui.backCommandButton.isHidden = true
+        if (currentMachine == MachineType.POST) {
+            ui.forwardCommandButton.isHidden = false
+            ui.backCommandButton.isHidden = false
+        } else {
+            ui.forwardCommandButton.isHidden = true
+            ui.backCommandButton.isHidden = true
+        }
+
         commandTabWidget.setEngine(engine!!, factory)
 
         commandTabWidget.connectCommands(this)
