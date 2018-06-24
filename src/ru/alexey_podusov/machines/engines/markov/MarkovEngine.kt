@@ -112,7 +112,7 @@ class MarkovEngine : BaseEngine() {
         executeNumberCommandList.add(nextCommandNumber)
 
 
-        if (isFinish || (!isReplaced && (nextCommandNumber >= comTab.commands.size))) {
+        if (isFinish && isReplaced || (!isReplaced && (nextCommandNumber >= comTab.commands.size))) {
             sendMessageSignal.emit(MessageType.MESSAGE_INFO, SUCCES_TEXT + (executeNumberCommandList.size - 1) + '\n'
                     + COUNT_REPLACEMENT_TEXT + workTab.detailedHistoryReplacement!!.size,
                     SUCCES_TITLE)
